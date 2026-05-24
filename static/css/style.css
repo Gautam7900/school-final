@@ -535,3 +535,40 @@ img {
 }
 
 
+/* MOBILE GRID FIX */
+
+@media screen and (max-width: 768px) {
+
+    .classes-grid,
+    .cards-grid,
+    .features-grid,
+    .stats-grid,
+    .gallery-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .class-card,
+    .card,
+    .feature-card {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    section {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+}
