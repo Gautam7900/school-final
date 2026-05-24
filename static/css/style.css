@@ -2258,3 +2258,27 @@ img {
         max-width:100%;
     }
 }
+
+
+
+
+
+
+
+
+
+.facility-card-link{
+    text-decoration:none;
+    color:inherit;
+    display:block;
+}
+
+.facility-card{
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}

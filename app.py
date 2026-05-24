@@ -4938,6 +4938,46 @@ def admin_delete_live_class(lcid):
 
 
 
+# app.py
+
+@app.route('/science-lab')
+def science_lab():
+    return render_template('science_lab.html')
+
+
+@app.route('/computer-lab')
+def computer_lab():
+    return render_template('computer_lab.html')
+
+
+@app.route('/library')
+def library():
+    return render_template('library.html')
+
+
+@app.route('/sports-ground')
+def sports_ground():
+    return render_template('sports_ground.html')
+
+
+@app.route('/art-room')
+def art_room():
+    return render_template('art_room.html')
+
+
+@app.route('/cafeteria')
+def cafeteria():
+    return render_template('cafeteria.html')
+
+
+@app.route('/medical-room')
+def medical_room():
+    return render_template('medical_room.html')
+
+
+@app.route('/transport')
+def transport():
+    return render_template('transport.html')
 
 
 
