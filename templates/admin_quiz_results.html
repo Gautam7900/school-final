@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Results — Admin{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>📊 {{ quiz['title'] }}</h2>
+        <p>{{ quiz['class_name'] }} · {{ quiz['subject'] }} · By {{ quiz['tname'] }} · {{ question_count }} Questions · {{ quiz['total_marks'] }} Marks</p>
+      </div>
+      <a href="/admin/quiz_manager" class="btn btn-outline btn-sm">← Quiz Manager</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>Student Results <span style="font-size:0.82rem;color:var(--muted);">({{ results|length }} attempts)</span></h3>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Roll No</th><th>Student</th><th>Class</th><th>Score</th><th>Percentage</th><th>Grade</th><th>Submitted</th></tr></thead>
+          <tbody>
+            {% for r in results %}
+            {% set pct = (r['score']/r['total']*100)|round(1) if r['total'] else 0 %}
+            <tr>
+              <td>
+                {% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉
+                {% else %}<strong style="color:var(--muted);">{{ loop.index }}</strong>{% endif %}
+              </td>
+              <td><code style="font-size:0.82rem;">{{ r['roll_number'] }}</code></td>
+              <td><strong>{{ r['student_name'] }}</strong></td>
+              <td style="font-size:0.85rem;">{{ r['class_name'] }}</td>
+              <td style="font-weight:800;color:var(--navy);font-size:1.05rem;">{{ r['score'] }}/{{ r['total'] }}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="progress-bar" style="width:80px;">
+                    <div class="progress-fill {% if pct>=75 %}green{% elif pct>=50 %}gold{% else %}orange{% endif %}" style="width:{{ pct }}%;"></div>
+                  </div>
+                  <strong>{{ pct }}%</strong>
+                </div>
+              </td>
+              <td>
+                <span style="background:var(--navy);color:var(--gold-lt);padding:3px 10px;border-radius:8px;font-size:0.82rem;font-weight:700;">
+                  {{ 'A1' if pct>=90 else 'A2' if pct>=80 else 'B1' if pct>=70 else 'B2' if pct>=60 else 'C1' if pct>=50 else 'D' }}
+                </span>
+              </td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ r['submitted_at'][:16] }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:3rem;">No attempts yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

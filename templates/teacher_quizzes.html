@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %}Manage Quizzes{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📝 Quiz Manager</h2><p>{{ session.teacher_name }}</p></div>
+      <div style="display:flex;gap:0.75rem;">
+        <button onclick="toggleForm('createForm')" class="btn btn-gold btn-sm">+ Create Quiz</button>
+        <a href="/teacher/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- CREATE FORM -->
+    <div id="createForm" style="display:none;" class="dash-card" style="margin-bottom:1.5rem;">
+      <div class="dash-card-header"><h3>➕ Create New Quiz</h3></div>
+      <div class="dash-card-body">
+        <div class="form-row">
+          <div class="form-group"><label>Class</label>
+            <select class="form-control" id="q_class">{% for c in classes %}<option>{{ c }}</option>{% endfor %}</select>
+          </div>
+          <div class="form-group"><label>Subject</label>
+            <select class="form-control" id="q_subject">{% for s in subjects %}<option>{{ s }}</option>{% endfor %}</select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Quiz Title</label>
+            <input class="form-control" id="q_title" placeholder="e.g. Chapter 4 — Fractions Quiz">
+          </div>
+          <div class="form-group"><label>Duration (minutes)</label>
+            <select class="form-control" id="q_duration">
+              <option>15</option><option>20</option><option selected>30</option><option>45</option><option>60</option>
+            </select>
+          </div>
+        </div>
+
+        <h4 style="color:var(--navy);margin:1.25rem 0 0.75rem;">Questions</h4>
+        <div id="questionsContainer"></div>
+        <button type="button" onclick="addQuestion()" class="btn btn-sm" style="background:var(--warm);color:var(--navy);border:1.5px dashed var(--gold);margin-bottom:1rem;">+ Add Question</button>
+
+        <div style="display:flex;gap:1rem;">
+          <button onclick="createQuiz()" class="btn btn-gold">💾 Save Quiz</button>
+          <button onclick="toggleForm('createForm')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+        </div>
+        <div id="createMsg" style="margin-top:0.75rem;font-size:0.88rem;"></div>
+      </div>
+    </div>
+
+    <!-- MY QUIZZES LIST -->
+    <div class="grid-2">
+      {% for q in quizzes %}
+      <div class="dash-card" id="qcard-{{ q['id'] }}">
+        <div style="background:{% if q['status']=='Active' %}var(--navy){% else %}#888{% endif %};padding:0.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;">
+          <div style="color:var(--white);">
+            <div style="font-size:0.75rem;opacity:0.75;text-transform:uppercase;letter-spacing:0.08em;">{{ q['class_name'] }} · {{ q['subject'] }}</div>
+            <div style="font-weight:700;font-size:0.95rem;">{{ q['title'] }}</div>
+          </div>
+          <span style="background:rgba(255,255,255,0.2);color:var(--white);padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;">{{ q['status'] }}</span>
+        </div>
+        <div style="padding:1rem 1.25rem;">
+          <div style="display:flex;gap:1rem;margin-bottom:1rem;font-size:0.85rem;color:var(--muted);">
+            <span>🎯 {{ q['total_marks'] }} marks</span>
+            <span>⏱ {{ q['duration'] }} mins</span>
+            <span>👥 {{ q['attempt_count'] or 0 }} attempts</span>
+            {% if q['avg_score'] %}<span>📊 Avg: {{ q['avg_score']|round(1) }}%</span>{% endif %}
+          </div>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+            <button onclick="toggleQuiz({{ q['id'] }})"
+              style="background:{% if q['status']=='Active' %}#fff3e0;color:#e65100{% else %}#e8f5e9;color:#2e7d32{% endif %};border:none;border-radius:6px;padding:6px 12px;font-size:0.82rem;font-weight:700;cursor:pointer;">
+              {% if q['status']=='Active' %}⏸ Deactivate{% else %}▶ Activate{% endif %}
+            </button>
+            <a href="/teacher/quiz/{{ q['id'] }}/results"
+              style="background:#e3f2fd;color:#1565c0;border-radius:6px;padding:6px 12px;font-size:0.82rem;font-weight:700;text-decoration:none;">
+              📊 Results
+            </a>
+            <button onclick="deleteQuiz({{ q['id'] }})"
+              style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:6px 12px;font-size:0.82rem;font-weight:700;cursor:pointer;">
+              🗑 Delete
+            </button>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div style="grid-column:span 2;text-align:center;padding:3rem;color:var(--muted);">
+        <div style="font-size:3rem;margin-bottom:0.75rem;">📝</div>
+        <p>No quizzes created yet. Click "Create Quiz" to start!</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+let qCount = 0;
+
+function toggleForm(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (el.style.display === 'block' && qCount === 0) addQuestion();
+}
+
+function addQuestion() {
+  qCount++;
+  const div = document.createElement('div');
+  div.id = `q${qCount}`;
+  div.style = 'border:1.5px solid #eee;border-radius:10px;padding:1rem;margin-bottom:1rem;background:var(--cream);';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;">
+      <strong style="color:var(--navy);">Question ${qCount}</strong>
+      <button type="button" onclick="document.getElementById('q${qCount}').remove()" style="background:none;border:none;color:#c62828;cursor:pointer;font-size:1rem;">✕</button>
+    </div>
+    <div class="form-group"><input class="form-control" id="qq${qCount}_q" placeholder="Enter question..." required></div>
+    <div class="form-row">
+      <div class="form-group"><label style="font-size:0.8rem;">A.</label><input class="form-control" id="qq${qCount}_a" placeholder="Option A"></div>
+      <div class="form-group"><label style="font-size:0.8rem;">B.</label><input class="form-control" id="qq${qCount}_b" placeholder="Option B"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label style="font-size:0.8rem;">C.</label><input class="form-control" id="qq${qCount}_c" placeholder="Option C"></div>
+      <div class="form-group"><label style="font-size:0.8rem;">D.</label><input class="form-control" id="qq${qCount}_d" placeholder="Option D"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label style="font-size:0.8rem;">Correct Answer</label>
+        <select class="form-control" id="qq${qCount}_ans">
+          <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+        </select>
+      </div>
+      <div class="form-group"><label style="font-size:0.8rem;">Marks</label>
+        <select class="form-control" id="qq${qCount}_marks">
+          <option>1</option><option>2</option><option>3</option><option>5</option>
+        </select>
+      </div>
+    </div>`;
+  document.getElementById('questionsContainer').appendChild(div);
+}
+
+async function createQuiz() {
+  const title = document.getElementById('q_title').value.trim();
+  if (!title) { showMsg('Please enter a quiz title','error'); return; }
+  const questions = [];
+  for (let i = 1; i <= qCount; i++) {
+    const el = document.getElementById('q'+i);
+    if (!el) continue;
+    const q = document.getElementById(`qq${i}_q`)?.value.trim();
+    const a = document.getElementById(`qq${i}_a`)?.value.trim();
+    const b = document.getElementById(`qq${i}_b`)?.value.trim();
+    if (!q || !a || !b) continue;
+    questions.push({
+      question: q,
+      a, b,
+      c: document.getElementById(`qq${i}_c`)?.value.trim() || 'N/A',
+      d: document.getElementById(`qq${i}_d`)?.value.trim() || 'N/A',
+      correct: document.getElementById(`qq${i}_ans`)?.value || 'A',
+      marks:   parseInt(document.getElementById(`qq${i}_marks`)?.value || 1)
+    });
+  }
+  if (!questions.length) { showMsg('Add at least 1 question','error'); return; }
+  const res = await fetch('/teacher/quiz/create', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      class_name: document.getElementById('q_class').value,
+      subject:    document.getElementById('q_subject').value,
+      title, duration: parseInt(document.getElementById('q_duration').value),
+      questions
+    })
+  });
+  const d = await res.json();
+  if (d.success) { showToast('✅ Quiz created!'); setTimeout(()=>location.reload(),800); }
+  else showMsg('Error: '+d.error,'error');
+}
+
+async function toggleQuiz(id) {
+  const res = await fetch(`/teacher/quiz/${id}/toggle`, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) { showToast(`✅ Quiz is now ${d.status}`); setTimeout(()=>location.reload(),600); }
+}
+
+async function deleteQuiz(id) {
+  if (!confirm('Delete this quiz and all student attempts?')) return;
+  const res = await fetch(`/teacher/quiz/${id}/delete`, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) { document.getElementById('qcard-'+id).remove(); showToast('🗑 Deleted'); }
+}
+
+function showMsg(msg, type) {
+  const el = document.getElementById('createMsg');
+  el.textContent = msg; el.style.color = type==='error'?'#c62828':'#2e7d32';
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background='#2e7d32'; t.style.color='#fff';
+  t.style.display='block'; setTimeout(()=>t.style.display='none',3000);
+}
+</script>
+{% endblock %}

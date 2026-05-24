@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Academics{% endblock %}
+{% block content %}
+
+<section class="section bg-navy" style="padding:4rem 2rem;">
+  <div class="section-inner">
+    <div class="section-label" style="color:var(--gold-lt);">Curriculum</div>
+    <h1 style="color:var(--white);">Academics at <em style="color:var(--gold-lt);font-style:normal;">BrightMind</em></h1>
+    <p style="color:rgba(255,255,255,0.65);max-width:600px;font-size:1.1rem;margin-top:1rem;">
+      A CBSE-aligned curriculum designed to spark curiosity and build deep understanding from the earliest years through board-level mastery.
+    </p>
+  </div>
+</section>
+
+<!-- CLASSES GRID -->
+<section class="section bg-warm">
+  <div class="section-inner">
+    <div class="section-header centered">
+      <div class="section-label">Classes</div>
+      <h2 class="section-title">Choose a Class to Explore</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;" id="classGrid">
+      {% set classes = [
+        ('UKG','K','Play & Learn','Letters, Numbers, Rhymes, Drawing, Activity-based Learning'),
+        ('Class 1','1','Foundation','English, Hindi, Mathematics, EVS, Drawing'),
+        ('Class 2','2','Foundation','English, Hindi, Mathematics, EVS, Drawing, GK'),
+        ('Class 3','3','Primary','English, Hindi, Mathematics, Science, Social Studies, GK'),
+        ('Class 4','4','Primary','English, Hindi, Mathematics, Science, Social Studies, Computer'),
+        ('Class 5','5','Primary','English, Hindi, Mathematics, Science, Social Studies, Computer, GK'),
+        ('Class 6','6','Middle','English, Hindi, Mathematics, Science, Social Science, Sanskrit, Computer'),
+        ('Class 7','7','Middle','English, Hindi, Mathematics, Science, Social Science, Sanskrit, Computer'),
+        ('Class 8','8','Middle','English, Hindi, Mathematics, Science, Social Science, Sanskrit, Computer'),
+        ('Class 9','9','Secondary','English, Hindi, Mathematics, Science, Social Science, IT'),
+        ('Class 10','10','Secondary · Board','English, Hindi, Mathematics, Science, Social Science, IT'),
+      ] %}
+      {% for cls in classes %}
+      <div class="class-card" onclick="showDetail('{{ cls[0] }}','{{ cls[3] }}')">
+        <div class="cls-num">{{ cls[1] }}</div>
+        <div class="cls-label">{{ cls[2] }}</div>
+        <div class="cls-subs"><strong>{{ cls[3].split(',')|length }}</strong> subjects</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Detail Panel -->
+    <div id="classDetail" style="display:none;margin-top:2rem;" class="dash-card">
+      <div class="dash-card-header">
+        <h3 id="detailTitle">Class Detail</h3>
+        <button onclick="document.getElementById('classDetail').style.display='none'" class="btn btn-sm" style="background:transparent;border:1px solid #ddd;color:var(--muted);">✕ Close</button>
+      </div>
+      <div class="dash-card-body">
+        <h4 style="color:var(--navy);margin-bottom:1rem;">📚 Subjects Offered</h4>
+        <div id="detailSubs" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--warm);border-radius:8px;">
+          <p style="font-size:0.9rem;color:var(--navy);font-weight:600;">📥 Syllabus & Timetable download coming soon. Please contact the school office for printed copies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMINATION PATTERN -->
+<section class="section bg-white">
+  <div class="section-inner">
+    <div class="section-header centered">
+      <div class="section-label">Evaluation</div>
+      <h2 class="section-title">Examination Pattern</h2>
+    </div>
+    <div class="grid-3">
+      {% for exam in [
+        ('📝','Unit Tests','Conducted monthly. Covers 2–3 chapters. 25 marks each.'),
+        ('📋','Half-Yearly','Comprehensive exam in September. 100 marks per subject.'),
+        ('🎓','Annual/Board','Final examination in March. Board exam for Classes 9 & 10.'),
+      ] %}
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">{{ exam[0] }}</div>
+          <h3>{{ exam[1] }}</h3>
+          <p>{{ exam[2] }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+function showDetail(cls, subjects) {
+  document.getElementById('detailTitle').textContent = cls + ' — Subjects';
+  const subsEl = document.getElementById('detailSubs');
+  subsEl.innerHTML = subjects.split(',').map(s =>
+    `<span style="background:var(--navy);color:var(--gold-lt);padding:6px 14px;border-radius:20px;font-size:0.85rem;font-weight:600;">${s.trim()}</span>`
+  ).join('');
+  document.getElementById('classDetail').style.display = 'block';
+  document.getElementById('classDetail').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+{% endblock %}

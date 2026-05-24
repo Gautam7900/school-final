@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Analytics Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📊 Analytics Dashboard</h2><p>School performance overview</p></div>
+      <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- SUMMARY STATS -->
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="stat-card"><div class="stat-icon navy">👨‍🎓</div><div><div class="stat-num">{{ summary.total_students }}</div><div class="stat-lbl">Total Students</div></div></div>
+      <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-num">₹{{ "{:,.0f}".format(summary.total_fee_paid) }}</div><div class="stat-lbl">Fees Collected</div></div></div>
+      <div class="stat-card"><div class="stat-icon orange">⏳</div><div><div class="stat-num">₹{{ "{:,.0f}".format(summary.total_fee_due - summary.total_fee_paid) }}</div><div class="stat-lbl">Fees Pending</div></div></div>
+      <div class="stat-card"><div class="stat-icon gold">📊</div><div><div class="stat-num">{{ summary.collection_pct }}%</div><div class="stat-lbl">Collection Rate</div></div></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:1.5rem;">
+
+      <!-- FEE COLLECTION BAR CHART -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>💰 Class-wise Fee Collection</h3></div>
+        <div class="dash-card-body">
+          {% for f in fee_stats %}
+          {% set pct = ((f['total_paid'] or 0) / (f['total_due'] or 1) * 100)|round(1) %}
+          <div style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:0.85rem;">
+              <span style="font-weight:700;color:var(--navy);">{{ f['class_name'] }}</span>
+              <span style="color:var(--muted);">₹{{ "{:,.0f}".format(f['total_paid'] or 0) }} / ₹{{ "{:,.0f}".format(f['total_due'] or 0) }} ({{ pct }}%)</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill {% if pct>=75 %}green{% elif pct>=50 %}gold{% else %}orange{% endif %}" style="width:{{ pct }}%;"></div>
+            </div>
+            <div style="display:flex;gap:1rem;margin-top:3px;font-size:0.75rem;color:var(--muted);">
+              <span style="color:var(--green);">✅ Paid: {{ f['paid_count'] or 0 }}</span>
+              <span style="color:var(--orange);">⏳ Pending: {{ f['pending_count'] or 0 }}</span>
+              <span style="color:var(--red);">❌ Overdue: {{ f['overdue_count'] or 0 }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ATTENDANCE BY CLASS -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📅 Attendance by Class</h3></div>
+        <div class="dash-card-body">
+          {% for a in att_stats %}
+          {% set pct = ((a['present_count'] or 0) / (a['total_records'] or 1) * 100)|round(1) %}
+          <div style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:0.85rem;">
+              <span style="font-weight:700;color:var(--navy);">{{ a['class_name'] }}</span>
+              <span style="color:{% if pct>=75 %}var(--green){% else %}var(--red){% endif %};font-weight:700;">{{ pct }}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill {% if pct>=75 %}green{% elif pct>=50 %}gold{% else %}orange{% endif %}" style="width:{{ pct }}%;"></div>
+            </div>
+          </div>
+          {% else %}
+          <p style="color:var(--muted);">No attendance data yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="grid-2">
+
+      <!-- MONTHLY FEE COLLECTION -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📆 Monthly Fee Collection</h3></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Month</th><th>Collected</th><th>Pending</th><th>Bar</th></tr></thead>
+            <tbody>
+              {% for m in monthly %}
+              {% set total = (m['collected'] or 0) + (m['pending'] or 0) %}
+              {% set pct = ((m['collected'] or 0) / (total or 1) * 100)|round(0)|int %}
+              <tr>
+                <td><strong>{{ m['fee_month'] }}</strong></td>
+                <td style="color:var(--green);font-weight:700;">₹{{ "{:,.0f}".format(m['collected'] or 0) }}</td>
+                <td style="color:var(--red);font-weight:700;">₹{{ "{:,.0f}".format(m['pending'] or 0) }}</td>
+                <td style="width:100px;">
+                  <div class="progress-bar">
+                    <div class="progress-fill green" style="width:{{ pct }}%;"></div>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">No fee data yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TOP STUDENTS -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>🏆 Top Performing Students</h3></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rank</th><th>Name</th><th>Class</th><th>Avg %</th><th>Grade</th></tr></thead>
+            <tbody>
+              {% for s in top_students %}
+              {% set pct = s['avg_pct']|round(1) %}
+              {% set grade = 'A1' if pct>=90 else 'A2' if pct>=80 else 'B1' if pct>=70 else 'B2' if pct>=60 else 'C1' %}
+              <tr>
+                <td>
+                  {% if loop.index == 1 %}<span style="font-size:1.2rem;">🥇</span>
+                  {% elif loop.index == 2 %}<span style="font-size:1.2rem;">🥈</span>
+                  {% elif loop.index == 3 %}<span style="font-size:1.2rem;">🥉</span>
+                  {% else %}<strong style="color:var(--muted);">{{ loop.index }}</strong>
+                  {% endif %}
+                </td>
+                <td><strong>{{ s['name'] }}</strong></td>
+                <td style="font-size:0.85rem;">{{ s['class_name'] }}</td>
+                <td><strong style="color:var(--green);">{{ pct }}%</strong></td>
+                <td><span style="background:var(--navy);color:var(--gold-lt);padding:2px 8px;border-radius:8px;font-size:0.78rem;font-weight:700;">{{ grade }}</span></td>
+              </tr>
+              {% else %}
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">No marks data yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

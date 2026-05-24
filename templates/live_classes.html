@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Live Classes{% endblock %}
+{% block content %}
+
+<section style="background:linear-gradient(135deg,var(--navy),#1a2a5e);padding:3.5rem 2rem;">
+  <div style="max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div class="section-label" style="color:var(--gold-lt);">Online Learning</div>
+      <h1 style="color:var(--white);">Live <em style="color:var(--gold-lt);font-style:normal;">Classes</em></h1>
+      <p style="color:rgba(255,255,255,0.65);margin-top:0.5rem;">Join your teacher's live session on Google Meet or Zoom</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div id="liveDot" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:8px 16px;">
+        <span style="width:10px;height:10px;background:#4caf50;border-radius:50%;animation:pulse 1.5s infinite;display:inline-block;"></span>
+        <span style="color:var(--white);font-size:0.85rem;font-weight:600;">
+          {{ classes_data|selectattr('status','eq','Live')|list|length }} Live Now
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-warm">
+  <div class="section-inner">
+
+    <!-- CLASS FILTER -->
+    <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2rem;align-items:center;">
+      <span style="font-weight:700;color:var(--navy);margin-right:0.25rem;">Filter:</span>
+      {% for cls in all_classes %}
+      <a href="/live_classes?class_name={{ cls }}"
+        style="padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;text-decoration:none;transition:all 0.2s;
+        {% if sel_class==cls %}background:var(--navy);color:var(--white);{% else %}background:var(--white);border:1.5px solid var(--navy);color:var(--navy);{% endif %}">
+        {{ cls }}
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if classes_data %}
+
+    <!-- LIVE NOW -->
+    {% set live_now = classes_data|selectattr('status','eq','Live')|list %}
+    {% if live_now %}
+    <div style="margin-bottom:2rem;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+        <span style="width:12px;height:12px;background:#f44336;border-radius:50%;animation:pulse 1s infinite;display:inline-block;"></span>
+        <h2 style="color:#c62828;font-size:1.4rem;font-family:'Cormorant Garamond',serif;">Live Now</h2>
+      </div>
+      {% for lc in live_now %}
+      <div style="background:linear-gradient(135deg,#c62828,#e53935);border-radius:var(--radius-lg);padding:2rem;color:var(--white);margin-bottom:1rem;box-shadow:0 8px 32px rgba(198,40,40,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:0.78rem;font-weight:700;margin-bottom:0.75rem;">
+              🔴 LIVE · {{ lc['platform'] }}
+            </div>
+            <h3 style="color:var(--white);font-size:1.3rem;margin-bottom:0.25rem;">{{ lc['title'] }}</h3>
+            <p style="color:rgba(255,255,255,0.8);font-size:0.9rem;">{{ lc['class_name'] }} · {{ lc['subject'] }} · by {{ lc['teacher_name'] }}</p>
+            {% if lc['description'] %}<p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin-top:0.5rem;">{{ lc['description'] }}</p>{% endif %}
+          </div>
+          <a href="{{ lc['meet_link'] }}" target="_blank"
+            style="display:inline-flex;align-items:center;gap:8px;background:var(--white);color:#c62828;padding:14px 28px;border-radius:10px;font-weight:800;font-size:0.95rem;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:all 0.2s;flex-shrink:0;"
+            onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">
+            {% if lc['platform']=='Zoom' %}🎥{% else %}📹{% endif %} Join Now
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- UPCOMING CLASSES -->
+    {% set upcoming = classes_data|selectattr('status','eq','Upcoming')|list %}
+    {% if upcoming %}
+    <div style="margin-bottom:2rem;">
+      <h3 style="color:var(--navy);font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:1rem;">📅 Upcoming Classes</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;">
+        {% for lc in upcoming %}
+        <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+          <!-- Top bar -->
+          <div style="background:{% if lc['platform']=='Zoom' %}linear-gradient(135deg,#2d8cff,#0062e0){% else %}linear-gradient(135deg,#0f9d58,#0d8a4e){% endif %};padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.3rem;">{% if lc['platform']=='Zoom' %}🎥{% else %}📹{% endif %}</span>
+              <span style="color:var(--white);font-weight:700;font-size:0.9rem;">{{ lc['platform'] }}</span>
+            </div>
+            <span style="background:rgba(255,255,255,0.2);color:var(--white);padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;">{{ lc['class_name'] }}</span>
+          </div>
+          <!-- Content -->
+          <div style="padding:1.25rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--gold-dk);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem;">{{ lc['subject'] }}</div>
+            <h4 style="color:var(--navy);font-size:1.05rem;margin-bottom:0.5rem;">{{ lc['title'] }}</h4>
+            {% if lc['description'] %}<p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.75rem;">{{ lc['description'][:100] }}{% if lc['description']|length > 100 %}…{% endif %}</p>{% endif %}
+            <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.82rem;color:var(--muted);">
+                👩‍🏫 <span>{{ lc['teacher_name'] }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.82rem;color:var(--muted);">
+                🕐 <span>{{ lc['scheduled_at'] }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.82rem;color:var(--muted);">
+                ⏱ <span>{{ lc['duration'] }} mins</span>
+              </div>
+            </div>
+            <a href="{{ lc['meet_link'] }}" target="_blank"
+              style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--navy);color:var(--gold-lt);padding:11px;border-radius:8px;font-weight:700;font-size:0.88rem;text-decoration:none;transition:all 0.2s;"
+              onmouseover="this.style.background='var(--gold)';this.style.color='var(--navy)'" onmouseout="this.style.background='var(--navy)';this.style.color='var(--gold-lt)'">
+              Join Class →
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- COMPLETED CLASSES -->
+    {% set completed = classes_data|selectattr('status','eq','Completed')|list %}
+    {% if completed %}
+    <div>
+      <h3 style="color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:1rem;">✅ Completed Classes</h3>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        {% for lc in completed %}
+        <div style="background:var(--white);border-radius:var(--radius);padding:1rem 1.25rem;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;opacity:0.75;">
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span style="font-size:1.5rem;">{% if lc['platform']=='Zoom' %}🎥{% else %}📹{% endif %}</span>
+            <div>
+              <div style="font-weight:700;color:var(--navy);">{{ lc['title'] }}</div>
+              <div style="font-size:0.82rem;color:var(--muted);">{{ lc['class_name'] }} · {{ lc['subject'] }} · {{ lc['teacher_name'] }} · {{ lc['scheduled_at'] }}</div>
+            </div>
+          </div>
+          <span style="background:#e8f5e9;color:#2e7d32;padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Completed</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div style="text-align:center;padding:5rem 2rem;">
+      <div style="font-size:4rem;margin-bottom:1rem;">📹</div>
+      <h3 style="color:var(--navy);">No Live Classes Scheduled</h3>
+      <p style="color:var(--muted);">Your teacher will add live class links here. Check back soon!</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

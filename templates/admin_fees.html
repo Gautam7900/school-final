@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+{% block title %}Fees Management{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>💰 Fees Management</h2>
+        <p>Class-wise · Month-wise · Complete & Remaining Tracker</p>
+      </div>
+      <div style="display:flex;gap:1rem;">
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+        <a href="/admin/logout" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+
+    <!-- ── TOP FILTER BAR ──────────────────────────────── -->
+    <div class="dash-card" style="margin-bottom:1.5rem;">
+      <div class="dash-card-body" style="padding:1.25rem 1.5rem;">
+        <form method="GET" action="/admin/fees" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+          <div class="form-group" style="margin:0;flex:1;min-width:140px;">
+            <label>Class</label>
+            <select class="form-control" name="class_name" onchange="this.form.submit()">
+              {% for cls in classes %}
+              <option {% if cls==sel_class %}selected{% endif %}>{{ cls }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;flex:1;min-width:140px;">
+            <label>Month Filter</label>
+            <select class="form-control" name="month" onchange="this.form.submit()">
+              <option value="">— All Months —</option>
+              {% for m in months %}
+              <option {% if m['fee_month']==sel_month %}selected{% endif %} value="{{ m['fee_month'] }}">
+                {{ m['fee_month'] }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;flex:1;min-width:120px;">
+            <label>Session Year</label>
+            <select class="form-control" name="year" onchange="this.form.submit()">
+              <option {% if sel_year=='2024-25' %}selected{% endif %}>2024-25</option>
+              <option {% if sel_year=='2025-26' %}selected{% endif %}>2025-26</option>
+              <option {% if sel_year=='2026-27' %}selected{% endif %}>2026-27</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-navy btn-sm" style="height:44px;">🔍 Filter</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── SUMMARY STATS ──────────────────────────────── -->
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="stat-card">
+        <div class="stat-icon navy">🏫</div>
+        <div><div class="stat-num">{{ sel_class }}</div><div class="stat-lbl">Selected Class</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold">💵</div>
+        <div><div class="stat-num">₹{{ "{:,.0f}".format(total_due) }}</div><div class="stat-lbl">Total Due</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div><div class="stat-num">₹{{ "{:,.0f}".format(total_paid) }}</div><div class="stat-lbl">Total Collected</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">⏳</div>
+        <div><div class="stat-num">₹{{ "{:,.0f}".format(total_rem) }}</div><div class="stat-lbl">Remaining</div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:1.5rem;margin-bottom:1.5rem;">
+
+      <!-- ── FEE STRUCTURE EDITOR ─────────────────────── -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>⚙️ Fee Structure — {{ sel_class }}</h3>
+        </div>
+        <div class="dash-card-body">
+          {% if fee_struct %}
+          <div style="margin-bottom:1.25rem;">
+            {% set total_struct = fee_struct['tuition_fee']+ fee_struct['activity_fee']+ fee_struct['computer_fee']+ fee_struct['other_fee'] %}
+            <div class="fee-item"><span>Tuition Fee</span><span class="amount">₹{{ fee_struct['tuition_fee']|int }}</span></div>
+            <div class="fee-item"><span>Activity Fee</span><span class="amount">₹{{ fee_struct['activity_fee']|int }}</span></div>
+            <div class="fee-item"><span>Computer Fee</span><span class="amount">₹{{ fee_struct['computer_fee']|int }}</span></div>
+            <div class="fee-item"><span>Other Fee</span><span class="amount">₹{{ fee_struct['other_fee']|int }}</span></div>
+            <div class="fee-item" style="border-top:2px solid var(--navy);padding-top:0.5rem;margin-top:0.25rem;">
+              <span style="font-weight:700;color:var(--navy);">Monthly Total</span>
+              <span style="font-weight:800;color:var(--navy);font-size:1.1rem;">₹{{ total_struct|int }}</span>
+            </div>
+          </div>
+          {% else %}
+          <p style="color:var(--muted);margin-bottom:1rem;">No structure set yet.</p>
+          {% endif %}
+          <button onclick="toggleForm('structForm')" class="btn btn-gold btn-sm" style="width:100%;">✏️ Edit Fee Structure</button>
+          <div id="structForm" style="display:none;margin-top:1rem;padding:1rem;background:var(--warm);border-radius:8px;">
+            <div class="form-group"><label>Tuition Fee (₹)</label>
+              <input class="form-control" type="number" id="sf_tuition" value="{{ fee_struct['tuition_fee']|int if fee_struct else 0 }}">
+            </div>
+            <div class="form-group"><label>Activity Fee (₹)</label>
+              <input class="form-control" type="number" id="sf_activity" value="{{ fee_struct['activity_fee']|int if fee_struct else 0 }}">
+            </div>
+            <div class="form-group"><label>Computer Fee (₹)</label>
+              <input class="form-control" type="number" id="sf_computer" value="{{ fee_struct['computer_fee']|int if fee_struct else 0 }}">
+            </div>
+            <div class="form-group"><label>Other Fee (₹)</label>
+              <input class="form-control" type="number" id="sf_other" value="{{ fee_struct['other_fee']|int if fee_struct else 0 }}">
+            </div>
+            <button onclick="saveStructure('{{ sel_class }}')" class="btn btn-navy btn-sm">💾 Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STUDENT-WISE SUMMARY ─────────────────────── -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>👨‍🎓 Student Summary — {{ sel_class }}</h3>
+          <button onclick="openGenerateModal()" class="btn btn-gold btn-sm">⚡ Generate Monthly Fees</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Roll</th><th>Name</th><th>Months</th><th>Total Due</th><th>Paid</th><th>Remaining</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              {% for s in students_summary %}
+              {% set pct = ((s['total_paid'] or 0) / (s['total_due'] or 1) * 100)|round(0)|int %}
+              <tr>
+                <td><code style="font-size:0.8rem;">{{ s['roll_number'] }}</code></td>
+                <td><strong>{{ s['name'] }}</strong></td>
+                <td style="text-align:center;">
+                  <span style="background:var(--warm);padding:2px 8px;border-radius:8px;font-size:0.82rem;font-weight:700;color:var(--navy);">
+                    {{ s['paid_months'] or 0 }}/{{ s['total_months'] or 0 }}
+                  </span>
+                </td>
+                <td>₹{{ "{:,.0f}".format(s['total_due'] or 0) }}</td>
+                <td style="color:var(--green);font-weight:700;">₹{{ "{:,.0f}".format(s['total_paid'] or 0) }}</td>
+                <td style="color:{% if (s['total_remaining'] or 0)>0 %}var(--red){% else %}var(--green){% endif %};font-weight:700;">
+                  ₹{{ "{:,.0f}".format(s['total_remaining'] or 0) }}
+                </td>
+                <td>
+                  <button onclick="openStudentFees({{ s['id'] }}, '{{ s['name'] }}', '{{ sel_class }}')"
+                    class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;border:none;cursor:pointer;font-weight:700;font-size:0.8rem;border-radius:6px;padding:5px 10px;">
+                    📋 View/Pay
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if not students_summary %}
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No students in {{ sel_class }} yet.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── MONTH-WISE DETAIL TABLE ──────────────────── -->
+    {% if fees %}
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>📅 Month-wise Fee Records {% if sel_month %}— {{ sel_month }}{% endif %}</h3>
+        <span style="font-size:0.82rem;color:var(--muted);">{{ fees|length }} records</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Month</th><th>Roll</th><th>Student</th><th>Total Fee</th><th>Paid</th><th>Remaining</th><th>Status</th><th>Paid On</th><th>Remarks</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            {% for f in fees %}
+            <tr id="fee-row-{{ f['id'] }}">
+              <td style="font-weight:700;color:var(--navy);">{{ f['fee_month'] }}</td>
+              <td style="font-size:0.82rem;">{{ f['roll_number'] }}</td>
+              <td><strong>{{ f['student_name'] }}</strong></td>
+              <td>₹{{ f['total_fee']|int }}</td>
+              <td style="color:var(--green);font-weight:700;">₹{{ f['paid_amount']|int }}</td>
+              <td style="color:{% if f['remaining']>0 %}var(--red){% else %}var(--green){% endif %};font-weight:700;">
+                ₹{{ f['remaining']|int }}
+              </td>
+              <td>
+                <span class="notice-badge
+                  {% if f['status']=='Paid' %}badge-holiday
+                  {% elif f['status']=='Partial' %}badge-events
+                  {% elif f['status']=='Overdue' %}badge-important
+                  {% else %}badge-academic{% endif %}">
+                  {{ f['status'] }}
+                </span>
+              </td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ f['paid_date'] or '—' }}</td>
+              <td style="font-size:0.82rem;color:var(--muted);">{{ f['remarks'] or '—' }}</td>
+              <td>
+                <button onclick="openPayModal({{ f['student_id'] }}, '{{ f['student_name'] }}', '{{ f['fee_month'] }}', {{ f['total_fee'] }}, {{ f['paid_amount'] }}, '{{ f['status'] }}', '{{ sel_class }}')"
+                  class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;border:none;cursor:pointer;font-weight:700;font-size:0.8rem;border-radius:6px;padding:5px 10px;">
+                  💳 Update
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ══ MODAL: Update Payment ════════════════════════════════ -->
+<div id="payModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:480px;box-shadow:var(--shadow-lg);margin:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h3 style="color:var(--navy);">💳 Update Fee Payment</h3>
+      <button onclick="closeModal('payModal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">✕</button>
+    </div>
+    <div style="background:var(--warm);border-radius:8px;padding:1rem;margin-bottom:1.25rem;">
+      <strong id="pm_student_name" style="color:var(--navy);"></strong>
+      <span id="pm_month_label" style="color:var(--muted);font-size:0.88rem;margin-left:0.5rem;"></span>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Total Fee (₹)</label>
+        <input class="form-control" type="number" id="pm_total" oninput="calcRemaining()">
+      </div>
+      <div class="form-group"><label>Amount Paid (₹)</label>
+        <input class="form-control" type="number" id="pm_paid" oninput="calcRemaining()">
+      </div>
+    </div>
+    <div style="background:#e8f5e9;border-radius:8px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-weight:700;color:var(--navy);">Remaining:</span>
+      <span id="pm_remaining_display" style="font-size:1.3rem;font-weight:800;color:var(--red);">₹0</span>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Payment Date</label>
+        <input class="form-control" type="date" id="pm_date">
+      </div>
+      <div class="form-group"><label>Remarks</label>
+        <input class="form-control" type="text" id="pm_remarks" placeholder="e.g. Cash, Online, Cheque">
+      </div>
+    </div>
+    <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+      <button onclick="savePayment()" class="btn btn-gold" style="flex:1;">💾 Save Payment</button>
+      <button onclick="closeModal('payModal')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Generate Monthly Fees ═════════════════════════ -->
+<div id="genModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:420px;box-shadow:var(--shadow-lg);margin:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h3 style="color:var(--navy);">⚡ Generate Monthly Fees</h3>
+      <button onclick="closeModal('genModal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">✕</button>
+    </div>
+    <p style="color:var(--muted);margin-bottom:1.25rem;font-size:0.9rem;">
+      This will create fee entries for all students of <strong>{{ sel_class }}</strong> for the selected month.
+    </p>
+    <div class="form-group"><label>Month</label>
+      <input class="form-control" type="month" id="gen_month">
+    </div>
+    <div class="form-group"><label>Session Year</label>
+      <select class="form-control" id="gen_year">
+        <option>2024-25</option><option>2025-26</option><option>2026-27</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+      <button onclick="generateFees('{{ sel_class }}')" class="btn btn-gold" style="flex:1;">⚡ Generate</button>
+      <button onclick="closeModal('genModal')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Student Fee Detail ════════════════════════════ -->
+<div id="studentFeeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:640px;box-shadow:var(--shadow-lg);margin:1rem;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h3 id="sfm_title" style="color:var(--navy);">Student Fee Detail</h3>
+      <button onclick="closeModal('studentFeeModal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">✕</button>
+    </div>
+    <div id="sfm_body">Loading...</div>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────── -->
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// ── helpers ──────────────────────────────────────────────────
+function toggleForm(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type==='success'?'#2e7d32':'#c62828';
+  t.style.color='#fff'; t.style.display='block';
+  setTimeout(()=>t.style.display='none', 3000);
+}
+
+// ── Fee structure ─────────────────────────────────────────────
+async function saveStructure(cls) {
+  const res = await fetch('/admin/fees/update_structure', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      class_name: cls,
+      tuition_fee: +document.getElementById('sf_tuition').value,
+      activity_fee: +document.getElementById('sf_activity').value,
+      computer_fee: +document.getElementById('sf_computer').value,
+      other_fee: +document.getElementById('sf_other').value
+    })
+  });
+  const d = await res.json();
+  if (d.success) { showToast('✅ Fee structure saved!'); location.reload(); }
+  else showToast('❌ Error', 'error');
+}
+
+// ── Pay Modal ─────────────────────────────────────────────────
+let pm_data = {};
+function openPayModal(sid, name, month, total, paid, status, cls) {
+  pm_data = {student_id: sid, class_name: cls};
+  document.getElementById('pm_student_name').textContent = name;
+  document.getElementById('pm_month_label').textContent  = '— ' + month;
+  document.getElementById('pm_total').value = total;
+  document.getElementById('pm_paid').value  = paid;
+  document.getElementById('pm_date').value  = new Date().toISOString().split('T')[0];
+  document.getElementById('pm_remarks').value = '';
+  document.getElementById('payModal').dataset.month = month;
+  calcRemaining();
+  document.getElementById('payModal').style.display = 'flex';
+}
+function calcRemaining() {
+  const total = +document.getElementById('pm_total').value || 0;
+  const paid  = +document.getElementById('pm_paid').value  || 0;
+  const rem   = Math.max(0, total - paid);
+  const el = document.getElementById('pm_remaining_display');
+  el.textContent = '₹' + rem.toLocaleString('en-IN');
+  el.style.color = rem > 0 ? 'var(--red)' : 'var(--green)';
+}
+async function savePayment() {
+  const month = document.getElementById('payModal').dataset.month;
+  const body = {
+    ...pm_data,
+    fee_month:   month,
+    total_fee:   +document.getElementById('pm_total').value,
+    paid_amount: +document.getElementById('pm_paid').value,
+    paid_date:   document.getElementById('pm_date').value,
+    remarks:     document.getElementById('pm_remarks').value
+  };
+  const res = await fetch('/admin/fees/update', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast('✅ Payment saved! Remaining: ₹' + d.remaining.toLocaleString('en-IN'));
+    closeModal('payModal');
+    setTimeout(()=>location.reload(), 1200);
+  } else showToast('❌ Error: '+d.error, 'error');
+}
+
+// ── Generate Modal ────────────────────────────────────────────
+function openGenerateModal() {
+  const today = new Date();
+  document.getElementById('gen_month').value =
+    today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0');
+  document.getElementById('genModal').style.display = 'flex';
+}
+async function generateFees(cls) {
+  const month = document.getElementById('gen_month').value;
+  const year  = document.getElementById('gen_year').value;
+  if (!month) { showToast('Please select a month','error'); return; }
+  const res = await fetch('/admin/fees/generate_monthly', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({class_name:cls, fee_month:month, fee_year:year})
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast(`✅ Generated for ${d.generated} students!`);
+    closeModal('genModal');
+    setTimeout(()=>location.reload(), 1200);
+  } else showToast('❌ '+d.error, 'error');
+}
+
+// ── Student Fee Detail Modal ──────────────────────────────────
+async function openStudentFees(sid, name, cls) {
+  document.getElementById('sfm_title').textContent = '📋 ' + name + ' — Fee History';
+  document.getElementById('studentFeeModal').style.display = 'flex';
+  document.getElementById('sfm_body').innerHTML = '<p style="color:var(--muted);">Loading...</p>';
+  const res = await fetch('/student/fees_detail', {credentials:'include'});
+  // We'll fetch via admin route for any student
+  const adminRes = await fetch(`/admin/fees/student_detail/${sid}`);
+  const d = await adminRes.json();
+  if (!d.fees) { document.getElementById('sfm_body').innerHTML='<p>No records.</p>'; return; }
+
+  let total_due=0,total_paid=0,total_rem=0;
+  let rows = d.fees.map(f => {
+    total_due+=f.total_fee; total_paid+=f.paid_amount; total_rem+=f.remaining;
+    const sc = f.status==='Paid'?'#2e7d32':f.status==='Partial'?'#e65100':f.status==='Overdue'?'#c62828':'#555';
+    return `<tr>
+      <td style="font-weight:700;">${f.fee_month}</td>
+      <td>₹${f.total_fee.toLocaleString('en-IN')}</td>
+      <td style="color:#2e7d32;font-weight:700;">₹${f.paid_amount.toLocaleString('en-IN')}</td>
+      <td style="color:${f.remaining>0?'#c62828':'#2e7d32'};font-weight:700;">₹${f.remaining.toLocaleString('en-IN')}</td>
+      <td><span style="font-weight:700;color:${sc};">${f.status}</span></td>
+      <td style="font-size:0.82rem;color:#888;">${f.paid_date||'—'}</td>
+      <td>
+        <button onclick="closeModal('studentFeeModal');openPayModal(${sid},'${name}','${f.fee_month}',${f.total_fee},${f.paid_amount},'${f.status}','${cls}')"
+          style="background:#e3f2fd;color:#1565c0;border:none;border-radius:5px;padding:4px 8px;font-size:0.78rem;font-weight:700;cursor:pointer;">
+          💳 Pay
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('sfm_body').innerHTML = `
+    <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <div style="flex:1;background:var(--warm);border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--navy);">₹${total_due.toLocaleString('en-IN')}</div>
+        <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;">Total Due</div>
+      </div>
+      <div style="flex:1;background:#e8f5e9;border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-size:1.4rem;font-weight:800;color:#2e7d32;">₹${total_paid.toLocaleString('en-IN')}</div>
+        <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;">Paid</div>
+      </div>
+      <div style="flex:1;background:${total_rem>0?'#fce4ec':'#e8f5e9'};border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-size:1.4rem;font-weight:800;color:${total_rem>0?'#c62828':'#2e7d32'};">₹${total_rem.toLocaleString('en-IN')}</div>
+        <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;">Remaining</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>Month</th><th>Total</th><th>Paid</th><th>Remaining</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+</script>
+{% endblock %}

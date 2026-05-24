@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Results{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📊 Quiz Results — {{ quiz['title'] }}</h2><p>{{ quiz['class_name'] }} · {{ quiz['subject'] }}</p></div>
+      <a href="/teacher/quizzes" class="btn btn-outline btn-sm">← My Quizzes</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>Student Results</h3>
+        <span style="font-size:0.82rem;color:var(--muted);">{{ results|length }} attempts</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Roll No</th><th>Student</th><th>Score</th><th>Percentage</th><th>Grade</th><th>Submitted</th></tr></thead>
+          <tbody>
+            {% for r in results %}
+            {% set pct = (r['score']/r['total']*100)|round(1) if r['total'] else 0 %}
+            {% set grade = 'A1' if pct>=90 else 'A2' if pct>=80 else 'B1' if pct>=70 else 'B2' if pct>=60 else 'C1' if pct>=50 else 'D' %}
+            <tr>
+              <td>
+                {% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉
+                {% else %}<strong>{{ loop.index }}</strong>{% endif %}
+              </td>
+              <td style="font-size:0.82rem;"><code>{{ r['roll_number'] }}</code></td>
+              <td><strong>{{ r['student_name'] }}</strong></td>
+              <td style="font-weight:800;color:var(--navy);">{{ r['score'] }}/{{ r['total'] }}</td>
+              <td>
+                <div class="progress-bar" style="width:120px;display:inline-block;">
+                  <div class="progress-fill {% if pct>=75 %}green{% elif pct>=50 %}gold{% else %}orange{% endif %}" style="width:{{ pct }}%;"></div>
+                </div>
+                <span style="font-weight:700;margin-left:6px;">{{ pct }}%</span>
+              </td>
+              <td><span style="background:var(--navy);color:var(--gold-lt);padding:2px 8px;border-radius:8px;font-size:0.8rem;font-weight:700;">{{ grade }}</span></td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ r['submitted_at'][:16] }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--muted);">No attempts yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

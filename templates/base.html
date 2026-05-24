@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}BrightMind School{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="notice-strip">
+  <div class="notice-strip-inner">
+    <span class="tag">📢 Notice</span>
+    <div class="notice-ticker">
+      <div class="notice-ticker-inner">
+        <span>📅 Annual Sports Day — 15th December 2024</span>
+        <span>📝 PTM scheduled for 30th November</span>
+        <span>🎓 Half-Yearly Results declared — Check student portal</span>
+        <span>📚 Admissions Open for 2025–26 Session!</span>
+        <span>📅 Annual Sports Day — 15th December 2024</span>
+        <span>📝 PTM scheduled for 30th November</span>
+        <span>🎓 Half-Yearly Results declared — Check student portal</span>
+        <span>📚 Admissions Open for 2025–26 Session!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">B</div>
+      <div class="nav-brand-text">
+        <strong>BrightMindSchool</strong>
+        <span>Est. 1995 · CBSE Affiliated</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/" {% if request.path=='/' %}class="active"{% endif %}>Home</a></li>
+      <li><a href="/about" {% if request.path=='/about' %}class="active"{% endif %}>About</a></li>
+      <li><a href="/teachers" {% if request.path.startswith('/teachers') %}class="active"{% endif %}>Teachers</a></li>
+      <li><a href="/admissions" {% if request.path=='/admissions' %}class="active"{% endif %}>Admissions</a></li>
+      <li><a href="/academics" {% if request.path=='/academics' %}class="active"{% endif %}>Academics</a></li>
+      <li><a href="/notices" {% if request.path=='/notices' %}class="active"{% endif %}>Notices</a></li>
+      <li><a href="/gallery" {% if request.path=='/gallery' %}class="active"{% endif %}>Gallery</a></li>
+      <li><a href="/contact" {% if request.path=='/contact' %}class="active"{% endif %}>Contact</a></li>
+    </ul>
+    <div class="nav-portals">
+      <a href="/student/login" class="btn-portal student">Student</a>
+      <a href="/teacher/login" class="btn-portal teacher">Teacher</a>
+      <a href="/parent/login" class="btn-portal" style="background:transparent;color:#7c3aed;border:1.5px solid #7c3aed;" onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#7c3aed'">Parent</a>
+      <a href="/admin/login" class="btn-portal admin">Admin</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="max-width:1280px;margin:1rem auto;padding:0 2rem;">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ '✅' if category=='success' else '❌' }} {{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-circle">B</div>
+          <span>BrightMind School</span>
+        </div>
+        <p>Nurturing young minds since 1995. Quality education from UKG to Class 10.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/teachers">Teachers</a></li>
+          <li><a href="/admissions">Admissions</a></li>
+          <li><a href="/notices">Notices</a></li>
+          <li><a href="/live_classes" {% if request.path=="/live_classes" %}class="active"{% endif %} style="{% if request.path=="/live_classes" %}color:var(--gold-lt);{% endif %}">📹 Live</a></li>
+          <li><a href="/timetable" {% if request.path.startswith('/timetable') %}class="active"{% endif %}>Timetable</a></li>
+          <li><a href="/exam_schedule" {% if request.path=="/exam_schedule" %}class="active"{% endif %}>Exams</a></li>
+          <li><a href="/achievers" {% if request.path=="/achievements" %}class="active"{% endif %}>🏆 Achievers</a></li>
+          <li><a href="/gallery">Gallery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Portals</h4>
+        <ul>
+          <li><a href="/student/login">Student Login</a></li>
+          <li><a href="/teacher/login">Teacher Login</a></li>
+          <li><a href="/admin/login">Admin Panel</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="footer-contact">
+          <li>📍 123 School Road, Delhi – 110001</li>
+          <li>📞 +91 11 1234 5678</li>
+          <li>📧 info@brightmindschool.edu.in</li>
+          <li>🕐 Mon–Sat: 8:00 AM – 4:00 PM</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <span>© 2024 BrightMind School. All rights reserved.</span>
+      <span>CBSE Affiliation No. 2730456</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

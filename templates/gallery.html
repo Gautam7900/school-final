@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+
+<section style="background:linear-gradient(135deg,var(--navy),#1e3a6e);padding:4rem 2rem;">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold-lt);">Moments & Memories</div>
+    <h1 style="color:var(--white);">School <em style="color:var(--gold-lt);font-style:normal;">Gallery</em></h1>
+  </div>
+</section>
+
+<section class="section bg-white">
+  <div class="section-inner">
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:2.5rem;justify-content:center;">
+      <a href="/gallery" style="padding:9px 22px;border-radius:25px;font-weight:700;font-size:0.82rem;text-decoration:none;{% if sel_cat=='All' %}background:var(--navy);color:var(--white);{% else %}background:transparent;border:1.5px solid var(--navy);color:var(--navy);{% endif %}">All Photos</a>
+      {% for cat in categories %}
+      <a href="/gallery?category={{ cat['category'] }}" style="padding:9px 22px;border-radius:25px;font-weight:700;font-size:0.82rem;text-decoration:none;{% if sel_cat==cat['category'] %}background:var(--navy);color:var(--white);{% else %}background:transparent;border:1.5px solid var(--navy);color:var(--navy);{% endif %}">{{ cat['category'] }}</a>
+      {% endfor %}
+    </div>
+
+    {% if photos %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
+      {% for p in photos %}
+      <div class="gallery-item-real" onclick="openLightbox('/static/uploads/gallery/{{ p['filename'] }}','{{ p['title'] }}','{{ p['category'] }}','{{ p['description'] or '' }}')">
+        <img src="/static/uploads/gallery/{{ p['filename'] }}" alt="{{ p['title'] }}" style="width:100%;height:220px;object-fit:cover;display:block;">
+        <div class="gallery-item-overlay">
+          <span class="gallery-cat-badge">{{ p['category'] }}</span>
+          <h4>{{ p['title'] }}</h4>
+          {% if p['description'] %}<p>{{ p['description'][:60] }}</p>{% endif %}
+          <span style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:4px;display:block;">{{ p['uploaded_at'][:10] }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:5rem 2rem;color:var(--muted);">
+      <div style="font-size:4rem;margin-bottom:1rem;">🖼️</div>
+      <h3 style="color:var(--navy);">No photos yet</h3>
+      <p>Admin panel se gallery mein photos upload karo.</p>
+      {% if session.get('role')=='admin' %}
+      <a href="/admin/gallery" class="btn btn-gold" style="margin-top:1rem;display:inline-flex;">📤 Upload Photos Now</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;align-items:center;justify-content:center;padding:2rem;" onclick="closeLightbox()">
+  <div style="position:relative;max-width:900px;width:100%;text-align:center;" onclick="event.stopPropagation()">
+    <img id="lbImg" src="" style="max-width:100%;max-height:75vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="margin-top:1rem;">
+      <div id="lbCat" style="display:inline-block;background:var(--gold);color:var(--navy);font-size:0.75rem;font-weight:800;padding:3px 12px;border-radius:12px;margin-bottom:0.5rem;text-transform:uppercase;"></div>
+      <h3 id="lbTitle" style="color:var(--white);margin:0;"></h3>
+      <p id="lbDesc" style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-top:0.25rem;"></p>
+    </div>
+    <button onclick="closeLightbox()" style="position:absolute;top:-12px;right:-12px;width:36px;height:36px;border-radius:50%;background:var(--gold);border:none;font-size:1.1rem;cursor:pointer;font-weight:700;color:var(--navy);">✕</button>
+  </div>
+</div>
+
+<style>
+.gallery-item-real { border-radius:var(--radius);overflow:hidden;position:relative;cursor:pointer;box-shadow:var(--shadow);transition:transform 0.3s ease,box-shadow 0.3s ease; }
+.gallery-item-real:hover { transform:translateY(-6px);box-shadow:var(--shadow-lg); }
+.gallery-item-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(13,27,62,0.92) 0%,transparent 60%);padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;transition:opacity 0.3s; }
+.gallery-item-real:hover .gallery-item-overlay { opacity:1; }
+.gallery-item-overlay h4 { color:var(--white);font-size:1rem;margin:0.25rem 0 0; }
+.gallery-item-overlay p { color:rgba(255,255,255,0.65);font-size:0.82rem;margin:0; }
+.gallery-cat-badge { display:inline-block;background:var(--gold);color:var(--navy);font-size:0.7rem;font-weight:800;padding:2px 10px;border-radius:10px;text-transform:uppercase;width:fit-content; }
+</style>
+{% endblock %}
+{% block scripts %}
+<script>
+function openLightbox(src,title,cat,desc) {
+  document.getElementById('lbImg').src=src;
+  document.getElementById('lbTitle').textContent=title;
+  document.getElementById('lbCat').textContent=cat;
+  document.getElementById('lbDesc').textContent=desc;
+  document.getElementById('lightbox').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').style.display='none';
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+</script>
+{% endblock %}

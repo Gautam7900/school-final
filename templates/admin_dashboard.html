@@ -1,0 +1,562 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>Admin Dashboard ⚙️</h2>
+        <p>BrightMind School — Management Console</p>
+      </div>
+      <a href="/admin/logout" class="btn btn-outline btn-sm">Logout</a>
+    </div>
+  </div>
+
+  <div class="dash-main">
+
+    <!-- ── STATS ─────────────────────────────────────────── -->
+    <div class="grid-4" style="margin-bottom:2rem;">
+      <div class="stat-card" style="cursor:pointer;" onclick="showTab('admissions')">
+        <div class="stat-icon navy">👨‍🎓</div>
+        <div><div class="stat-num">{{ stats.students }}</div><div class="stat-lbl">Total Students</div></div>
+      </div>
+      <div class="stat-card" style="cursor:pointer;" onclick="showTab('teachers')">
+        <div class="stat-icon green">👩‍🏫</div>
+        <div><div class="stat-num">{{ stats.teachers }}</div><div class="stat-lbl">Teachers</div></div>
+      </div>
+      <div class="stat-card" style="cursor:pointer;" onclick="showTab('admissions')">
+        <div class="stat-icon orange">📝</div>
+        <div><div class="stat-num">{{ stats.admissions }}</div><div class="stat-lbl">Pending Admissions</div></div>
+      </div>
+      <div class="stat-card" style="cursor:pointer;" onclick="showTab('notices')">
+        <div class="stat-icon gold">📢</div>
+        <div><div class="stat-num">{{ stats.notices }}</div><div class="stat-lbl">Active Notices</div></div>
+      </div>
+    </div>
+
+
+    <!-- ── QUICK ACCESS ─────────────────────────────────── -->
+    <div style="margin-bottom:2rem;">
+
+      <!-- Row 1: Students & Teachers -->
+      <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.6rem;">👥 Students & Teachers</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:1.25rem;">
+        <a href="/admin/teacher_assignments" class="admin-btn" style="background:linear-gradient(135deg,#0d1b3e,#243a73);color:#fff;">
+          👩‍🏫 Teacher Assignments
+        </a>
+        <a href="/admin/teacher_edit/1" class="admin-btn" style="background:linear-gradient(135deg,#1a237e,#283593);color:#fff;" onclick="event.preventDefault();document.getElementById('teacherPickModal').style.display='flex'">
+          📷 Teacher Profiles & Photos
+        </a>
+        <a href="/admin/id_cards" class="admin-btn" style="background:linear-gradient(135deg,#311b92,#4527a0);color:#fff;">
+          🪪 ID Card Generator (PDF)
+        </a>
+        <a href="/admin/achievements" class="admin-btn" style="background:linear-gradient(135deg,#e65100,#f57c00);color:#fff;">
+          🏆 Achievements / Awards
+        </a>
+      </div>
+
+      <!-- Row 2: Academics -->
+      <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.6rem;">📚 Academics</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:1.25rem;">
+        <a href="/admin/timetable" class="admin-btn" style="background:linear-gradient(135deg,#01579b,#0288d1);color:#fff;">
+          📅 Timetable
+        </a>
+        <a href="/admin/exam_schedule" class="admin-btn" style="background:linear-gradient(135deg,#b71c1c,#d32f2f);color:#fff;">
+          📝 Exam Date Sheet
+        </a>
+        <a href="/live_classes" class="admin-btn" style="background:linear-gradient(135deg,#c62828,#e53935);color:#fff;">
+          📹 Live Classes (Video Links)
+        </a>
+        <a href="/admin/quiz_manager" class="admin-btn" style="background:linear-gradient(135deg,#4a148c,#6a1b9a);color:#fff;">
+          📋 Quiz Manager
+        </a>
+      </div>
+
+      <!-- Row 3: Finance & Communication -->
+      <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.6rem;">💰 Finance & Communication</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:1.25rem;">
+        <a href="/admin/fees" class="admin-btn" style="background:linear-gradient(135deg,#a07830,#c9a84c);color:#fff;">
+          💰 Fees Management
+        </a>
+        <a href="/admin/notifications" class="admin-btn" style="background:linear-gradient(135deg,#006064,#00838f);color:#fff;">
+          📲 WhatsApp Notifications
+        </a>
+        <a href="/admin/gallery" class="admin-btn" style="background:linear-gradient(135deg,#1b5e20,#388e3c);color:#fff;">
+          🖼️ Gallery Photos
+        </a>
+        <a href="/admin/analytics" class="admin-btn" style="background:linear-gradient(135deg,#880e4f,#ad1457);color:#fff;">
+          📊 Analytics Dashboard
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Teacher Pick Modal -->
+    <div id="teacherPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;">
+      <div style="background:var(--white);border-radius:var(--radius-lg);padding:2rem;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+          <h3 style="color:var(--navy);">📷 Select Teacher to Edit</h3>
+          <button onclick="document.getElementById('teacherPickModal').style.display='none'" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">✕</button>
+        </div>
+        {% for t in teachers %}
+        <a href="/admin/teacher_edit/{{ t['id'] }}"
+          style="display:flex;align-items:center;gap:12px;padding:0.85rem;border-radius:10px;margin-bottom:0.5rem;border:1.5px solid #eee;text-decoration:none;transition:all 0.2s;"
+          onmouseover="this.style.borderColor='var(--gold)';this.style.background='var(--warm)'"
+          onmouseout="this.style.borderColor='#eee';this.style.background='#fff'">
+          {% if t['photo'] %}
+          <img src="/static/uploads/teachers/{{ t['photo'] }}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);">
+          {% else %}
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--gold-lt);">{{ t['name'][0] }}</div>
+          {% endif %}
+          <div>
+            <div style="font-weight:700;color:var(--navy);">{{ t['name'] }}</div>
+            <div style="font-size:0.82rem;color:var(--muted);">{{ t['subject'] }}</div>
+          </div>
+          <span style="margin-left:auto;color:var(--gold-dk);font-size:0.82rem;font-weight:700;">Edit →</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <style>
+    .admin-btn {
+      display:flex; align-items:center; gap:10px;
+      padding:13px 16px; border-radius:10px;
+      font-weight:700; font-size:0.85rem;
+      text-decoration:none; transition:all 0.2s;
+    }
+    .admin-btn:hover { transform:translateY(-3px); filter:brightness(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.18); }
+    </style>
+
+<!-- ── TABS ──────────────────────────────────────────── -->
+    <div style="display:flex;gap:0;border-bottom:2px solid #eee;margin-bottom:2rem;overflow-x:auto;">
+      {% for tab,label,icon in [('admissions','Admissions','📝'),('students','Students','👨‍🎓'),('teachers','Teachers','👩‍🏫'),('notices','Notices','📢'),('messages','Messages','✉️')] %}
+      <button onclick="showTab('{{ tab }}')" id="tab-{{ tab }}"
+        style="padding:12px 22px;border:none;background:transparent;font-family:'Source Sans 3',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;color:var(--muted);margin-bottom:-2px;white-space:nowrap;">
+        {{ icon }} {{ label }}
+      </button>
+      {% endfor %}
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB 1 — ADMISSIONS  (view + status change + delete)
+    ══════════════════════════════════════════════════════ -->
+    <div id="panel-admissions" class="tab-panel dash-card" style="display:block;">
+      <div class="dash-card-header">
+        <h3>📝 Admission Applications</h3>
+        <span style="font-size:0.82rem;color:var(--muted);">{{ admissions|length }} total applications</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Contact</th><th>Email</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for a in admissions %}
+            <tr id="adm-row-{{ a['id'] }}">
+              <td>{{ a['id'] }}</td>
+              <td><strong>{{ a['name'] }}</strong></td>
+              <td>{{ a['class_name'] }}</td>
+              <td>{{ a['parent_name'] or '—' }}</td>
+              <td>{{ a['contact'] or '—' }}</td>
+              <td style="font-size:0.85rem;">{{ a['email'] or '—' }}</td>
+              <td>
+                <select onchange="updateAdmissionStatus({{ a['id'] }}, this.value)"
+                  style="border:1.5px solid #ddd;border-radius:6px;padding:4px 8px;font-size:0.82rem;font-weight:700;cursor:pointer;
+                  color:{% if a['status']=='Approved' %}#2e7d32{% elif a['status']=='Rejected' %}#c62828{% else %}#e65100{% endif %};">
+                  <option {% if a['status']=='Pending' %}selected{% endif %}>Pending</option>
+                  <option {% if a['status']=='Approved' %}selected{% endif %}>Approved</option>
+                  <option {% if a['status']=='Rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+              </td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ a['created_at'][:10] }}</td>
+              <td>
+                <button onclick="deleteAdmission({{ a['id'] }})"
+                  style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not admissions %}
+            <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2.5rem;">No applications yet.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB 2 — STUDENTS  (add + delete)
+    ══════════════════════════════════════════════════════ -->
+    <div id="panel-students" class="tab-panel dash-card" style="display:none;">
+      <div class="dash-card-header">
+        <h3>👨‍🎓 Students <span style="font-size:0.82rem;color:var(--muted);font-family:'Source Sans 3',sans-serif;">({{ students|length }} total)</span></h3>
+        <button onclick="toggleForm('addStudentForm')" class="btn btn-gold btn-sm">+ Add Student</button>
+      </div>
+      <div id="addStudentForm" style="display:none;padding:1.5rem;border-bottom:1px solid #eee;background:var(--warm);">
+        <h4 style="color:var(--navy);margin-bottom:1rem;">➕ Add New Student</h4>
+        <form method="POST" action="/admin/add_student">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name</label><input class="form-control" name="name" required placeholder="Student full name"></div>
+            <div class="form-group"><label>Class</label>
+              <select class="form-control" name="class_name" required>
+                <option>UKG</option>{% for i in range(1,11) %}<option>Class {{ i }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Roll Number</label><input class="form-control" name="roll_number" required placeholder="e.g. C5-010"></div>
+            <div class="form-group"><label>Login Password</label><input class="form-control" name="password" required placeholder="Student login password"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Parent / Guardian Name</label><input class="form-control" name="parent_name" placeholder="Parent name"></div>
+            <div class="form-group"><label>Contact Number</label><input class="form-control" name="contact" placeholder="+91 XXXXX XXXXX"></div>
+          </div>
+          <div style="display:flex;gap:1rem;">
+            <button type="submit" class="btn btn-navy btn-sm">✅ Add Student</button>
+            <button type="button" onclick="toggleForm('addStudentForm')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Roll</th><th>Name</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for s in students %}
+            <tr id="stu-row-{{ s['id'] }}">
+              <td><code style="background:#f5f5f5;padding:3px 8px;border-radius:4px;font-size:0.82rem;">{{ s['roll_number'] }}</code></td>
+              <td><strong>{{ s['name'] }}</strong></td>
+              <td><span style="background:var(--warm);color:var(--navy);padding:3px 10px;border-radius:10px;font-size:0.8rem;font-weight:700;">{{ s['class_name'] }}</span></td>
+              <td>{{ s['parent_name'] or '—' }}</td>
+              <td>{{ s['contact'] or '—' }}</td>
+              <td>
+                <button onclick="deleteStudent({{ s['id'] }}, '{{ s['name'] }}')"
+                  style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not students %}<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem;">No students added yet.</td></tr>{% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB 3 — TEACHERS  (add + delete)
+    ══════════════════════════════════════════════════════ -->
+    <div id="panel-teachers" class="tab-panel dash-card" style="display:none;">
+      <div class="dash-card-header">
+        <h3>👩‍🏫 Teachers <span style="font-size:0.82rem;color:var(--muted);font-family:'Source Sans 3',sans-serif;">({{ teachers|length }} total)</span></h3>
+        <button onclick="toggleForm('addTeacherForm')" class="btn btn-gold btn-sm">+ Add Teacher</button>
+      </div>
+      <div id="addTeacherForm" style="display:none;padding:1.5rem;border-bottom:1px solid #eee;background:var(--warm);">
+        <h4 style="color:var(--navy);margin-bottom:1rem;">➕ Add New Teacher</h4>
+        <form method="POST" action="/admin/add_teacher">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name</label><input class="form-control" name="name" required placeholder="e.g. Mrs. Neha Gupta"></div>
+            <div class="form-group"><label>Subject</label><input class="form-control" name="subject" required placeholder="e.g. Hindi"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Login Username</label><input class="form-control" name="username" required placeholder="e.g. neha"></div>
+            <div class="form-group"><label>Login Password</label><input class="form-control" name="password" required placeholder="Teacher login password"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input class="form-control" type="email" name="email" placeholder="teacher@school.com"></div>
+            <div class="form-group" style="display:flex;align-items:flex-end;gap:0.75rem;">
+              <button type="submit" class="btn btn-navy btn-sm" style="flex:1;">✅ Add Teacher</button>
+              <button type="button" onclick="toggleForm('addTeacherForm')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Username</th><th>Email</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for t in teachers %}
+            <tr id="tch-row-{{ t['id'] }}">
+              <td>{{ t['id'] }}</td>
+              <td><strong>{{ t['name'] }}</strong></td>
+              <td><span style="background:var(--warm);color:var(--navy);padding:3px 10px;border-radius:10px;font-size:0.82rem;font-weight:700;">{{ t['subject'] }}</span></td>
+              <td><code style="background:#f5f5f5;padding:3px 8px;border-radius:4px;font-size:0.85rem;">{{ t['username'] }}</code></td>
+              <td style="color:var(--muted);font-size:0.88rem;">{{ t['email'] or '—' }}</td>
+              <td>
+                <div style="display:flex;gap:5px;align-items:center;">
+                  <a href="{{ '/teachers/' + t['id']|string }}"
+                    style="background:#e8f5e9;color:#2e7d32;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
+                    👁 Profile
+                  </a>
+                  <a href="{{ '/admin/teacher_edit/' + t['id']|string }}"
+                    style="background:#e3f2fd;color:#1565c0;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
+                    ✏️ Edit
+                  </a>
+                  <button onclick="deleteTeacher({{ t['id'] }}, '{{ t['name'] }}')"
+                    style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not teachers %}<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem;">No teachers yet.</td></tr>{% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB 4 — NOTICES  (add + view all + edit + delete)
+    ══════════════════════════════════════════════════════ -->
+    <div id="panel-notices" class="tab-panel dash-card" style="display:none;">
+      <div class="dash-card-header">
+        <h3>📢 Notices <span style="font-size:0.82rem;color:var(--muted);font-family:'Source Sans 3',sans-serif;">({{ all_notices|length }} total)</span></h3>
+        <button onclick="toggleForm('addNoticeForm')" class="btn btn-gold btn-sm">+ Post Notice</button>
+      </div>
+
+      <!-- ADD NOTICE FORM -->
+      <div id="addNoticeForm" style="display:none;padding:1.5rem;border-bottom:1px solid #eee;background:var(--warm);">
+        <h4 style="color:var(--navy);margin-bottom:1rem;">➕ Post New Notice</h4>
+        <form method="POST" action="/admin/add_notice">
+          <div class="form-row">
+            <div class="form-group"><label>Notice Title</label><input class="form-control" name="title" required placeholder="Notice headline"></div>
+            <div class="form-group"><label>Category</label>
+              <select class="form-control" name="category">
+                <option>General</option><option>Academic</option><option>Events</option><option>Holiday</option><option>Important</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Content</label><textarea class="form-control" name="content" rows="3" required placeholder="Full notice details..."></textarea></div>
+          <div style="display:flex;gap:1rem;">
+            <button type="submit" class="btn btn-navy btn-sm">📢 Post Notice</button>
+            <button type="button" onclick="toggleForm('addNoticeForm')" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- EDIT NOTICE FORM (hidden, shown on edit click) -->
+      <div id="editNoticeForm" style="display:none;padding:1.5rem;border-bottom:1px solid #eee;background:#fff9e6;">
+        <h4 style="color:var(--navy);margin-bottom:1rem;">✏️ Edit Notice</h4>
+        <form method="POST" action="/admin/edit_notice">
+          <input type="hidden" name="notice_id" id="editNoticeId">
+          <div class="form-row">
+            <div class="form-group"><label>Title</label><input class="form-control" name="title" id="editNoticeTitle" required></div>
+            <div class="form-group"><label>Category</label>
+              <select class="form-control" name="category" id="editNoticeCategory">
+                <option>General</option><option>Academic</option><option>Events</option><option>Holiday</option><option>Important</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Content</label><textarea class="form-control" name="content" id="editNoticeContent" rows="3" required></textarea></div>
+          <div style="display:flex;gap:1rem;">
+            <button type="submit" class="btn btn-gold btn-sm">💾 Save Changes</button>
+            <button type="button" onclick="closeEditNotice()" class="btn btn-sm" style="background:#eee;color:#666;">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- NOTICES LIST TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Title</th><th>Category</th><th>Content Preview</th><th>Posted On</th><th>Actions</th></tr></thead>
+          <tbody id="noticesTableBody">
+            {% for n in all_notices %}
+            <tr id="ntc-row-{{ n['id'] }}">
+              <td>{{ n['id'] }}</td>
+              <td><strong>{{ n['title'] }}</strong></td>
+              <td><span class="notice-badge badge-{{ n['category']|lower }}">{{ n['category'] }}</span></td>
+              <td style="max-width:280px;color:var(--muted);font-size:0.88rem;">
+                {{ n['content'][:90] }}{% if n['content']|length > 90 %}…{% endif %}
+              </td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ n['created_at'][:10] }}</td>
+              <td style="display:flex;gap:6px;align-items:center;">
+                <button onclick="openEditNotice({{ n['id'] }}, {{ n['title']|tojson }}, {{ n['content']|tojson }}, {{ n['category']|tojson }})"
+                  style="background:#e3f2fd;color:#1565c0;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                  ✏️ Edit
+                </button>
+                <button onclick="deleteNotice({{ n['id'] }}, {{ n['title']|tojson }})"
+                  style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not all_notices %}
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2.5rem;">No notices posted yet.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB 5 — MESSAGES  (view + delete)
+    ══════════════════════════════════════════════════════ -->
+    <div id="panel-messages" class="tab-panel dash-card" style="display:none;">
+      <div class="dash-card-header">
+        <h3>✉️ Contact Messages <span style="font-size:0.82rem;color:var(--muted);font-family:'Source Sans 3',sans-serif;">({{ messages|length }} total)</span></h3>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for m in messages %}
+            <tr id="msg-row-{{ m['id'] }}">
+              <td>{{ m['id'] }}</td>
+              <td><strong>{{ m['name'] }}</strong></td>
+              <td style="font-size:0.85rem;">{{ m['email'] or '—' }}</td>
+              <td style="font-size:0.88rem;">{{ m['subject'] or '—' }}</td>
+              <td style="max-width:260px;font-size:0.85rem;color:var(--muted);">
+                <span id="msg-short-{{ m['id'] }}">{{ m['message'][:60] }}{% if m['message']|length > 60 %}<span>… <a href="#" onclick="expandMsg({{ m['id'] }});return false;" style="color:var(--navy);font-weight:700;font-size:0.8rem;">Read more</a></span>{% endif %}</span>
+                <span id="msg-full-{{ m['id'] }}" style="display:none;">{{ m['message'] }} <a href="#" onclick="collapseMsg({{ m['id'] }});return false;" style="color:var(--navy);font-weight:700;font-size:0.8rem;">Less</a></span>
+              </td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ m['created_at'][:10] }}</td>
+              <td>
+                <button onclick="deleteMessage({{ m['id'] }})"
+                  style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not messages %}
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2.5rem;">No messages yet.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dashboard -->
+
+<!-- ── TOAST NOTIFICATION ────────────────────────────────── -->
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;transition:all 0.3s;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// ── TAB SWITCHING ─────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('[id^="tab-"]').forEach(b => {
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--muted)';
+  });
+  document.getElementById('panel-' + name).style.display = 'block';
+  const btn = document.getElementById('tab-' + name);
+  if (btn) { btn.style.borderBottomColor = 'var(--gold)'; btn.style.color = 'var(--navy)'; }
+}
+
+function toggleForm(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'success' ? '#2e7d32' : '#c62828';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// ── ADMISSION: Update Status ──────────────────────────────
+async function updateAdmissionStatus(id, status) {
+  const res = await fetch('/admin/update_admission_status', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id, status})
+  });
+  const data = await res.json();
+  if (data.success) showToast(`✅ Status updated to "${status}"`);
+  else showToast('❌ Error updating status', 'error');
+}
+
+// ── ADMISSION: Delete ─────────────────────────────────────
+async function deleteAdmission(id) {
+  if (!confirm('Delete this admission application? This cannot be undone.')) return;
+  const res = await fetch('/admin/delete_admission/' + id, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('adm-row-' + id).remove();
+    showToast('🗑 Application deleted');
+  } else showToast('❌ Error', 'error');
+}
+
+// ── STUDENT: Delete ───────────────────────────────────────
+async function deleteStudent(id, name) {
+  if (!confirm(`Delete student "${name}"? All their marks, attendance and fee records will also be deleted.`)) return;
+  const res = await fetch('/admin/delete_student/' + id, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('stu-row-' + id).remove();
+    showToast(`🗑 Student "${name}" deleted`);
+  } else showToast('❌ Error: ' + (data.error || ''), 'error');
+}
+
+// ── TEACHER: Delete ───────────────────────────────────────
+async function deleteTeacher(id, name) {
+  if (!confirm(`Delete teacher "${name}"? This cannot be undone.`)) return;
+  const res = await fetch('/admin/delete_teacher_ajax/' + id, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('tch-row-' + id).remove();
+    showToast(`🗑 Teacher "${name}" deleted`);
+  } else showToast('❌ Error', 'error');
+}
+
+// ── NOTICE: Edit ─────────────────────────────────────────
+function openEditNotice(id, title, content, category) {
+  document.getElementById('editNoticeId').value      = id;
+  document.getElementById('editNoticeTitle').value   = title;
+  document.getElementById('editNoticeContent').value = content;
+  document.getElementById('editNoticeCategory').value= category;
+  document.getElementById('addNoticeForm').style.display  = 'none';
+  document.getElementById('editNoticeForm').style.display = 'block';
+  document.getElementById('editNoticeForm').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function closeEditNotice() {
+  document.getElementById('editNoticeForm').style.display = 'none';
+}
+
+// ── NOTICE: Delete ────────────────────────────────────────
+async function deleteNotice(id, title) {
+  if (!confirm(`Delete notice "${title}"?`)) return;
+  const res = await fetch('/admin/delete_notice/' + id, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('ntc-row-' + id).remove();
+    showToast('🗑 Notice deleted');
+  } else showToast('❌ Error', 'error');
+}
+
+// ── MESSAGE: Expand/Collapse ──────────────────────────────
+function expandMsg(id) {
+  document.getElementById('msg-short-' + id).style.display = 'none';
+  document.getElementById('msg-full-'  + id).style.display = 'inline';
+}
+function collapseMsg(id) {
+  document.getElementById('msg-short-' + id).style.display = 'inline';
+  document.getElementById('msg-full-'  + id).style.display = 'none';
+}
+
+// ── MESSAGE: Delete ───────────────────────────────────────
+async function deleteMessage(id) {
+  if (!confirm('Delete this message?')) return;
+  const res = await fetch('/admin/delete_message/' + id, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('msg-row-' + id).remove();
+    showToast('🗑 Message deleted');
+  } else showToast('❌ Error', 'error');
+}
+
+// Activate first tab on load
+showTab('admissions');
+</script>
+{% endblock %}

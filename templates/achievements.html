@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Achievements{% endblock %}
+{% block content %}
+
+<section style="background:linear-gradient(135deg,var(--navy),#1e3a6e);padding:4rem 2rem;">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold-lt);">Hall of Fame</div>
+    <h1 style="color:var(--white);">Student <em style="color:var(--gold-lt);font-style:normal;">Achievements</em></h1>
+    <p style="color:rgba(255,255,255,0.65);margin-top:0.5rem;">Celebrating excellence, talent and hard work of our students</p>
+  </div>
+</section>
+
+<section class="section bg-warm">
+  <div class="section-inner">
+    <!-- Category Filter -->
+    <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2rem;justify-content:center;">
+      <a href="/achievements" style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:0.82rem;text-decoration:none;{% if sel_cat=='All' %}background:var(--navy);color:var(--white);{% else %}background:var(--white);border:1.5px solid var(--navy);color:var(--navy);{% endif %}">🏆 All</a>
+      {% for cat in cats %}
+      <a href="/achievements?category={{ cat['category'] }}" style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:0.82rem;text-decoration:none;{% if sel_cat==cat['category'] %}background:var(--navy);color:var(--white);{% else %}background:var(--white);border:1.5px solid var(--navy);color:var(--navy);{% endif %}">
+        {% if cat['category']=='Academic' %}📚{% elif cat['category']=='Sports' %}⚽{% elif cat['category']=='Cultural' %}🎨{% elif cat['category']=='Science' %}🔬{% else %}🌟{% endif %}
+        {{ cat['category'] }}
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if items %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+      {% for item in items %}
+      <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='var(--shadow-lg)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+        <!-- Top -->
+        <div style="background:linear-gradient(135deg,var(--navy),var(--navy-lt));padding:1.5rem;text-align:center;position:relative;">
+          {% if item['photo'] %}
+         <img src="{{ url_for('static', filename='uploads/achievements/' + item['photo']) }}"
+             style="width:52px;height:52px;border-radius:50%;object-fit:cover;">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 0.75rem;">
+            {% if item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎨{% else %}🌟{% endif %}
+          </div>
+          {% endif %}
+          <span style="position:absolute;top:10px;right:10px;background:var(--gold);color:var(--navy);font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:12px;text-transform:uppercase;">{{ item['category'] }}</span>
+        </div>
+        <!-- Content -->
+        <div style="padding:1.25rem;">
+          <h3 style="color:var(--navy);font-size:1.05rem;margin-bottom:0.25rem;">{{ item['title'] }}</h3>
+          <div style="font-weight:700;color:var(--gold-dk);font-size:0.9rem;margin-bottom:0.25rem;">{{ item['student_name'] }}</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;">{{ item['class_name'] }}{% if item['achievement_date'] %} · {{ item['achievement_date'] }}{% endif %}</div>
+          {% if item['description'] %}
+          <p style="font-size:0.85rem;color:var(--muted);border-top:1px solid #eee;padding-top:0.75rem;">{{ item['description'] }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:5rem;color:var(--muted);">
+      <div style="font-size:4rem;margin-bottom:1rem;">🏆</div>
+      <h3 style="color:var(--navy);">No Achievements Yet</h3>
+      <p>Admin will add student achievements here.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

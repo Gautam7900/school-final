@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Result{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📊 {{ quiz['title'] }} — Your Result</h2><p>{{ quiz['subject'] }} · by {{ quiz['teacher_name'] }}</p></div>
+      <a href="/student/quizzes" class="btn btn-outline btn-sm">← All Quizzes</a>
+    </div>
+  </div>
+  <div class="dash-main" style="max-width:800px;">
+
+    {% if attempt %}
+    {% set pct = (attempt['score'] / attempt['total'] * 100)|round(1) if attempt['total'] else 0 %}
+    <!-- Score Card -->
+    <div style="background:{% if pct>=60 %}linear-gradient(135deg,#1b5e20,#2e7d32){% else %}linear-gradient(135deg,#b71c1c,#c62828){% endif %};border-radius:var(--radius-lg);padding:2.5rem;text-align:center;color:var(--white);margin-bottom:1.5rem;box-shadow:var(--shadow-lg);">
+      <div style="font-size:3rem;margin-bottom:0.5rem;">{{ '🏆' if pct>=90 else '🎉' if pct>=60 else '📚' }}</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:700;line-height:1;">{{ attempt['score']|int }} / {{ attempt['total'] }}</div>
+      <div style="font-size:1.1rem;opacity:0.85;margin:0.25rem 0;">{{ pct }}% Score</div>
+      <div style="margin-top:0.75rem;font-size:0.9rem;opacity:0.7;">Submitted: {{ attempt['submitted_at'][:16] }}</div>
+    </div>
+
+    <!-- Question Review -->
+    <div class="dash-card">
+      <div class="dash-card-header"><h3>📋 Question Review</h3></div>
+      <div class="dash-card-body">
+        {% for q in questions %}
+        {% set my_ans = answers.get(q['id']|string, answers.get(q['id'], '')) %}
+        {% set correct = q['correct']|upper %}
+        {% set is_correct = my_ans|upper == correct %}
+        <div style="margin-bottom:1.25rem;padding:1rem;border-radius:10px;background:{% if is_correct %}#e8f5e9{% elif my_ans %}#fce4ec{% else %}#fff3e0{% endif %};border:1.5px solid {% if is_correct %}#81c784{% elif my_ans %}#ef9a9a{% else %}#ffcc02{% endif %};">
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:0.75rem;">
+            <span style="font-size:1.2rem;">{{ '✅' if is_correct else '❌' if my_ans else '⚠️' }}</span>
+            <div style="font-weight:700;color:var(--navy);">{{ loop.index }}. {{ q['question'] }}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-left:2rem;">
+            {% for opt, label in [('A',q['option_a']),('B',q['option_b']),('C',q['option_c']),('D',q['option_d'])] %}
+            <div style="padding:6px 10px;border-radius:6px;font-size:0.85rem;
+              background:{% if opt==correct %}#e8f5e9;border:1.5px solid #2e7d32;font-weight:700;color:#1b5e20;
+              {% elif opt==my_ans|upper and not is_correct %}#fce4ec;border:1.5px solid #e57373;color:#c62828;
+              {% else %}transparent;border:1px solid #eee;color:#555;{% endif %}">
+              {{ opt }}) {{ label }}
+              {% if opt==correct %} ✓{% elif opt==my_ans|upper and not is_correct %} ✗{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% if not my_ans %}<div style="margin-left:2rem;margin-top:0.5rem;font-size:0.8rem;color:#e65100;font-weight:600;">Not attempted</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:4rem;color:var(--muted);">
+      <p>You haven't attempted this quiz yet.</p>
+      <a href="/student/attempt_quiz/{{ quiz['id'] }}" class="btn btn-gold" style="margin-top:1rem;display:inline-flex;">▶ Attempt Now</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}Manage Live Classes{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>📹 Live Class Manager</h2>
+        <p>{{ session.teacher_name }} · {{ session.teacher_sub }}</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <a href="/live_classes" class="btn btn-outline btn-sm" target="_blank">👁 Student View</a>
+        <a href="/teacher/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;align-items:start;">
+
+      <!-- ADD FORM -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>➕ Schedule New Class</h3></div>
+        <div class="dash-card-body">
+
+          <div class="form-group">
+            <label>Class</label>
+            <select class="form-control" id="lc_class">
+              {% for cls in all_classes %}<option>{{ cls }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <select class="form-control" id="lc_subject">
+              {% for sub in subjects %}<option>{{ sub }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Class Title</label>
+            <input class="form-control" type="text" id="lc_title" placeholder="e.g. Fractions & Decimals — Doubt Class">
+          </div>
+          <div class="form-group">
+            <label>Platform</label>
+            <select class="form-control" id="lc_platform" onchange="updatePlaceholder()">
+              <option>Google Meet</option>
+              <option>Zoom</option>
+              <option>Microsoft Teams</option>
+              <option>YouTube Live</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Meeting Link</label>
+            <input class="form-control" type="url" id="lc_link" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date & Time</label>
+              <input class="form-control" type="datetime-local" id="lc_datetime">
+            </div>
+            <div class="form-group">
+              <label>Duration (mins)</label>
+              <select class="form-control" id="lc_duration">
+                <option>30</option><option>45</option>
+                <option selected>60</option><option>90</option><option>120</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description (optional)</label>
+            <textarea class="form-control" id="lc_desc" rows="2" placeholder="Topics to be covered, chapter reference, etc."></textarea>
+          </div>
+
+          <button onclick="scheduleClass()" class="btn btn-gold" style="width:100%;">📅 Schedule Class</button>
+          <div id="addMsg" style="margin-top:0.75rem;font-size:0.88rem;"></div>
+        </div>
+      </div>
+
+      <!-- MY CLASSES LIST -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>📋 My Scheduled Classes</h3>
+          <span style="font-size:0.82rem;color:var(--muted);">{{ my_classes|length }} total</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.85rem;padding:1.25rem;">
+          {% for lc in my_classes %}
+          <div id="lc-card-{{ lc['id'] }}" style="border:1.5px solid #eee;border-radius:var(--radius);overflow:hidden;">
+            <!-- Status bar -->
+            <div style="padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;
+              background:{% if lc['status']=='Live' %}#c62828{% elif lc['status']=='Upcoming' %}var(--navy){% else %}#888{% endif %};">
+              <div style="display:flex;align-items:center;gap:8px;">
+                {% if lc['status']=='Live' %}<span style="width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 1s infinite;display:inline-block;"></span>{% endif %}
+                <span style="color:var(--white);font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">
+                  {{ lc['status'] }} · {{ lc['platform'] }}
+                </span>
+              </div>
+              <div style="display:flex;gap:6px;">
+                {% if lc['status'] == 'Upcoming' %}
+                <button onclick="setStatus({{ lc['id'] }},'Live')"
+                  style="background:#4caf50;color:var(--white);border:none;border-radius:5px;padding:3px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                  🔴 Go Live
+                </button>
+                {% elif lc['status'] == 'Live' %}
+                <button onclick="setStatus({{ lc['id'] }},'Completed')"
+                  style="background:rgba(255,255,255,0.25);color:var(--white);border:none;border-radius:5px;padding:3px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                  ✅ End Class
+                </button>
+                {% endif %}
+                <button onclick="deleteClass({{ lc['id'] }})"
+                  style="background:rgba(255,255,255,0.15);color:var(--white);border:none;border-radius:5px;padding:3px 10px;font-size:0.75rem;cursor:pointer;">
+                  🗑
+                </button>
+              </div>
+            </div>
+            <!-- Content -->
+            <div style="padding:1rem;">
+              <div style="font-size:0.75rem;font-weight:700;color:var(--gold-dk);text-transform:uppercase;letter-spacing:0.08em;">{{ lc['class_name'] }} · {{ lc['subject'] }}</div>
+              <div style="font-weight:700;color:var(--navy);font-size:1rem;margin:0.2rem 0;">{{ lc['title'] }}</div>
+              <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;">🕐 {{ lc['scheduled_at'] }} · ⏱ {{ lc['duration'] }} mins</div>
+              <div style="display:flex;gap:0.5rem;align-items:center;">
+                <a href="{{ lc['meet_link'] }}" target="_blank"
+                  style="background:var(--navy);color:var(--gold-lt);padding:7px 16px;border-radius:7px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">
+                  🔗 Open Link
+                </a>
+                <input type="text" value="{{ lc['meet_link'] }}" readonly
+                  style="flex:1;border:1.5px solid #eee;border-radius:7px;padding:7px 10px;font-size:0.78rem;color:var(--muted);background:#fafafa;"
+                  onclick="this.select();document.execCommand('copy');showToast('✅ Link copied!')">
+                <span style="font-size:0.72rem;color:var(--muted);">click to copy</span>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div style="text-align:center;padding:3rem;color:var(--muted);">
+            <div style="font-size:3rem;margin-bottom:0.75rem;">📹</div>
+            <p>No classes scheduled yet. Add your first live class!</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// Set default datetime to next hour
+const now = new Date();
+now.setHours(now.getHours()+1, 0, 0, 0);
+document.getElementById('lc_datetime').value = now.toISOString().slice(0,16);
+
+const placeholders = {
+  'Google Meet':       'https://meet.google.com/xxx-xxxx-xxx',
+  'Zoom':              'https://zoom.us/j/1234567890',
+  'Microsoft Teams':   'https://teams.microsoft.com/l/meetup-join/...',
+  'YouTube Live':      'https://youtube.com/live/...',
+};
+function updatePlaceholder() {
+  const p = document.getElementById('lc_platform').value;
+  document.getElementById('lc_link').placeholder = placeholders[p] || 'https://...';
+}
+
+async function scheduleClass() {
+  const title = document.getElementById('lc_title').value.trim();
+  const link  = document.getElementById('lc_link').value.trim();
+  const dt    = document.getElementById('lc_datetime').value;
+  if (!title) { showMsg('❌ Please enter a title', 'error'); return; }
+  if (!link)  { showMsg('❌ Please enter the meeting link', 'error'); return; }
+  if (!dt)    { showMsg('❌ Please select date and time', 'error'); return; }
+
+  const res = await fetch('/teacher/add_live_class', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      class_name:   document.getElementById('lc_class').value,
+      subject:      document.getElementById('lc_subject').value,
+      title, meet_link: link,
+      platform:     document.getElementById('lc_platform').value,
+      scheduled_at: dt,
+      duration:     document.getElementById('lc_duration').value,
+      description:  document.getElementById('lc_desc').value,
+    })
+  });
+  const d = await res.json();
+  if (d.success) {
+    showMsg('✅ Class scheduled!', 'success');
+    showToast('✅ Live class scheduled!');
+    setTimeout(() => location.reload(), 1000);
+  } else showMsg('❌ Error: ' + d.error, 'error');
+}
+
+async function setStatus(id, status) {
+  const label = status === 'Live' ? 'go LIVE' : 'mark as Completed';
+  if (!confirm(`Are you sure you want to ${label}?`)) return;
+  const res = await fetch('/teacher/update_live_class_status', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({id, status})
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast(status === 'Live' ? '🔴 Class is now Live!' : '✅ Class ended!');
+    setTimeout(() => location.reload(), 800);
+  }
+}
+
+async function deleteClass(id) {
+  if (!confirm('Delete this live class?')) return;
+  const res = await fetch('/teacher/delete_live_class/'+id, {method:'POST'});
+  const d = await res.json();
+  if (d.success) {
+    document.getElementById('lc-card-'+id).remove();
+    showToast('🗑 Deleted');
+  }
+}
+
+function showMsg(msg, type) {
+  const el = document.getElementById('addMsg');
+  el.textContent = msg;
+  el.style.color = type === 'success' ? '#2e7d32' : '#c62828';
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = '#2e7d32'; t.style.color = '#fff';
+  t.style.display = 'block'; setTimeout(() => t.style.display='none', 3000);
+}
+</script>
+{% endblock %}

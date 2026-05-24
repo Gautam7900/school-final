@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Student ID Cards{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>🪪 Student ID Card Generator</h2><p>Generate & download print-ready PDF ID cards</p></div>
+      <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- Stats + Filter -->
+    <div class="dash-card" style="margin-bottom:1.5rem;">
+      <div class="dash-card-body">
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;">
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <span style="font-weight:700;color:var(--navy);">Filter Class:</span>
+            {% for cls in classes %}
+            <a href="/admin/id_cards?class_name={{ cls }}"
+              style="padding:6px 14px;border-radius:18px;font-weight:700;font-size:0.82rem;text-decoration:none;transition:all 0.2s;
+              {% if sel_cls==cls %}background:var(--navy);color:var(--white);{% else %}background:var(--white);border:1.5px solid var(--navy);color:var(--navy);{% endif %}">
+              {{ cls }}
+            </a>
+            {% endfor %}
+          </div>
+          <a href="/admin/generate_id_card/0?class_name={{ sel_cls if sel_cls!='All' else '' }}"
+            target="_blank" class="btn btn-gold">
+            📄 Download All{% if sel_cls!='All' %} — {{ sel_cls }}{% endif %} PDF
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Box -->
+    <div style="background:linear-gradient(135deg,var(--navy),var(--navy-lt));border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div style="font-size:2rem;">🪪</div>
+      <div style="flex:1;">
+        <div style="color:var(--gold-lt);font-weight:700;font-size:0.95rem;">How to use ID Card Generator</div>
+        <div style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:3px;">
+          Click <strong style="color:var(--gold-lt);">📄 PDF</strong> next to any student for individual card &nbsp;|&nbsp;
+          Click <strong style="color:var(--gold-lt);">Download All PDF</strong> for the entire class at once &nbsp;|&nbsp;
+          Print the PDF — cards are sized to fit on A4 paper (2 per row)
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Grid -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>👨‍🎓 Students — {{ sel_cls }}</h3>
+        <span style="font-size:0.82rem;color:var(--muted);">{{ students|length }} students · Click PDF to generate</span>
+      </div>
+
+      {% if students %}
+      <div style="padding:1.25rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+        {% for s in students %}
+
+        <!-- ID Card Preview -->
+        <div style="border:2.5px solid var(--gold);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:all 0.2s;"
+             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='var(--shadow-lg)'"
+             onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+
+          <!-- Card Header -->
+          <div style="background:var(--navy);padding:0.65rem 1rem;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--gold-lt);font-weight:800;letter-spacing:0.12em;text-transform:uppercase;">
+              🏫 BrightMind School · CBSE · 2024-25
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div style="padding:1rem;display:flex;gap:0.85rem;align-items:center;background:var(--white);">
+            <!-- Photo placeholder -->
+            <div style="width:60px;height:72px;border-radius:8px;background:linear-gradient(135deg,var(--navy),var(--navy-lt));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold-lt);flex-shrink:0;border:2px solid var(--gold);">
+              {{ s['name'][0] }}
+            </div>
+            <!-- Info -->
+            <div style="min-width:0;flex:1;">
+              <div style="font-weight:800;color:var(--navy);font-size:0.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                {{ s['name'] }}
+              </div>
+              <div style="font-size:0.78rem;color:var(--muted);margin:2px 0;">
+                <span style="background:var(--warm);color:var(--navy);padding:1px 7px;border-radius:8px;font-weight:700;font-size:0.72rem;">{{ s['class_name'] }}</span>
+              </div>
+              <div style="font-size:0.78rem;color:var(--muted);">
+                Roll: <strong style="color:var(--navy);">{{ s['roll_number'] }}</strong>
+              </div>
+              {% if s['parent_name'] %}
+              <div style="font-size:0.72rem;color:#aaa;margin-top:2px;">Parent: {{ s['parent_name'] }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Card Footer + Action -->
+          <div style="padding:0.5rem 0.75rem;background:var(--cream);display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:0.65rem;color:#aaa;">Ph: +91 11 1234 5678</div>
+            <a href="/admin/generate_id_card/{{ s['id'] }}" target="_blank"
+              style="background:var(--navy);color:var(--gold-lt);padding:6px 16px;border-radius:7px;font-size:0.8rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;">
+              📄 PDF
+            </a>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div style="text-align:center;padding:4rem;color:var(--muted);">
+        <div style="font-size:3.5rem;margin-bottom:1rem;">👨‍🎓</div>
+        <h3 style="color:var(--navy);">No Students in {{ sel_cls }}</h3>
+        <p>Add students from the Admin Dashboard → Students tab.</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

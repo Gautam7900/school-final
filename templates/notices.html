@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Notices{% endblock %}
+{% block content %}
+<section style="background:linear-gradient(135deg,var(--navy),#1e3a6e);padding:4rem 2rem;color:var(--white);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold-lt);">Stay Updated</div>
+    <h1 style="color:var(--white);">School <em style="color:var(--gold-lt);font-style:normal;">Notices</em></h1>
+  </div>
+</section>
+
+<section class="section bg-warm">
+  <div class="section-inner">
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;">
+      {% for cat in ['All','Academic','Events','Holiday','Important','General'] %}
+      <button onclick="filterNotice('{{ cat }}')" id="filter-{{ cat }}"
+        style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s;">
+        {{ cat }}
+      </button>
+      {% endfor %}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;" id="noticeList">
+      {% for notice in notices %}
+      <div class="notice-card" data-cat="{{ notice['category'] }}">
+        <div class="nc-date">
+          <div class="day">{{ notice['created_at'][:10].split('-')[2] }}</div>
+          <div class="mon">{{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][notice['created_at'][:10].split('-')[1]|int-1] }}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);">{{ notice['created_at'][:4] }}</div>
+        </div>
+        <div class="nc-body" style="flex:1;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+            <span class="notice-badge badge-{{ notice['category']|lower }}">{{ notice['category'] }}</span>
+          </div>
+          <h4>{{ notice['title'] }}</h4>
+          <p>{{ notice['content'] }}</p>
+        </div>
+      </div>
+      {% endfor %}
+      {% if not notices %}<p style="text-align:center;color:var(--muted);padding:3rem;">No notices at this time.</p>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function filterNotice(cat) {
+  document.querySelectorAll('.notice-card').forEach(c => {
+    c.style.display = (cat==='All' || c.dataset.cat===cat) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('[id^="filter-"]').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--navy)';
+  });
+  const active = document.getElementById('filter-'+cat);
+  active.style.background = 'var(--navy)'; active.style.color = 'var(--white)';
+}
+filterNotice('All');
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Our Teachers{% endblock %}
+{% block content %}
+
+<section style="background:linear-gradient(135deg,var(--navy),#1e3a6e);padding:4rem 2rem;">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold-lt);">Meet Our Faculty</div>
+    <h1 style="color:var(--white);">Our <em style="color:var(--gold-lt);font-style:normal;">Teachers</em></h1>
+    <p style="color:rgba(255,255,255,0.65);max-width:550px;font-size:1.05rem;margin-top:0.75rem;">
+      Dedicated educators who inspire, guide, and shape young minds every day.
+    </p>
+  </div>
+</section>
+
+<section class="section bg-warm">
+  <div class="section-inner">
+    <div class="grid-3">
+      {% for t in teachers %}
+      <a href="/teachers/{{ t['id'] }}" style="text-decoration:none;display:block;">
+        <div class="teacher-card">
+          <div class="teacher-photo-wrap">
+            {% if t['photo'] %}
+              <img src="/static/uploads/teachers/{{ t['photo'] }}" alt="{{ t['name'] }}" class="teacher-photo-img">
+            {% else %}
+              <div class="teacher-photo-placeholder">
+                {{ t['name'][0] }}{{ t['name'].split(' ')[-1][0] if t['name'].split()|length > 1 else '' }}
+              </div>
+            {% endif %}
+            <div class="teacher-subject-badge">{{ t['subject'] }}</div>
+          </div>
+          <div class="teacher-info">
+            <h3>{{ t['name'] }}</h3>
+            <p style="color:var(--muted);font-size:0.88rem;margin:0.25rem 0;">{{ t['qualification'] or 'B.Ed, M.A.' }}</p>
+            <p style="color:var(--muted);font-size:0.85rem;">{{ t['experience'] or '—' }} Experience</p>
+            <div class="teacher-view-btn">View Profile →</div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+      {% if not teachers %}
+      <div style="grid-column:span 3;text-align:center;padding:3rem;color:var(--muted);">No teachers added yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+.teacher-card { background:var(--white);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);transition:all 0.3s ease;height:100%; }
+a:hover .teacher-card { transform:translateY(-8px);box-shadow:var(--shadow-lg); }
+.teacher-photo-wrap { position:relative;background:linear-gradient(135deg,var(--navy),var(--navy-lt));height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden; }
+.teacher-photo-img { width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease; }
+a:hover .teacher-photo-img { transform:scale(1.05); }
+.teacher-photo-placeholder { width:90px;height:90px;border-radius:50%;background:rgba(201,168,76,0.2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold-lt);letter-spacing:2px; }
+.teacher-subject-badge { position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:0.75rem;font-weight:800;padding:4px 14px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap; }
+.teacher-info { padding:1.5rem;text-align:center; }
+.teacher-info h3 { color:var(--navy);font-size:1.2rem;margin-bottom:0.25rem; }
+.teacher-view-btn { display:inline-block;margin-top:1rem;background:var(--navy);color:var(--gold-lt);font-size:0.82rem;font-weight:700;padding:8px 20px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase;transition:all 0.2s; }
+a:hover .teacher-view-btn { background:var(--gold);color:var(--navy); }
+</style>
+{% endblock %}

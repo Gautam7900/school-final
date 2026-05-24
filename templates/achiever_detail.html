@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}{{ item['student_name'] or 'Achiever' }} — Profile{% endblock %}
+{% block content %}
+
+{% set cat_colors = {
+  'Academic': ('1565c0','e3f2fd','📚','Academic Excellence'),
+  'Sports':   ('2e7d32','e8f5e9','⚽','Sports Achievement'),
+  'Cultural': ('6a1b9a','f3e5f5','🎨','Cultural Achievement'),
+  'Science':  ('00838f','e0f7fa','🔬','Science Achievement'),
+} %}
+{% set ci = cat_colors.get(item['category'], ('c9a84c','fff8e1','🌟','Achievement')) %}
+
+<!-- HERO -->
+<section style="background:linear-gradient(135deg,#0d1b3e 0%,#1a2f5e 100%);padding:4rem 2rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;opacity:0.05;font-size:20rem;display:flex;align-items:center;justify-content:flex-end;padding-right:2rem;pointer-events:none;">🏆</div>
+
+  <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
+    <a href="/achievers" style="color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:2rem;">
+      ← Back to All Achievers
+    </a>
+
+    <div style="display:flex;gap:2.5rem;align-items:center;flex-wrap:wrap;">
+
+      <!-- Avatar -->
+      <div style="flex-shrink:0;">
+        {% if item['photo'] %}
+        <img src="/static/uploads/achievements/{{ item['photo'] }}"
+             style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid #{{ ci[0] }};box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+        {% else %}
+        <div style="width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#{{ ci[0] }}33,#{{ ci[0] }}88);border:4px solid #{{ ci[0] }};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:700;color:#{{ ci[0] }};box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+          {{ (item['student_name'] or 'S')[0].upper() }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Info -->
+      <div style="flex:1;min-width:240px;">
+        <!-- Category badge -->
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#{{ ci[0] }}22;border:1px solid #{{ ci[0] }}55;color:#{{ ci[0] }};padding:5px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">
+          {{ ci[2] }} {{ ci[3] }}
+        </div>
+
+        <!-- Name -->
+        <h1 style="color:var(--white);font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 0.25rem;font-family:'Cormorant Garamond',serif;">
+          {{ item['student_name'] or 'Student' }}
+        </h1>
+
+        <!-- Class -->
+        <div style="color:rgba(255,255,255,0.55);font-size:0.95rem;margin-bottom:1rem;">{{ item['class_name'] }} · BrightMind School</div>
+
+        <!-- Achievement title -->
+        <div style="background:rgba(201,168,76,0.12);border-left:4px solid var(--gold);padding:0.75rem 1rem;border-radius:0 8px 8px 0;margin-bottom:1rem;">
+          <div style="color:var(--gold-lt);font-weight:800;font-size:1.1rem;">{{ item['title'] }}</div>
+        </div>
+
+        <!-- Meta -->
+        <div style="display:flex;flex-wrap:wrap;gap:1.25rem;">
+          {% if item['achievement_date'] %}
+          <div style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.55);font-size:0.88rem;">
+            📅 <span>{{ item['achievement_date'] }}</span>
+          </div>
+          {% endif %}
+          <div style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.55);font-size:0.88rem;">
+            🏫 <span>{{ item['class_name'] }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.55);font-size:0.88rem;">
+            {{ ci[2] }} <span>{{ item['category'] }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section style="background:linear-gradient(180deg,#111f45,#0d1b3e);padding:3rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+
+    <!-- Description / Story -->
+    <div>
+      {% if item['description'] %}
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2rem;margin-bottom:1.5rem;">
+        <h3 style="color:var(--gold-lt);font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:1rem;">📖 About This Achievement</h3>
+        <p style="color:rgba(255,255,255,0.75);font-size:1rem;line-height:1.8;">{{ item['description'] }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Congratulations card -->
+      <div style="background:linear-gradient(135deg,#{{ ci[0] }}22,#{{ ci[0] }}11);border:1px solid #{{ ci[0] }}33;border-radius:16px;padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🎉</div>
+        <h3 style="color:var(--white);font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:0.5rem;">Congratulations!</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">BrightMind School is proud of <strong style="color:var(--gold-lt);">{{ item['student_name'] or 'this student' }}</strong> for this outstanding achievement. Keep shining! ⭐</p>
+      </div>
+    </div>
+
+    <!-- Achievement Details Card -->
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;">
+      <div style="background:#{{ ci[0] }}33;padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h3 style="color:var(--white);font-size:1rem;font-weight:700;">🏆 Achievement Details</h3>
+      </div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem;">
+        {% for label, value in [
+          ('Student', item['student_name'] or '—'),
+          ('Class',   item['class_name'] or '—'),
+          ('Category',item['category'] or '—'),
+          ('Date',    item['achievement_date'] or '—'),
+          ('Award',   item['title'] or '—'),
+        ] %}
+        <div>
+          <div style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">{{ label }}</div>
+          <div style="color:var(--white);font-weight:600;font-size:0.92rem;">{{ value }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- OTHER ACHIEVERS FROM SAME CLASS -->
+{% if others %}
+<section style="background:#0d1b3e;padding:2.5rem 2rem;border-top:1px solid rgba(255,255,255,0.06);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <h3 style="color:var(--gold-lt);font-family:'Cormorant Garamond',serif;font-size:1.5rem;margin-bottom:1.5rem;">
+      More from {{ item['class_name'] }}
+    </h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+      {% for o in others %}
+      <a href="/achievers/{{ o['id'] }}" style="text-decoration:none;display:flex;align-items:center;gap:0.85rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.85rem;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='rgba(255,255,255,0.09)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.background='rgba(255,255,255,0.05)'">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,0.2);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold-lt);flex-shrink:0;">
+          {{ (o['student_name'] or 'S')[0].upper() }}
+        </div>
+        <div style="min-width:0;">
+          <div style="color:var(--white);font-weight:700;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o['student_name'] or 'Student' }}</div>
+          <div style="color:rgba(255,255,255,0.45);font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o['title'] }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

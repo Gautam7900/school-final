@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Assignments{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>👩‍🏫 Teacher — Class & Subject Assignments</h2>
+        <p>Assign which teacher teaches which subject in which class</p>
+      </div>
+      <div style="display:flex;gap:1rem;">
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+        <a href="/admin/logout" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;align-items:start;">
+
+      <!-- ── ASSIGN FORM ────────────────────────────── -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>➕ New Assignment</h3></div>
+        <div class="dash-card-body">
+          <div class="form-group">
+            <label>Select Teacher</label>
+            <select class="form-control" id="asgn_teacher">
+              <option value="">— Choose Teacher —</option>
+              {% for t in teachers %}
+              <option value="{{ t['id'] }}">{{ t['name'] }} ({{ t['subject'] }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Class</label>
+            <select class="form-control" id="asgn_class">
+              <option>UKG</option>
+              {% for i in range(1,11) %}<option>Class {{ i }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <select class="form-control" id="asgn_subject">
+              {% for sub in ['Mathematics','Science','English','Hindi','Social Science','Computer','Sanskrit','Drawing','Physical Education','EVS','GK'] %}
+              <option>{{ sub }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button onclick="addAssignment()" class="btn btn-gold" style="width:100%;">✅ Assign Teacher</button>
+          <div id="asgn_msg" style="margin-top:0.75rem;font-size:0.9rem;"></div>
+        </div>
+      </div>
+
+      <!-- ── CLASS-WISE ASSIGNMENT VIEW ─────────────── -->
+      <div>
+        <!-- Filter by class -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+          <button onclick="filterClass('all')" id="filter-all"
+            class="filter-btn" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--navy);background:var(--navy);color:var(--white);font-weight:700;font-size:0.82rem;cursor:pointer;">
+            All Classes
+          </button>
+          <button onclick="filterClass('UKG')" id="filter-UKG"
+            class="filter-btn" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-weight:700;font-size:0.82rem;cursor:pointer;">
+            UKG
+          </button>
+          {% for i in range(1,11) %}
+          <button onclick="filterClass('Class {{ i }}')" id="filter-Class-{{ i }}"
+            class="filter-btn" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-weight:700;font-size:0.82rem;cursor:pointer;">
+            Class {{ i }}
+          </button>
+          {% endfor %}
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>📋 Current Assignments</h3>
+            <span id="asgn_count" style="font-size:0.82rem;color:var(--muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Class</th><th>Subject</th><th>Teacher</th><th>Action</th></tr></thead>
+              <tbody id="assignTable">
+                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Class summary grid -->
+        <div style="margin-top:1.5rem;">
+          <h4 style="color:var(--navy);margin-bottom:1rem;font-family:'Cormorant Garamond',serif;">📊 Class-wise Overview</h4>
+          <div id="classSummary" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+let allAssignments = [];
+let currentFilter = 'all';
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = type==='success'?'#2e7d32':'#c62828';
+  t.style.color='#fff'; t.style.display='block';
+  setTimeout(()=>t.style.display='none', 3000);
+}
+
+async function loadAssignments() {
+  const res = await fetch('/admin/get_assignments');
+  allAssignments = await res.json();
+  renderTable(allAssignments);
+  renderSummary(allAssignments);
+  document.getElementById('asgn_count').textContent = allAssignments.length + ' total';
+}
+
+function renderTable(data) {
+  const filtered = currentFilter==='all' ? data : data.filter(a=>a.class_name===currentFilter);
+  const tbody = document.getElementById('assignTable');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">No assignments yet for this class.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(a => `
+    <tr id="row-${a.id}">
+      <td><span style="background:var(--navy);color:var(--gold-lt);padding:3px 10px;border-radius:10px;font-size:0.8rem;font-weight:700;">${a.class_name}</span></td>
+      <td><strong>${a.subject}</strong></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:30px;height:30px;background:linear-gradient(135deg,var(--navy),var(--navy-lt));border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.9rem;">👩‍🏫</span>
+          ${a.teacher_name}
+        </div>
+      </td>
+      <td>
+        <button onclick="removeAssignment(${a.id})"
+          style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+          🗑 Remove
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderSummary(data) {
+  const classMap = {};
+  data.forEach(a => {
+    if (!classMap[a.class_name]) classMap[a.class_name] = [];
+    classMap[a.class_name].push(a.subject);
+  });
+  const allClasses = ['UKG',...Array.from({length:10},(_,i)=>'Class '+(i+1))];
+  document.getElementById('classSummary').innerHTML = allClasses.map(cls => {
+    const subs = classMap[cls] || [];
+    const color = subs.length===0?'#eee':subs.length<3?'#fff3e0':'#e8f5e9';
+    const tcolor = subs.length===0?'#999':subs.length<3?'#e65100':'#2e7d32';
+    return `<div style="background:${color};border-radius:10px;padding:0.9rem;cursor:pointer;" onclick="filterClass('${cls}')">
+      <div style="font-weight:800;color:var(--navy);font-size:0.9rem;">${cls}</div>
+      <div style="font-size:1.4rem;font-weight:800;color:${tcolor};">${subs.length}</div>
+      <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.06em;">Subjects Assigned</div>
+    </div>`;
+  }).join('');
+}
+
+function filterClass(cls) {
+  currentFilter = cls;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.style.background='transparent'; b.style.color='var(--navy)';
+  });
+  const activeId = 'filter-' + (cls==='all'?'all':cls.replace(' ','-'));
+  const activeBtn = document.getElementById(activeId);
+  if (activeBtn) { activeBtn.style.background='var(--navy)'; activeBtn.style.color='var(--white)'; }
+  renderTable(allAssignments);
+}
+
+async function addAssignment() {
+  const tid = document.getElementById('asgn_teacher').value;
+  const cls = document.getElementById('asgn_class').value;
+  const sub = document.getElementById('asgn_subject').value;
+  if (!tid) { document.getElementById('asgn_msg').textContent='❌ Please select a teacher'; document.getElementById('asgn_msg').style.color='var(--red)'; return; }
+  const res = await fetch('/admin/assign_teacher', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({teacher_id:tid, class_name:cls, subject:sub})
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast(`✅ Assigned! ${cls} — ${sub}`);
+    document.getElementById('asgn_msg').textContent='';
+    loadAssignments();
+  } else {
+    showToast('❌ '+(d.error||'Already assigned'), 'error');
+  }
+}
+
+async function removeAssignment(id) {
+  if (!confirm('Remove this assignment?')) return;
+  const res = await fetch('/admin/remove_assignment', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({id})
+  });
+  const d = await res.json();
+  if (d.success) { showToast('🗑 Assignment removed'); loadAssignments(); }
+  else showToast('❌ Error','error');
+}
+
+// Load on page ready
+loadAssignments();
+filterClass('all');
+</script>
+{% endblock %}

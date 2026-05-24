@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Manage Exam Schedule{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📝 Exam Schedule Management</h2><p>Add and manage exam date sheets</p></div>
+      <div style="display:flex;gap:0.75rem;">
+        <a href="/exam_schedule" class="btn btn-outline btn-sm" target="_blank">👁 View Public</a>
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:1.5rem;align-items:start;">
+
+      <!-- ADD FORM -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>➕ Add Exam</h3></div>
+        <div class="dash-card-body">
+          <form method="POST" action="/admin/exam_schedule/add">
+            <div class="form-group"><label>Class</label>
+              <select class="form-control" name="class_name" required>
+                {% for cls in classes %}<option>{{ cls }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="form-group"><label>Subject</label>
+              <input class="form-control" name="subject" required placeholder="e.g. Mathematics">
+            </div>
+            <div class="form-group"><label>Exam Type</label>
+              <select class="form-control" name="exam_type">
+                <option>Unit Test</option><option>Half Yearly</option>
+                <option>Annual</option><option>Board Pre-Board</option><option>Practice Test</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Date</label>
+                <input class="form-control" type="date" name="exam_date" required>
+              </div>
+              <div class="form-group"><label>Day</label>
+                <select class="form-control" name="day">
+                  <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                  <option>Thursday</option><option>Friday</option><option>Saturday</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Start Time</label>
+                <input class="form-control" type="time" name="start_time" value="10:00">
+              </div>
+              <div class="form-group"><label>End Time</label>
+                <input class="form-control" type="time" name="end_time" value="13:00">
+              </div>
+            </div>
+            <div class="form-group"><label>Venue</label>
+              <input class="form-control" name="venue" placeholder="e.g. Main Hall, Hall A" value="Main Hall">
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%;">➕ Add Exam</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- EXAM LIST -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>📋 All Exams <span style="font-size:0.82rem;color:var(--muted);">({{ exams|length }} total)</span></h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Class</th><th>Subject</th><th>Type</th><th>Time</th><th>Venue</th><th>Del</th></tr></thead>
+            <tbody>
+              {% for e in exams %}
+              <tr id="exam-{{ e['id'] }}">
+                <td><strong>{{ e['exam_date'] }}</strong><br><span style="font-size:0.75rem;color:var(--muted);">{{ e['day'] }}</span></td>
+                <td><span style="background:var(--navy);color:var(--gold-lt);padding:2px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;">{{ e['class_name'] }}</span></td>
+                <td><strong>{{ e['subject'] }}</strong></td>
+                <td style="font-size:0.82rem;">{{ e['exam_type'] }}</td>
+                <td style="font-size:0.82rem;">{{ e['start_time'] }}–{{ e['end_time'] }}</td>
+                <td style="font-size:0.82rem;">{{ e['venue'] }}</td>
+                <td>
+                  <button onclick="delExam({{ e['id'] }})"
+                    style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 8px;font-size:0.8rem;cursor:pointer;">🗑</button>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No exams added yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function delExam(id) {
+  if (!confirm('Delete this exam entry?')) return;
+  const res = await fetch('/admin/exam_schedule/delete/'+id, {method:'POST'});
+  const d = await res.json();
+  if (d.success) { document.getElementById('exam-'+id).remove(); showToast('🗑 Deleted'); }
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background='#2e7d32'; t.style.color='#fff';
+  t.style.display='block'; setTimeout(()=>t.style.display='none',3000);
+}
+</script>
+{% endblock %}

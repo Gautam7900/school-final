@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Admissions{% endblock %}
+{% block content %}
+
+<div class="admissions-hero">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold-lt);justify-content:center;">2025–26 Session</div>
+    <h1>Admissions <em>Open</em></h1>
+    <p style="color:rgba(255,255,255,0.7);max-width:550px;margin:1rem auto 0;font-size:1.1rem;">
+      Applications are now open for UKG through Class 10. Secure your child's future at BrightMind School.
+    </p>
+  </div>
+</div>
+
+<!-- ADMISSION FORM + FEE INFO -->
+<section class="section bg-white">
+  <div class="section-inner">
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:3rem;align-items:start;">
+
+      <!-- FORM -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>📝 Online Admission Form</h3>
+          <span style="font-size:0.8rem;color:var(--muted);">All fields required</span>
+        </div>
+        <div class="dash-card-body">
+          <form method="POST" action="/admissions">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Student's Full Name</label>
+                <input class="form-control" type="text" name="name" placeholder="e.g. Aarav Sharma" required>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input class="form-control" type="date" name="dob" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Applying for Class</label>
+              <select class="form-control" name="class_name" required>
+                <option value="">— Select Class —</option>
+                <option>UKG</option>
+                {% for i in range(1, 11) %}<option>Class {{ i }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Parent / Guardian Name</label>
+                <input class="form-control" type="text" name="parent_name" placeholder="Father/Mother name" required>
+              </div>
+              <div class="form-group">
+                <label>Contact Number</label>
+                <input class="form-control" type="tel" name="contact" placeholder="+91 XXXXX XXXXX" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input class="form-control" type="email" name="email" placeholder="example@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>Residential Address</label>
+              <textarea class="form-control" name="address" rows="3" placeholder="Full address with city and PIN code" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%;">Submit Application →</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- FEE + INFO -->
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div class="fee-card">
+          <h3>💰 Fee Structure 2025–26</h3>
+          <div style="margin-top:1rem;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:0.5rem;font-size:0.85rem;">UKG – Class 2</div>
+            <div class="fee-item"><span>Tuition Fee (Monthly)</span><span class="amount">₹3,500</span></div>
+            <div class="fee-item"><span>Annual Charges</span><span class="amount">₹8,000</span></div>
+            <div style="font-weight:700;color:var(--navy);margin:0.75rem 0 0.5rem;font-size:0.85rem;">Class 3 – 5</div>
+            <div class="fee-item"><span>Tuition Fee (Monthly)</span><span class="amount">₹4,500</span></div>
+            <div class="fee-item"><span>Annual Charges</span><span class="amount">₹10,000</span></div>
+            <div style="font-weight:700;color:var(--navy);margin:0.75rem 0 0.5rem;font-size:0.85rem;">Class 6 – 8</div>
+            <div class="fee-item"><span>Tuition Fee (Monthly)</span><span class="amount">₹5,500</span></div>
+            <div class="fee-item"><span>Annual Charges</span><span class="amount">₹12,000</span></div>
+            <div style="font-weight:700;color:var(--navy);margin:0.75rem 0 0.5rem;font-size:0.85rem;">Class 9 – 10</div>
+            <div class="fee-item"><span>Tuition Fee (Monthly)</span><span class="amount">₹6,500</span></div>
+            <div class="fee-item"><span>Annual Charges</span><span class="amount">₹15,000</span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--navy);border-radius:var(--radius);padding:1.75rem;color:var(--white);">
+          <h4 style="color:var(--gold-lt);margin-bottom:1rem;">📋 Documents Required</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;">
+            {% for doc in ['Birth Certificate (Original + Copy)','Previous Class Mark Sheet','TC from Previous School','4 Passport Size Photographs','Aadhaar Card (Student + Parent)','Address Proof','Caste Certificate (if applicable)'] %}
+            <li style="font-size:0.88rem;color:rgba(255,255,255,0.75);display:flex;gap:8px;align-items:center;">
+              <span style="color:var(--gold);font-size:0.7rem;">●</span> {{ doc }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div style="background:var(--warm);border-radius:var(--radius);padding:1.5rem;border-left:4px solid var(--gold);">
+          <h4 style="color:var(--navy);margin-bottom:0.5rem;">🗓️ Important Dates</h4>
+          <div class="fee-item"><span>Application Opens</span><span class="amount">1 Jan 2025</span></div>
+          <div class="fee-item"><span>Application Closes</span><span class="amount">28 Feb 2025</span></div>
+          <div class="fee-item"><span>Entrance Test</span><span class="amount">15 Mar 2025</span></div>
+          <div class="fee-item"><span>Result Declaration</span><span class="amount">25 Mar 2025</span></div>
+          <div class="fee-item"><span>Session Begins</span><span class="amount">1 Apr 2025</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

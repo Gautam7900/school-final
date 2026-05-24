@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}Gallery Management{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>🖼️ Gallery Management</h2>
+        <p>Upload & manage school photos by category</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <a href="/gallery" class="btn btn-outline btn-sm" target="_blank">👁 View Gallery</a>
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+
+    <!-- UPLOAD FORM -->
+    <div class="dash-card" style="margin-bottom:1.5rem;">
+      <div class="dash-card-header"><h3>📤 Upload New Photo</h3></div>
+      <div class="dash-card-body">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;">
+
+          <!-- Preview Box -->
+          <div id="uploadPreviewBox" style="width:180px;height:140px;border-radius:10px;background:var(--warm);border:2px dashed var(--gold);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;" onclick="document.getElementById('galleryFileInput').click()">
+            <div id="uploadPreviewPlaceholder" style="text-align:center;">
+              <div style="font-size:2.5rem;">📷</div>
+              <div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem;">Click to select</div>
+            </div>
+            <img id="uploadPreviewImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
+          </div>
+
+          <div>
+            <input type="file" id="galleryFileInput" accept="image/*" style="display:none;" onchange="previewUpload(this)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Photo Title *</label>
+                <input class="form-control" type="text" id="up_title" placeholder="e.g. Annual Day 2024">
+              </div>
+              <div class="form-group">
+                <label>Category *</label>
+                <select class="form-control" id="up_cat">
+                  <option>Events</option>
+                  <option>Sports</option>
+                  <option>Academic</option>
+                  <option>Cultural</option>
+                  <option>Infrastructure</option>
+                  <option>Achievements</option>
+                  <option>General</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description (optional)</label>
+              <input class="form-control" type="text" id="up_desc" placeholder="Brief description of the photo">
+            </div>
+            <button onclick="uploadGalleryPhoto()" class="btn btn-gold">📤 Upload Photo</button>
+            <div id="upMsg" style="margin-top:0.75rem;font-size:0.9rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTO LIST -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>📸 All Photos <span style="font-size:0.82rem;color:var(--muted);font-family:'Source Sans 3',sans-serif;">({{ photos|length }} total)</span></h3>
+        <!-- Filter by category -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          {% set cats = photos|map(attribute='category')|unique|list %}
+          <button onclick="filterPhotos('all')" id="pf-all"
+            style="padding:5px 12px;border-radius:12px;border:1.5px solid var(--navy);background:var(--navy);color:var(--white);font-size:0.78rem;font-weight:700;cursor:pointer;">All</button>
+          {% for cat in ['Events','Sports','Academic','Cultural','Infrastructure','Achievements','General'] %}
+          <button onclick="filterPhotos('{{ cat }}')" id="pf-{{ cat }}"
+            style="padding:5px 12px;border-radius:12px;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-size:0.78rem;font-weight:700;cursor:pointer;">{{ cat }}</button>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if photos %}
+      <div style="padding:1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;" id="adminPhotoGrid">
+        {% for p in photos %}
+        <div class="admin-photo-card" data-cat="{{ p['category'] }}" id="photo-{{ p['id'] }}">
+          <div style="position:relative;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);">
+            <img src="{{ '/static/uploads/gallery/' + p['filename'] }}"
+                 alt="{{ p['title'] }}"
+                 style="width:100%;height:160px;object-fit:cover;display:block;">
+            <div style="position:absolute;top:8px;left:8px;">
+              <span style="background:var(--gold);color:var(--navy);font-size:0.68rem;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;">{{ p['category'] }}</span>
+            </div>
+            <button onclick="deletePhoto({{ p['id'] }}, '{{ p['title'] }}')"
+              style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:#c62828;border:none;color:#fff;font-size:0.85rem;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;">✕</button>
+          </div>
+          <div style="padding:0.6rem 0.25rem;">
+            <div style="font-weight:700;font-size:0.88rem;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ p['title'] }}</div>
+            <div style="font-size:0.75rem;color:var(--muted);">{{ p['uploaded_at'][:10] }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:3rem;color:var(--muted);">
+        <div style="font-size:3rem;margin-bottom:1rem;">🖼️</div>
+        <p>No photos uploaded yet. Upload your first photo above!</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function previewUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('uploadPreviewPlaceholder').style.display = 'none';
+    const img = document.getElementById('uploadPreviewImg');
+    img.src = e.target.result; img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadGalleryPhoto() {
+  const file  = document.getElementById('galleryFileInput').files[0];
+  const title = document.getElementById('up_title').value.trim();
+  const cat   = document.getElementById('up_cat').value;
+  const desc  = document.getElementById('up_desc').value.trim();
+  if (!file)  { showMsg('upMsg','❌ Please select a photo','error'); return; }
+  if (!title) { showMsg('upMsg','❌ Please enter a title','error'); return; }
+  const fd = new FormData();
+  fd.append('photo', file);
+  fd.append('title', title);
+  fd.append('category', cat);
+  fd.append('description', desc);
+  showMsg('upMsg','⏳ Uploading...','info');
+  const res = await fetch('/admin/upload_gallery_photo', { method:'POST', body:fd });
+  const d   = await res.json();
+  if (d.success) {
+    showMsg('upMsg','✅ Photo uploaded successfully!','success');
+    showToast('✅ Photo added to gallery!');
+    setTimeout(() => location.reload(), 1200);
+  } else showMsg('upMsg','❌ '+d.error,'error');
+}
+
+async function deletePhoto(id, title) {
+  if (!confirm(`Delete photo "${title}"? This cannot be undone.`)) return;
+  const res = await fetch('/admin/delete_gallery_photo/'+id, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) {
+    document.getElementById('photo-'+id).remove();
+    showToast('🗑 Photo deleted');
+  } else showToast('❌ Error','error');
+}
+
+function filterPhotos(cat) {
+  document.querySelectorAll('.admin-photo-card').forEach(c => {
+    c.style.display = (cat==='all' || c.dataset.cat===cat) ? 'block' : 'none';
+  });
+  document.querySelectorAll('[id^="pf-"]').forEach(b => {
+    b.style.background='transparent'; b.style.color='var(--navy)';
+  });
+  const active = document.getElementById('pf-'+cat);
+  if (active) { active.style.background='var(--navy)'; active.style.color='var(--white)'; }
+}
+
+function showMsg(id,msg,type) {
+  const el=document.getElementById(id);
+  el.textContent=msg;
+  el.style.color=type==='success'?'#2e7d32':type==='error'?'#c62828':'#555';
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background='#2e7d32'; t.style.color='#fff';
+  t.style.display='block'; setTimeout(()=>t.style.display='none',3000);
+}
+</script>
+{% endblock %}

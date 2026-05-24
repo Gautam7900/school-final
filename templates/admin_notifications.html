@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}WhatsApp Notifications{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📲 WhatsApp Notifications</h2><p>Send messages to parents</p></div>
+      <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+
+      <!-- SEND PANEL -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📤 Send Message</h3></div>
+        <div class="dash-card-body">
+          <div class="form-group">
+            <label>Send To</label>
+            <select class="form-control" id="notif_target" onchange="updateTarget()">
+              <option value="all">All Parents</option>
+              <option value="class">Specific Class</option>
+              <option value="fees_pending">Fees Pending Students</option>
+              <option value="single">Single Parent</option>
+            </select>
+          </div>
+
+          <div id="classSelector" style="display:none;" class="form-group">
+            <label>Class</label>
+            <select class="form-control" id="notif_class">
+              {% for cls in classes %}<option>{{ cls }}</option>{% endfor %}
+            </select>
+          </div>
+
+          <div id="singleSelector" style="display:none;" class="form-group">
+            <label>Student</label>
+            <select class="form-control" id="notif_student">
+              {% for s in students %}
+              <option value="{{ s['contact'] }}" data-name="{{ s['name'] }}">{{ s['name'] }} ({{ s['class_name'] }}) — {{ s['contact'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quick Templates</label>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+              <button type="button" onclick="setTmpl(1)"
+                style="background:var(--warm);border:1px solid var(--gold);border-radius:6px;padding:4px 10px;font-size:0.75rem;cursor:pointer;color:var(--navy);font-weight:600;">
+                Fee Reminder
+              </button>
+              <button type="button" onclick="setTmpl(2)"
+                style="background:var(--warm);border:1px solid var(--gold);border-radius:6px;padding:4px 10px;font-size:0.75rem;cursor:pointer;color:var(--navy);font-weight:600;">
+                Result Ready
+              </button>
+              <button type="button" onclick="setTmpl(3)"
+                style="background:var(--warm);border:1px solid var(--gold);border-radius:6px;padding:4px 10px;font-size:0.75rem;cursor:pointer;color:var(--navy);font-weight:600;">
+                PTM Notice
+              </button>
+              <button type="button" onclick="setTmpl(4)"
+                style="background:var(--warm);border:1px solid var(--gold);border-radius:6px;padding:4px 10px;font-size:0.75rem;cursor:pointer;color:var(--navy);font-weight:600;">
+                Holiday
+              </button>
+            </div>
+            <textarea class="form-control" id="notif_message" rows="4"
+              placeholder="Type message... Use {name} for student name, {class} for class"></textarea>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Variables: {name} = Student name, {class} = Class name</div>
+          </div>
+
+          <button onclick="sendNotification()" class="btn btn-gold" style="width:100%;">📲 Send via WhatsApp</button>
+          <div id="sendResult" style="margin-top:1rem;"></div>
+        </div>
+      </div>
+
+      <!-- FEES PENDING LIST -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>⚠️ Fees Pending</h3></div>
+        <div class="table-wrap" style="max-height:400px;overflow-y:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Class</th><th>Month</th><th>Pending</th><th>Send</th></tr></thead>
+            <tbody>
+              {% for f in pending_fees %}
+              <tr>
+                <td><strong>{{ f['name'] }}</strong></td>
+                <td style="font-size:0.82rem;">{{ f['class_name'] }}</td>
+                <td style="font-size:0.82rem;">{{ f['fee_month'] }}</td>
+                <td style="color:var(--red);font-weight:700;">₹{{ f['remaining']|int }}</td>
+                <td>
+                  <button onclick="quickSend('{{ f['contact'] }}','{{ f['name'] }}','{{ f['class_name'] }}','{{ f['fee_month'] }}',{{ f['remaining']|int }})"
+                    style="background:#e8f5e9;color:#2e7d32;border:none;border-radius:5px;padding:4px 8px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                    📲
+                  </button>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">No pending fees!</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEND LOG -->
+    <div class="dash-card">
+      <div class="dash-card-header"><h3>📋 Message Log</h3></div>
+      <div class="table-wrap,btn btn-gold">
+        <table>
+          <thead><tr><th>Contact</th><th>Message</th><th>Status</th><th>Sent At</th></tr></thead>
+          <tbody>
+            {% for log in logs %}
+            <tr>
+              <td>{{ log['recipient'] }}</td>
+              <td style="max-width:300px;font-size:0.85rem;color:var(--muted);">{{ log['message'][:80] }}{% if log['message']|length > 80 %}…{% endif %}</td>
+              <td><span style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:8px;font-size:0.78rem;font-weight:700;">{{ log['status'] }}</span></td>
+              <td style="font-size:0.8rem;color:var(--muted);">{{ log['sent_at'][:16] }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">No messages sent yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+const templates = {
+  1: 'Dear Parent of {name} ({class}), School fees are pending. Please pay at earliest. Contact: +91 11 1234 5678 - BrightMind School',
+  2: 'Dear Parent of {name} ({class}), Exam results are now available on student portal. Login at: 127.0.0.1:5000/student/login - BrightMind School',
+  3: 'Dear Parent of {name} ({class}), Parent-Teacher Meeting on 30th November 2024 at 10:00 AM. Your attendance is requested. - BrightMind School',
+  4: 'Dear Parents, School will be closed tomorrow due to holiday. Classes will resume as per schedule. - BrightMind School'
+};
+
+function setTmpl(n) {
+  document.getElementById('notif_message').value = templates[n] || '';
+}
+
+function updateTarget() {
+  const v = document.getElementById('notif_target').value;
+  document.getElementById('classSelector').style.display  = v === 'class'  ? 'block' : 'none';
+  document.getElementById('singleSelector').style.display = v === 'single' ? 'block' : 'none';
+}
+
+function quickSend(contact, name, cls, month, amt) {
+  const msg = 'Dear Parent of ' + name + ' (' + cls + '), School fees of Rs.' + amt + ' for ' + month + ' are pending. Please pay at earliest. - BrightMind School';
+  const link = 'https://wa.me/91' + contact.replace(/\s/g,'') + '?text=' + encodeURIComponent(msg);
+  window.open(link, '_blank');
+  showToast('📲 WhatsApp opened!');
+}
+
+async function sendNotification() {
+  const target  = document.getElementById('notif_target').value;
+  const message = document.getElementById('notif_message').value.trim();
+  if (!message) { showToast('Please write a message first', 'error'); return; }
+
+  const body = {target, message};
+  if (target === 'class')  body.class_name = document.getElementById('notif_class').value;
+  if (target === 'single') {
+    const sel  = document.getElementById('notif_student');
+    body.contact = sel.value;
+    body.name    = sel.options[sel.selectedIndex].dataset.name;
+  }
+
+  const res = await fetch('/admin/send_notification', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  });
+  const d = await res.json();
+  if (d.success) {
+    const el = document.getElementById('sendResult');
+    el.innerHTML = '<div style="background:#e8f5e9;border-radius:8px;padding:1rem;text-align:center;">' +
+      '<div style="font-weight:700;color:#2e7d32;font-size:1.1rem;">✅ ' + d.sent + ' messages logged!</div>' +
+      '<div style="margin-top:0.5rem;"><a href="https://web.whatsapp.com/" target="_blank" style="color:#2e7d32;font-weight:700;">📲 Open WhatsApp Web →</a></div>' +
+      '</div>';
+    showToast('✅ ' + d.sent + ' messages logged!');
+    setTimeout(() => location.reload(), 4000);
+  }
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = (type === 'error') ? '#c62828' : '#2e7d32';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+</script>
+{% endblock %}

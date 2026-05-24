@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}My Quizzes{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📝 Online Quizzes</h2><p>{{ session.student_name }} · {{ session.student_class }}</p></div>
+      <a href="/student/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    {% if quizzes %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;">
+      {% for q in quizzes %}
+      <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;">
+        <div style="background:{% if q['status']=='Active' %}linear-gradient(135deg,var(--navy),var(--navy-lt)){% else %}#888{% endif %};padding:1rem 1.25rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="background:rgba(255,255,255,0.2);color:var(--white);padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;">{{ q['subject'] }}</span>
+            <span style="color:rgba(255,255,255,0.8);font-size:0.75rem;">⏱ {{ q['duration'] }} mins</span>
+          </div>
+          <h3 style="color:var(--white);margin:0.5rem 0 0;font-size:1.1rem;">{{ q['title'] }}</h3>
+        </div>
+        <div style="padding:1.25rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:0.85rem;color:var(--muted);">
+            <span>👩‍🏫 {{ q['teacher_name'] }}</span>
+            <span>🎯 {{ q['total_marks'] }} marks</span>
+          </div>
+          {% if q['attempted_at'] %}
+            <div style="background:#e8f5e9;border-radius:8px;padding:0.75rem;text-align:center;margin-bottom:0.75rem;">
+              <div style="font-weight:800;color:#2e7d32;font-size:1.3rem;">{{ q['my_score'] }}/{{ q['total_marks'] }}</div>
+              <div style="font-size:0.78rem;color:#555;">{{ (q['my_score']/q['total_marks']*100)|round(1) if q['total_marks'] else 0 }}%</div>
+            </div>
+            <div style="text-align:center;background:#f5f5f5;border-radius:8px;padding:8px;font-size:0.82rem;color:var(--muted);">✅ Already Attempted</div>
+          {% elif q['status'] == 'Active' %}
+            <a href="/student/quiz/{{ q['id'] }}"
+              style="display:block;text-align:center;background:var(--gold);color:var(--navy);padding:11px;border-radius:8px;font-weight:800;font-size:0.9rem;text-decoration:none;">
+              Start Quiz →
+            </a>
+          {% else %}
+            <div style="text-align:center;background:#f5f5f5;border-radius:8px;padding:10px;font-size:0.85rem;color:var(--muted);">Not Active Yet</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:5rem;color:var(--muted);">
+      <div style="font-size:4rem;margin-bottom:1rem;">📝</div>
+      <h3 style="color:var(--navy);">No Quizzes Yet</h3>
+      <p>Your teacher will assign quizzes here. Check back soon!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

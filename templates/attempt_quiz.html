@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}{{ quiz['title'] }}{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>📝 {{ quiz['title'] }}</h2>
+        <p>{{ quiz['class_name'] }} · {{ quiz['subject'] }} · {{ quiz['total_marks'] }} Marks · ⏱ <span id="timerDisplay">{{ quiz['duration'] }}:00</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="dash-main" style="max-width:800px;">
+    <form id="quizForm">
+      {% for q in questions %}
+      <div class="dash-card" style="margin-bottom:1.25rem;" id="qcard-{{ loop.index }}">
+        <div class="dash-card-body">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:1rem;">
+            <span style="background:var(--navy);color:var(--gold-lt);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0;">{{ loop.index }}</span>
+            <div style="flex:1;">
+              <p style="font-weight:700;color:var(--navy);font-size:1rem;margin:0;">{{ q['question'] }}</p>
+              <p style="font-size:0.78rem;color:var(--muted);margin:2px 0 0;">{{ q['marks'] }} mark{{ 's' if q['marks']>1 else '' }}</p>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+            {% for opt, label in [('A',q['option_a']),('B',q['option_b']),('C',q['option_c']),('D',q['option_d'])] %}
+            <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1.5px solid #eee;cursor:pointer;transition:all 0.2s;"
+                   onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor=this.querySelector('input').checked?'var(--navy)':'#eee'">
+              <input type="radio" name="q_{{ q['id'] }}" value="{{ opt }}"
+                     onchange="markSelected(this)" style="accent-color:var(--navy);">
+              <span style="font-size:0.9rem;"><strong style="color:var(--navy);">{{ opt }}.</strong> {{ label }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow);display:flex;gap:1rem;align-items:center;justify-content:space-between;">
+        <div style="font-size:0.88rem;color:var(--muted);" id="progressText">0 of {{ questions|length }} answered</div>
+        <button type="button" onclick="submitQuiz({{ quiz['id'] }}, {{ questions|length }})"
+          class="btn btn-gold" style="font-size:1rem;padding:14px 32px;">
+          Submit Quiz →
+        </button>
+      </div>
+    </form>
+
+    <!-- Result Modal -->
+    <div id="resultModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;align-items:center;justify-content:center;">
+      <div style="background:var(--white);border-radius:var(--radius-lg);padding:3rem;max-width:420px;width:90%;text-align:center;box-shadow:var(--shadow-lg);">
+        <div style="font-size:4rem;margin-bottom:1rem;" id="resultEmoji">🎉</div>
+        <h2 style="color:var(--navy);" id="resultTitle">Quiz Submitted!</h2>
+        <div style="background:var(--warm);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--navy);" id="resultScore">-/-</div>
+          <div style="color:var(--muted);font-size:0.9rem;" id="resultPct">Score</div>
+        </div>
+        <a href="/student/quizzes" class="btn btn-gold" style="display:block;width:100%;text-align:center;margin-top:0.5rem;">Back to Quizzes</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+// Timer
+let timeLeft = {{ quiz['duration'] }} * 60;
+const timer = setInterval(() => {
+  timeLeft--;
+  const m = Math.floor(timeLeft/60), s = timeLeft%60;
+  document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  if (timeLeft <= 60) document.getElementById('timerDisplay').style.color = '#c62828';
+  if (timeLeft <= 0) { clearInterval(timer); submitQuiz({{ quiz['id'] }}, {{ questions|length }}); }
+}, 1000);
+
+function markSelected(input) {
+  const card = input.closest('.dash-card');
+  card.querySelectorAll('label').forEach(l => {
+    l.style.background = '#fff'; l.style.borderColor = '#eee'; l.style.fontWeight = 'normal';
+  });
+  const lbl = input.closest('label');
+  lbl.style.background = '#e8f0fe'; lbl.style.borderColor = 'var(--navy)';
+
+  const total = {{ questions|length }};
+  const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+  document.getElementById('progressText').textContent = `${answered} of ${total} answered`;
+}
+
+async function submitQuiz(qid, total) {
+  const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+  if (answered < total) {
+    if (!confirm(`You have answered ${answered} of ${total} questions. Submit anyway?`)) return;
+  }
+  clearInterval(timer);
+  const answers = {};
+  document.querySelectorAll('input[type="radio"]:checked').forEach(inp => {
+    const name = inp.name; // q_123
+    const qid  = name.split('_')[1];
+    answers[qid] = inp.value;
+  });
+  const res = await fetch(`/student/quiz/${qid}/submit`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(answers)
+  });
+  const d = await res.json();
+  if (d.success) {
+    document.getElementById('resultScore').textContent = `${d.score}/${d.total}`;
+    document.getElementById('resultPct').textContent   = `${d.pct}% · ${d.pct>=90?'Excellent!':d.pct>=75?'Very Good!':d.pct>=50?'Good':'Keep Practicing!'}`;
+    document.getElementById('resultEmoji').textContent = d.pct>=90?'🏆':d.pct>=75?'🎉':d.pct>=50?'👍':'📚';
+    document.getElementById('resultTitle').textContent = 'Quiz Submitted!';
+    document.getElementById('resultModal').style.display = 'flex';
+  } else {
+    alert(d.error || 'Error submitting quiz');
+  }
+}
+</script>
+{% endblock %}

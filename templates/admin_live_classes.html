@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block title %}Manage Live Classes{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>📹 Live Classes Management</h2>
+        <p>Schedule, manage and monitor all live classes</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <a href="/live_classes" class="btn btn-outline btn-sm" target="_blank">👁 Student View</a>
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+
+    <!-- STATS -->
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="stat-card">
+        <div class="stat-icon navy">📹</div>
+        <div><div class="stat-num">{{ stats.total }}</div><div class="stat-lbl">Total Classes</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red" style="background:linear-gradient(135deg,#c62828,#e53935);">🔴</div>
+        <div><div class="stat-num">{{ stats.live }}</div><div class="stat-lbl">Live Now</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold">📅</div>
+        <div><div class="stat-num">{{ stats.upcoming }}</div><div class="stat-lbl">Upcoming</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div><div class="stat-num">{{ stats.completed }}</div><div class="stat-lbl">Completed</div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:1.5rem;align-items:start;">
+
+      <!-- ADD FORM -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>➕ Schedule Live Class</h3></div>
+        <div class="dash-card-body">
+          <div class="form-group">
+            <label>Teacher</label>
+            <select class="form-control" id="alc_teacher">
+              <option value="">— Select Teacher —</option>
+              {% for t in teachers %}
+              <option value="{{ t['id'] }}">{{ t['name'] }} ({{ t['subject'] }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Class</label>
+              <select class="form-control" id="alc_class">
+                {% for cls in all_classes %}<option>{{ cls }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Subject</label>
+              <select class="form-control" id="alc_subject">
+                {% for sub in subjects %}<option>{{ sub }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Class Title</label>
+            <input class="form-control" id="alc_title" placeholder="e.g. Chapter 4 — Doubt Session">
+          </div>
+          <div class="form-group">
+            <label>Platform</label>
+            <select class="form-control" id="alc_platform" onchange="updateLink()">
+              <option>Google Meet</option>
+              <option>Zoom</option>
+              <option>Microsoft Teams</option>
+              <option>YouTube Live</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Meeting Link</label>
+            <input class="form-control" type="url" id="alc_link" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date & Time</label>
+              <input class="form-control" type="datetime-local" id="alc_datetime">
+            </div>
+            <div class="form-group">
+              <label>Duration</label>
+              <select class="form-control" id="alc_duration">
+                <option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="alc_status">
+              <option>Upcoming</option>
+              <option>Live</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Description (optional)</label>
+            <textarea class="form-control" id="alc_desc" rows="2" placeholder="Topics to be covered..."></textarea>
+          </div>
+          <button onclick="addLiveClass()" class="btn btn-gold" style="width:100%;">📅 Schedule Class</button>
+          <div id="alc_msg" style="margin-top:0.75rem;font-size:0.88rem;"></div>
+        </div>
+      </div>
+
+      <!-- ALL CLASSES LIST -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>📋 All Live Classes</h3>
+          <span style="font-size:0.82rem;color:var(--muted);">{{ classes_data|length }} total</span>
+        </div>
+
+        <!-- Filter tabs -->
+        <div style="display:flex;gap:0;border-bottom:1px solid #eee;padding:0 1.25rem;">
+          {% for status,color in [('All','var(--navy)'),('Live','#c62828'),('Upcoming','#e65100'),('Completed','#2e7d32')] %}
+          <button onclick="filterLC('{{ status }}')" id="lf-{{ status }}"
+            style="padding:10px 18px;border:none;background:transparent;font-size:0.85rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);transition:all 0.2s;">
+            {% if status=='Live' %}🔴 {% elif status=='Upcoming' %}📅 {% elif status=='Completed' %}✅ {% endif %}{{ status }}
+          </button>
+          {% endfor %}
+        </div>
+
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.85rem;max-height:600px;overflow-y:auto;" id="lc_list">
+          {% for lc in classes_data %}
+          <div id="lc-card-{{ lc['id'] }}" class="lc-item" data-status="{{ lc['status'] }}"
+               style="border:1.5px solid {% if lc['status']=='Live' %}#e57373{% elif lc['status']=='Upcoming' %}var(--gold){% else %}#ddd{% endif %};border-radius:var(--radius);overflow:hidden;">
+
+            <!-- Status bar -->
+            <div style="padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;
+              background:{% if lc['status']=='Live' %}#c62828{% elif lc['status']=='Upcoming' %}var(--navy){% else %}#888{% endif %};">
+              <div style="display:flex;align-items:center;gap:8px;">
+                {% if lc['status']=='Live' %}<span style="width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 1s infinite;display:inline-block;"></span>{% endif %}
+                <span style="color:#fff;font-size:0.78rem;font-weight:700;text-transform:uppercase;">
+                  {{ lc['status'] }} · {{ lc['platform'] }}
+                </span>
+              </div>
+              <div style="display:flex;gap:5px;">
+                {% if lc['status']=='Upcoming' %}
+                  <button onclick="setLC({{ lc['id'] }},'Live')" style="background:#4caf50;color:#fff;border:none;border-radius:5px;padding:3px 9px;font-size:0.72rem;font-weight:700;cursor:pointer;">🔴 Go Live</button>
+                {% elif lc['status']=='Live' %}
+                  <button onclick="setLC({{ lc['id'] }},'Completed')" style="background:rgba(255,255,255,0.25);color:#fff;border:none;border-radius:5px;padding:3px 9px;font-size:0.72rem;font-weight:700;cursor:pointer;">✅ End</button>
+                {% elif lc['status']=='Completed' %}
+                  <button onclick="setLC({{ lc['id'] }},'Upcoming')" style="background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:5px;padding:3px 9px;font-size:0.72rem;font-weight:700;cursor:pointer;">🔁 Reopen</button>
+                {% endif %}
+                <button onclick="deleteLC({{ lc['id'] }})" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:5px;padding:3px 8px;font-size:0.72rem;cursor:pointer;">🗑</button>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div style="padding:0.9rem 1rem;">
+              <div style="font-size:0.72rem;font-weight:700;color:var(--gold-dk);text-transform:uppercase;letter-spacing:0.08em;">
+                {{ lc['class_name'] }} · {{ lc['subject'] }}
+              </div>
+              <div style="font-weight:700;color:var(--navy);font-size:0.95rem;margin:0.15rem 0;">{{ lc['title'] }}</div>
+              <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem;">
+                👩‍🏫 {{ lc['teacher_name'] }} · 🕐 {{ lc['scheduled_at'] }} · ⏱ {{ lc['duration'] }} mins
+              </div>
+              <div style="display:flex;gap:0.5rem;align-items:center;">
+                <a href="{{ lc['meet_link'] }}" target="_blank"
+                  style="background:var(--navy);color:var(--gold-lt);padding:6px 14px;border-radius:7px;font-size:0.8rem;font-weight:700;text-decoration:none;">
+                  🔗 Open Link
+                </a>
+                <input type="text" value="{{ lc['meet_link'] }}" readonly
+                  onclick="this.select();document.execCommand('copy');showToast('✅ Link copied!')"
+                  style="flex:1;border:1px solid #eee;border-radius:6px;padding:6px 8px;font-size:0.75rem;color:#888;background:#fafafa;cursor:pointer;"
+                  title="Click to copy">
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div style="text-align:center;padding:3rem;color:var(--muted);">
+            <div style="font-size:3rem;margin-bottom:0.75rem;">📹</div>
+            <p>No live classes yet. Schedule one using the form!</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+// Set default datetime
+const now = new Date();
+now.setHours(now.getHours()+1,0,0,0);
+document.getElementById('alc_datetime').value = now.toISOString().slice(0,16);
+
+const linkPlaceholders = {
+  'Google Meet':     'https://meet.google.com/xxx-xxxx-xxx',
+  'Zoom':            'https://zoom.us/j/1234567890',
+  'Microsoft Teams': 'https://teams.microsoft.com/l/meetup-join/...',
+  'YouTube Live':    'https://youtube.com/live/...',
+};
+function updateLink() {
+  const p = document.getElementById('alc_platform').value;
+  document.getElementById('alc_link').placeholder = linkPlaceholders[p] || 'https://...';
+}
+
+async function addLiveClass() {
+  const tid   = document.getElementById('alc_teacher').value;
+  const title = document.getElementById('alc_title').value.trim();
+  const link  = document.getElementById('alc_link').value.trim();
+  const dt    = document.getElementById('alc_datetime').value;
+  const msg   = document.getElementById('alc_msg');
+
+  if (!tid)   { msg.textContent='❌ Please select a teacher'; msg.style.color='#c62828'; return; }
+  if (!title) { msg.textContent='❌ Please enter a title';    msg.style.color='#c62828'; return; }
+  if (!link)  { msg.textContent='❌ Please enter a link';     msg.style.color='#c62828'; return; }
+  if (!dt)    { msg.textContent='❌ Please select date/time'; msg.style.color='#c62828'; return; }
+
+  const res = await fetch('/admin/live_classes/add', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      teacher_id:   tid,
+      class_name:   document.getElementById('alc_class').value,
+      subject:      document.getElementById('alc_subject').value,
+      title, meet_link: link,
+      platform:     document.getElementById('alc_platform').value,
+      scheduled_at: dt,
+      duration:     document.getElementById('alc_duration').value,
+      status:       document.getElementById('alc_status').value,
+      description:  document.getElementById('alc_desc').value,
+    })
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast('✅ Live class scheduled!');
+    setTimeout(() => location.reload(), 800);
+  } else {
+    msg.textContent = '❌ Error: ' + (d.error || 'Unknown');
+    msg.style.color = '#c62828';
+  }
+}
+
+async function setLC(id, status) {
+  const label = status==='Live'?'go LIVE':status==='Completed'?'end this class':'reopen';
+  if (!confirm('Are you sure you want to ' + label + '?')) return;
+  const res = await fetch('/admin/live_classes/update_status', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({id, status})
+  });
+  const d = await res.json();
+  if (d.success) {
+    showToast(status==='Live'?'🔴 Class is now LIVE!':status==='Completed'?'✅ Class ended':'🔁 Reopened');
+    setTimeout(() => location.reload(), 700);
+  }
+}
+
+async function deleteLC(id) {
+  if (!confirm('Delete this live class?')) return;
+  const res = await fetch('/admin/live_classes/delete/'+id, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) {
+    document.getElementById('lc-card-'+id).remove();
+    showToast('🗑 Deleted');
+  }
+}
+
+function filterLC(status) {
+  document.querySelectorAll('.lc-item').forEach(el => {
+    el.style.display = (status==='All' || el.dataset.status===status) ? 'block' : 'none';
+  });
+  document.querySelectorAll('[id^="lf-"]').forEach(b => {
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--muted)';
+  });
+  const btn = document.getElementById('lf-'+status);
+  if (btn) { btn.style.borderBottomColor = 'var(--gold)'; btn.style.color = 'var(--navy)'; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = '#1b5e20'; t.style.color = '#fff';
+  t.style.display = 'block'; setTimeout(() => t.style.display='none', 3000);
+}
+
+// Activate All filter on load
+filterLC('All');
+</script>
+{% endblock %}

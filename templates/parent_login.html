@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Parent Login{% endblock %}
+{% block content %}
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-circle">👨‍👩‍👧</div>
+      <h2>Parent Portal</h2>
+      <p>Login to track your child's progress</p>
+    </div>
+    <form method="POST">
+      <div class="form-group">
+        <label>Child's Roll Number</label>
+        <input class="form-control" type="text" name="roll_number" placeholder="e.g. C5-001" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>Your Registered Contact Number</label>
+        <input class="form-control" type="text" name="contact" placeholder="e.g. 9876543210" required>
+      </div>
+      <button type="submit" class="btn btn-gold" style="width:100%;margin-top:0.5rem;">Login →</button>
+    </form>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <p style="font-size:0.82rem;color:var(--muted);">Demo: Roll <strong>C5-001</strong> / Contact <strong>9876543210</strong></p>
+      <br><a href="/" style="color:var(--navy);font-size:0.85rem;">← Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

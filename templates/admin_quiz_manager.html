@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Manager{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div><h2>📋 Quiz Manager</h2><p>View and manage all quizzes created by teachers</p></div>
+      <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- STATS -->
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="stat-card"><div class="stat-icon navy">📋</div><div>
+        <div class="stat-num">{{ quizzes|length }}</div><div class="stat-lbl">Total Quizzes</div></div>
+      </div>
+      <div class="stat-card"><div class="stat-icon green">✅</div><div>
+        <div class="stat-num">{{ quizzes|selectattr('status','eq','Active')|list|length }}</div><div class="stat-lbl">Active</div></div>
+      </div>
+      <div class="stat-card"><div class="stat-icon orange">📝</div><div>
+        <div class="stat-num">{{ quizzes|selectattr('status','eq','Draft')|list|length }}</div><div class="stat-lbl">Drafts</div></div>
+      </div>
+      <div class="stat-card"><div class="stat-icon gold">👥</div><div>
+        <div class="stat-num">{{ quizzes|sum(attribute='attempt_count') }}</div><div class="stat-lbl">Total Attempts</div></div>
+      </div>
+    </div>
+
+    <!-- QUIZ LIST -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>All Quizzes</h3>
+        <span style="font-size:0.82rem;color:var(--muted);">Manage status, view results</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Title</th><th>Teacher</th><th>Class</th><th>Subject</th><th>Marks</th><th>Attempts</th><th>Avg Score</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for q in quizzes %}
+            <tr id="quiz-row-{{ q['id'] }}">
+              <td><strong>{{ q['title'] }}</strong><br><span style="font-size:0.75rem;color:var(--muted);">⏱ {{ q['duration'] }} mins</span></td>
+              <td style="font-size:0.85rem;">{{ q['teacher_name'] }}</td>
+              <td><span style="background:var(--navy);color:var(--gold-lt);padding:2px 8px;border-radius:6px;font-size:0.78rem;font-weight:700;">{{ q['class_name'] }}</span></td>
+              <td style="font-size:0.85rem;">{{ q['subject'] }}</td>
+              <td style="font-weight:700;">{{ q['total_marks'] }}</td>
+              <td style="text-align:center;font-weight:700;">{{ q['attempt_count'] or 0 }}</td>
+              <td style="text-align:center;">
+                {% if q['avg_score'] %}
+                <span style="font-weight:700;color:{% if q['avg_score']>=75 %}var(--green){% elif q['avg_score']>=50 %}var(--orange){% else %}var(--red){% endif %};">
+                  {{ q['avg_score']|round(1) }}%
+                </span>
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                <span id="status-{{ q['id'] }}" style="padding:3px 10px;border-radius:12px;font-size:0.78rem;font-weight:700;
+                  background:{% if q['status']=='Active' %}#e8f5e9;color:#2e7d32{% else %}#f5f5f5;color:#666{% endif %};">
+                  {{ q['status'] }}
+                </span>
+              </td>
+              <td>
+                <div style="display:flex;gap:5px;">
+                  <button onclick="toggleQuiz({{ q['id'] }}, '{{ q['status'] }}')"
+                    style="background:{% if q['status']=='Active' %}#fff3e0;color:#e65100{% else %}#e8f5e9;color:#2e7d32{% endif %};border:none;border-radius:6px;padding:5px 10px;font-size:0.78rem;font-weight:700;cursor:pointer;">
+                    {% if q['status']=='Active' %}⏸{% else %}▶{% endif %}
+                  </button>
+                  <a href="/admin/quiz/{{ q['id'] }}/results"
+                    style="background:#e3f2fd;color:#1565c0;border-radius:6px;padding:5px 10px;font-size:0.78rem;font-weight:700;text-decoration:none;">
+                    📊
+                  </a>
+                  <button onclick="deleteQuiz({{ q['id'] }})"
+                    style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 10px;font-size:0.78rem;font-weight:700;cursor:pointer;">
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--muted);">No quizzes created yet. Teachers can create quizzes from their portal.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function toggleQuiz(id, currentStatus) {
+  const res = await fetch('/admin/quiz/toggle/'+id, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) {
+    showToast(d.status==='Active'?'▶ Quiz Activated!':'⏸ Quiz Deactivated');
+    setTimeout(()=>location.reload(), 700);
+  }
+}
+async function deleteQuiz(id) {
+  if (!confirm('Delete this quiz and ALL student attempts? This cannot be undone.')) return;
+  const res = await fetch('/admin/quiz/delete/'+id, {method:'POST'});
+  const d   = await res.json();
+  if (d.success) { document.getElementById('quiz-row-'+id).remove(); showToast('🗑 Quiz deleted'); }
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background='#2e7d32'; t.style.color='#fff';
+  t.style.display='block'; setTimeout(()=>t.style.display='none',3000);
+}
+</script>
+{% endblock %}

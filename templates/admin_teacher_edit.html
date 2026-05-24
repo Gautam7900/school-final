@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Edit Teacher — {{ teacher['name'] }}{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="dash-header-inner">
+      <div>
+        <h2>✏️ Edit Teacher Profile</h2>
+        <p>{{ teacher['name'] }} — {{ teacher['subject'] }}</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <a href="{{ '/teachers/' + teacher['id']|string }}" class="btn btn-outline btn-sm">👁 View Profile</a>
+        <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main" style="max-width:900px;">
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:1.5rem;align-items:start;">
+
+      <!-- PHOTO UPLOAD -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📷 Profile Photo</h3></div>
+        <div class="dash-card-body" style="text-align:center;">
+          <div id="photoPreview" style="margin-bottom:1.25rem;">
+            {% if teacher['photo'] %}
+              <img id="previewImg"
+                   src="{{ '/static/uploads/teachers/' + teacher['photo'] }}"
+                   style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:var(--shadow);">
+            {% else %}
+              <div id="previewImg" style="width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));border:4px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--gold-lt);margin:0 auto;">
+                {{ teacher['name'][0] }}
+              </div>
+            {% endif %}
+          </div>
+
+          <label style="display:block;cursor:pointer;">
+            <div style="background:var(--warm);border:2px dashed var(--gold);border-radius:10px;padding:1.25rem;transition:all 0.2s;"
+                 onmouseover="this.style.background='#efe8d4'" onmouseout="this.style.background='var(--warm)'">
+              <div style="font-size:1.5rem;margin-bottom:0.5rem;">📁</div>
+              <div style="font-weight:700;color:var(--navy);font-size:0.9rem;">Click to choose photo</div>
+              <div style="color:var(--muted);font-size:0.8rem;margin-top:0.25rem;">JPG, PNG, WEBP supported</div>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+          </label>
+          <button onclick="uploadPhoto({{ teacher['id'] }})" class="btn btn-gold" style="width:100%;margin-top:1rem;">
+            📤 Upload Photo
+          </button>
+          <div id="photoMsg" style="margin-top:0.75rem;font-size:0.88rem;"></div>
+        </div>
+      </div>
+
+      <!-- EDIT INFO -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📋 Profile Information</h3></div>
+        <div class="dash-card-body">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input class="form-control" type="text" id="ei_phone" value="{{ teacher['phone'] or '' }}" placeholder="+91 XXXXX XXXXX">
+          </div>
+          <div class="form-group">
+            <label>Qualification</label>
+            <input class="form-control" type="text" id="ei_qual" value="{{ teacher['qualification'] or '' }}" placeholder="e.g. M.Sc Mathematics, B.Ed">
+          </div>
+          <div class="form-group">
+            <label>Experience</label>
+            <input class="form-control" type="text" id="ei_exp" value="{{ teacher['experience'] or '' }}" placeholder="e.g. 12 Years">
+          </div>
+          <div class="form-group">
+            <label>Joining Date</label>
+            <input class="form-control" type="date" id="ei_join" value="{{ teacher['joining_date'] or '' }}">
+          </div>
+          <div class="form-group">
+            <label>About / Bio</label>
+            <textarea class="form-control" id="ei_bio" rows="4" placeholder="Write something about this teacher...">{{ teacher['bio'] or '' }}</textarea>
+          </div>
+          <button onclick="saveInfo({{ teacher['id'] }})" class="btn btn-gold" style="width:100%;">💾 Save Changes</button>
+          <div id="infoMsg" style="margin-top:0.75rem;font-size:0.88rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:2rem;right:2rem;padding:14px 24px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('previewImg');
+    if (prev.tagName === 'IMG') {
+      prev.src = e.target.result;
+    } else {
+      const img = document.createElement('img');
+      img.id = 'previewImg';
+      img.src = e.target.result;
+      img.style = 'width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:var(--shadow);';
+      prev.parentNode.replaceChild(img, prev);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadPhoto(tid) {
+  const file = document.getElementById('photoInput').files[0];
+  if (!file) { showMsg('photoMsg', '❌ Please select a photo first', 'error'); return; }
+  const fd = new FormData();
+  fd.append('photo', file);
+  showMsg('photoMsg', '⏳ Uploading...', 'info');
+  const res = await fetch('/admin/upload_teacher_photo/' + tid, { method: 'POST', body: fd });
+  const d = await res.json();
+  if (d.success) { showMsg('photoMsg', '✅ Photo uploaded!', 'success'); showToast('✅ Photo saved!'); }
+  else showMsg('photoMsg', '❌ ' + d.error, 'error');
+}
+
+async function saveInfo(tid) {
+  const body = {
+    id: tid,
+    phone:         document.getElementById('ei_phone').value,
+    qualification: document.getElementById('ei_qual').value,
+    experience:    document.getElementById('ei_exp').value,
+    joining_date:  document.getElementById('ei_join').value,
+    bio:           document.getElementById('ei_bio').value,
+  };
+  const res = await fetch('/admin/update_teacher_info', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  const d = await res.json();
+  if (d.success) { showMsg('infoMsg','✅ Saved successfully!','success'); showToast('✅ Profile updated!'); }
+  else showMsg('infoMsg','❌ Error saving','error');
+}
+
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.color = type==='success'?'#2e7d32':type==='error'?'#c62828':'#555';
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background='#2e7d32'; t.style.color='#fff';
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none', 3000);
+}
+</script>
+{% endblock %}
