@@ -3,7 +3,7 @@
 {% block content %}
 <div class="dashboard">
   <div class="dash-header">
-    <div class="dash-header-inner">
+   <div class="dash-header-inner dashboard-top">      
       <div>
         <h2>Welcome, {{ session.student_name }} 👋</h2>
         <p>{{ session.student_class }} · Roll: {% for m in marks %}{% endfor %} {{ session.get('student_id') }} | Academic Year 2024–25</p>
