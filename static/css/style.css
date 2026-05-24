@@ -575,20 +575,21 @@ img {
         gap:6px;
     }
 
-    .class-card{
-        padding:10px 4px !important;
-        width:100%;
-        min-width:0;
+     .class-card{
+      padding:18px 8px !important;
+      min-height:140px;
     }
 
-    .cls-num{
-        font-size:20px !important;
+     .cls-num{
+      font-size:26px !important;
+      margin-bottom:8px;
     }
 
-    .cls-label,
-    .cls-subs{
-        font-size:10px !important;
-    }
+      .cls-label,
+      .cls-subs{
+       font-size:12px !important;
+      line-height:1.4;
+   }
 
     body{
         overflow-x:hidden;
