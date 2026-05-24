@@ -526,38 +526,7 @@ img {
 }
 
 
-/* MOBILE CLASS GRID FIX */
 
-@media screen and (max-width: 768px) {
-
-    .classes-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 8px;
-        width: 100%;
-    }
-
-    .class-card {
-        width: 100% !important;
-        min-width: 0 !important;
-        padding: 12px 5px !important;
-        border-radius: 12px;
-    }
-
-    .class-card h3,
-    .class-card .number {
-        font-size: 18px !important;
-    }
-
-    .class-card p,
-    .class-card span {
-        font-size: 9px !important;
-    }
-
-    body {
-        overflow-x: hidden !important;
-    }
-}
 
 
 
@@ -585,5 +554,43 @@ img {
         display: block;
         cursor: pointer;
         z-index: 1000;
+    }
+}
+
+
+/* CLASS GRID */
+
+.class-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+/* MOBILE */
+
+@media screen and (max-width:768px){
+
+    .class-grid{
+        grid-template-columns:repeat(4,1fr);
+        gap:6px;
+    }
+
+    .class-card{
+        padding:10px 4px !important;
+        width:100%;
+        min-width:0;
+    }
+
+    .cls-num{
+        font-size:20px !important;
+    }
+
+    .cls-label,
+    .cls-subs{
+        font-size:10px !important;
+    }
+
+    body{
+        overflow-x:hidden;
     }
 }
