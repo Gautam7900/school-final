@@ -1,53 +1,259 @@
 {% extends 'base.html' %}
-{% block title %}Computer Lab{% endblock %}
+{% block title %}Computer Laboratory{% endblock %}
 
 {% block content %}
 
-<section class="section bg-navy">
-  <div class="section-inner" style="text-align:center;padding:5rem 2rem;">
+<!-- HERO SECTION -->
+<section class="facility-hero">
 
-    <div class="section-label" style="color:var(--gold-lt);">FACILITY</div>
+  <div class="section-label">
+    MODERN FACILITY
+  </div>
 
-    <h1 style="color:white;">💻 Computer Laboratories</h1>
+  <h1>
+    💻 Computer Laboratory
+  </h1>
 
-    <p style="color:rgba(255,255,255,0.7);max-width:700px;margin:auto;line-height:1.8;">
-      Modern computer labs with high-speed internet, smart systems and digital learning.
-    </p>
+  <p>
+    BrightMind School provides advanced computer laboratories equipped
+    with high-speed internet, smart systems and modern digital learning
+    technologies for students.
+  </p>
+
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="section bg-white">
+  <div class="section-inner">
+
+    <div class="section-header centered">
+      <div class="section-label">ABOUT LAB</div>
+      <h2 class="section-title">Smart Digital Learning</h2>
+    </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:1.2fr 1fr;
+      gap:2rem;
+      align-items:center;
+    " class="facility-about">
+
+      <!-- LEFT -->
+
+      <div>
+
+        <p style="
+          line-height:2;
+          color:#666;
+          font-size:1.05rem;
+        ">
+          Our computer laboratories are designed to help students develop
+          digital skills, coding knowledge and practical learning experience.
+          Students learn programming, internet safety, typing, presentations
+          and creative digital projects in a modern environment.
+        </p>
+
+        <div style="
+          margin-top:2rem;
+          display:grid;
+          grid-template-columns:repeat(2,1fr);
+          gap:1rem;
+        ">
+
+          <div class="card">
+            <div class="card-body" style="text-align:center;">
+              <h2 style="color:var(--navy);font-size:2rem;">60+</h2>
+              <p>Modern Computers</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="text-align:center;">
+              <h2 style="color:var(--navy);font-size:2rem;">24/7</h2>
+              <p>Internet Access</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT IMAGE -->
+
+      <div>
+
+        <img
+          src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
+          alt="Computer Lab"
+          style="
+            width:100%;
+            border-radius:24px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.12);
+          "
+        >
+
+      </div>
+
+    </div>
 
   </div>
 </section>
 
+<!-- FEATURES -->
 <section class="section bg-warm">
+
   <div class="section-inner">
 
-    <div class="grid-3">
+    <div class="section-header centered">
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">🌐</div>
-          <h3>Internet Access</h3>
-          <p>High-speed internet connectivity for smart learning.</p>
-        </div>
+      <div class="section-label">FEATURES</div>
+
+      <h2 class="section-title">
+        What Students Learn
+      </h2>
+
+    </div>
+
+    <div class="facility-grid">
+
+      <div class="facility-card">
+
+        <div class="card-icon">🌐</div>
+
+        <h3>Internet Learning</h3>
+
+        <p>
+          Students access online educational resources,
+          research material and digital content.
+        </p>
+
       </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">⌨️</div>
-          <h3>Practical Training</h3>
-          <p>Hands-on computer practice for all classes.</p>
-        </div>
+      <div class="facility-card">
+
+        <div class="card-icon">👨‍💻</div>
+
+        <h3>Coding Skills</h3>
+
+        <p>
+          Basic programming and coding classes
+          for logical thinking and creativity.
+        </p>
+
       </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">👨‍💻</div>
-          <h3>Coding Skills</h3>
-          <p>Students learn programming and digital creativity.</p>
-        </div>
+      <div class="facility-card">
+
+        <div class="card-icon">⌨️</div>
+
+        <h3>Typing Practice</h3>
+
+        <p>
+          Speed typing and practical keyboard
+          learning sessions for students.
+        </p>
+
+      </div>
+
+      <div class="facility-card">
+
+        <div class="card-icon">📊</div>
+
+        <h3>MS Office</h3>
+
+        <p>
+          Students learn Word, Excel and
+          PowerPoint professionally.
+        </p>
+
+      </div>
+
+      <div class="facility-card">
+
+        <div class="card-icon">🖥️</div>
+
+        <h3>Smart Systems</h3>
+
+        <p>
+          High-performance computers with
+          latest educational software.
+        </p>
+
+      </div>
+
+      <div class="facility-card">
+
+        <div class="card-icon">🔐</div>
+
+        <h3>Cyber Safety</h3>
+
+        <p>
+          Safe browsing awareness and
+          internet security training.
+        </p>
+
       </div>
 
     </div>
+
   </div>
+
+</section>
+
+<!-- GALLERY -->
+<section class="section bg-white">
+
+  <div class="section-inner">
+
+    <div class="section-header centered">
+
+      <div class="section-label">GALLERY</div>
+
+      <h2 class="section-title">
+        Inside Our Computer Labs
+      </h2>
+
+    </div>
+
+    <div class="facility-gallery">
+
+      <img
+        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+      <img
+        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+      <img
+        src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CTA -->
+<section class="facility-cta">
+
+  <h2>
+    Preparing Students For The Digital Future
+  </h2>
+
+  <p>
+    Our modern computer labs help students
+    become future-ready with practical digital learning.
+  </p>
+
+  <a href="/admissions" class="facility-btn">
+    Apply For Admission →
+  </a>
+
 </section>
 
 {% endblock %}

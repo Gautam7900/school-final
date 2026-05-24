@@ -2490,3 +2490,1658 @@ img {
     }
 
 }
+
+
+
+
+
+
+/* COMPUTER LAB PAGE */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+.gallery-img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+@media(max-width:768px){
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+}
+
+
+
+
+
+/* =====================================
+   SCIENCE LAB PAGE CSS
+===================================== */
+
+/* HERO SECTION */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+/* =====================================
+   LIBRARY PAGE CSS
+===================================== */
+
+/* HERO SECTION */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+
+/* =====================================
+   SPORTS GROUND PAGE CSS
+===================================== */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+
+
+/* =====================================
+   ART ROOM PAGE CSS
+===================================== */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+
+/* =====================================
+   CAFETERIA PAGE CSS
+===================================== */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+
+/* =====================================
+   MEDICAL ROOM PAGE CSS
+===================================== */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+
+
+
+
+/* =====================================
+   TRANSPORT PAGE CSS
+===================================== */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* GALLERY */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+}
+
+.gallery-img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:24px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.gallery-img:hover{
+    transform:scale(1.03);
+}
+
+/* CTA */
+
+.facility-cta{
+    background:#081b4b;
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.8rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.72);
+    max-width:720px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:15px 36px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    background:#f0c85a;
+    transform:translateY(-3px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:220px;
+    }
+
+    .facility-cta{
+        padding:70px 18px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+        line-height:1.3;
+    }
+
+    .facility-cta p{
+        font-size:15px;
+    }
+
+    .facility-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}

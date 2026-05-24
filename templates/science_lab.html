@@ -1,51 +1,288 @@
 {% extends 'base.html' %}
-{% block title %}Science Labs{% endblock %}
+{% block title %}Science Laboratories{% endblock %}
 
 {% block content %}
 
-<section class="section bg-navy">
-  <div class="section-inner" style="text-align:center;padding:5rem 2rem;">
-    <div class="section-label" style="color:var(--gold-lt);">FACILITY</div>
+<!-- HERO SECTION -->
+<section class="facility-hero">
 
-    <h1 style="color:white;">🔬 Science Laboratories</h1>
-
-    <p style="color:rgba(255,255,255,0.7);max-width:700px;margin:auto;line-height:1.8;">
-      Advanced Physics, Chemistry and Biology labs designed for practical learning and scientific innovation.
-    </p>
+  <div class="section-label">
+    ADVANCED FACILITY
   </div>
+
+  <h1>
+    🔬 Science Laboratories
+  </h1>
+
+  <p>
+    BrightMind School provides modern Physics, Chemistry and Biology
+    laboratories where students explore practical experiments,
+    scientific innovation and hands-on learning.
+  </p>
+
 </section>
 
-<section class="section bg-warm">
+<!-- ABOUT SECTION -->
+<section class="section bg-white">
+
   <div class="section-inner">
 
-    <div class="grid-3">
+    <div class="section-header centered">
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">⚛️</div>
-          <h3>Physics Lab</h3>
-          <p>Modern instruments for motion, electricity and optics experiments.</p>
-        </div>
+      <div class="section-label">
+        ABOUT LABS
       </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">🧪</div>
-          <h3>Chemistry Lab</h3>
-          <p>Safe and fully equipped practical chemistry environment.</p>
+      <h2 class="section-title">
+        Practical Science Learning
+      </h2>
+
+    </div>
+
+    <div class="facility-about">
+
+      <!-- LEFT -->
+
+      <div>
+
+        <p style="
+          line-height:2;
+          color:#666;
+          font-size:1.05rem;
+        ">
+
+          Our science laboratories are designed to encourage
+          practical understanding and scientific thinking.
+          Students perform real experiments under expert guidance,
+          helping them understand concepts beyond textbooks.
+
+        </p>
+
+        <div style="
+          margin-top:2rem;
+          display:grid;
+          grid-template-columns:repeat(2,1fr);
+          gap:1rem;
+        ">
+
+          <div class="card">
+            <div class="card-body" style="text-align:center;">
+              <h2 style="color:var(--navy);font-size:2rem;">3</h2>
+              <p>Advanced Labs</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="text-align:center;">
+              <h2 style="color:var(--navy);font-size:2rem;">100+</h2>
+              <p>Scientific Instruments</p>
+            </div>
+          </div>
+
         </div>
+
       </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-icon">🧬</div>
-          <h3>Biology Lab</h3>
-          <p>Microscopes, models and specimen learning for students.</p>
-        </div>
+      <!-- RIGHT IMAGE -->
+
+      <div>
+
+        <img
+          src="https://images.unsplash.com/photo-1532187643603-ba119ca4109e?q=80&w=1200&auto=format&fit=crop"
+          alt="Science Lab"
+          style="
+            width:100%;
+            border-radius:24px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.12);
+          "
+        >
+
       </div>
 
     </div>
+
   </div>
+
+</section>
+
+<!-- FEATURES -->
+<section class="section bg-warm">
+
+  <div class="section-inner">
+
+    <div class="section-header centered">
+
+      <div class="section-label">
+        LAB FACILITIES
+      </div>
+
+      <h2 class="section-title">
+        Explore Our Science Labs
+      </h2>
+
+    </div>
+
+    <div class="facility-grid">
+
+      <!-- PHYSICS -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">⚛️</div>
+
+        <h3>Physics Lab</h3>
+
+        <p>
+          Learn mechanics, electricity,
+          optics and motion through
+          advanced experiments.
+        </p>
+
+      </div>
+
+      <!-- CHEMISTRY -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">🧪</div>
+
+        <h3>Chemistry Lab</h3>
+
+        <p>
+          Safe and modern environment
+          for chemical reactions and
+          practical observations.
+        </p>
+
+      </div>
+
+      <!-- BIOLOGY -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">🧬</div>
+
+        <h3>Biology Lab</h3>
+
+        <p>
+          Microscopes, specimens and
+          models for detailed biological
+          understanding.
+        </p>
+
+      </div>
+
+      <!-- SAFETY -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">🦺</div>
+
+        <h3>Safety Measures</h3>
+
+        <p>
+          Complete safety protocols,
+          fire extinguishers and lab
+          supervision available.
+        </p>
+
+      </div>
+
+      <!-- EXPERIMENTS -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">🔍</div>
+
+        <h3>Practical Experiments</h3>
+
+        <p>
+          Students perform live
+          experiments for deeper
+          conceptual clarity.
+        </p>
+
+      </div>
+
+      <!-- STEM -->
+
+      <div class="facility-card">
+
+        <div class="card-icon">🚀</div>
+
+        <h3>STEM Activities</h3>
+
+        <p>
+          Innovation projects, robotics
+          and scientific creativity
+          sessions for students.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- GALLERY -->
+<section class="section bg-white">
+
+  <div class="section-inner">
+
+    <div class="section-header centered">
+
+      <div class="section-label">
+        GALLERY
+      </div>
+
+      <h2 class="section-title">
+        Inside Our Laboratories
+      </h2>
+
+    </div>
+
+    <div class="facility-gallery">
+
+      <img
+        src="https://images.unsplash.com/photo-1532187643603-ba119ca4109e?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+      <img
+        src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+      <img
+        src="https://images.unsplash.com/photo-1581093458791-9d15482442f6?q=80&w=1200&auto=format&fit=crop"
+        class="gallery-img"
+      >
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CTA -->
+<section class="facility-cta">
+
+  <h2>
+    Inspiring Future Scientists
+  </h2>
+
+  <p>
+    Our modern laboratories help students
+    explore science practically and build
+    curiosity for innovation and discovery.
+  </p>
+
+  <a href="/admissions" class="facility-btn">
+    Apply For Admission →
+  </a>
+
 </section>
 
 {% endblock %}
