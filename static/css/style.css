@@ -558,6 +558,56 @@ img {
 }
 
 
+
+/* ===== MOBILE 4 COLUMN RESPONSIVE GRID ===== */
+
+@media only screen and (max-width: 768px) {
+
+    .classes-grid {
+
+        display: grid !important;
+
+        /* 4 BOX PER ROW */
+        grid-template-columns: repeat(4, 1fr) !important;
+
+        gap: 6px;
+
+        width: 100%;
+
+        padding: 0 8px;
+    }
+
+    .class-card {
+
+        width: 100% !important;
+
+        min-width: unset !important;
+
+        padding: 10px 4px !important;
+
+        border-radius: 10px;
+    }
+
+    /* BIG NUMBER */
+    .class-card h3,
+    .class-card .number {
+        font-size: 18px !important;
+    }
+
+    /* SMALL TEXT */
+    .class-card p,
+    .class-card span {
+        font-size: 9px !important;
+        line-height: 1.2;
+    }
+
+    body {
+        overflow-x: hidden !important;
+    }
+}
+
+
+
 /* CLASS GRID */
 
 .class-grid{
@@ -575,21 +625,20 @@ img {
         gap:6px;
     }
 
-     .class-card{
-      padding:18px 8px !important;
-      min-height:140px;
+    .class-card{
+        padding:10px 4px !important;
+        width:100%;
+        min-width:0;
     }
 
-     .cls-num{
-      font-size:26px !important;
-      margin-bottom:8px;
+    .cls-num{
+        font-size:20px !important;
     }
 
-      .cls-label,
-      .cls-subs{
-       font-size:12px !important;
-      line-height:1.4;
-   }
+    .cls-label,
+    .cls-subs{
+        font-size:10px !important;
+    }
 
     body{
         overflow-x:hidden;
