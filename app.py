@@ -4947,6 +4947,29 @@ def admin_delete_live_class(lcid):
 # ═══════════════════════════════════════════════
 # ADMIN QUIZ MANAGER
 # ═══════════════════════════════════════════════
+
+@app.route('/admin/achievements')
+def admin_achievements():
+
+    students = []
+    classes = ['UKG','Class 1','Class 2','Class 3','Class 4','Class 5',
+               'Class 6','Class 7','Class 8','Class 9','Class 10']
+
+    items = []
+
+    return render_template(
+        'admin_achievements.html',
+        students=students,
+        classes=classes,
+        items=items
+    )
+
+
+
+
+
+
+
 # ── ADMIN QUIZ MANAGER ─────────────────────────────────────────
 @app.route('/admin/quiz_manager')
 def admin_quiz_manager():
