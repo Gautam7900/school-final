@@ -128,5 +128,19 @@ function toggleMenu() {
 }
 </script>
 {% block scripts %}{% endblock %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuBtn = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
+
+    if(menuBtn){
+        menuBtn.addEventListener("click", function () {
+            navLinks.classList.toggle("active");
+        });
+    }
+
+});
+</script>
 </body>
 </html>

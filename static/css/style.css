@@ -566,3 +566,66 @@ img {
         overflow-x: hidden !important;
     }
 }
+
+
+/* MOBILE CLASS GRID FIX */
+
+@media screen and (max-width: 768px) {
+
+    .classes-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .class-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 12px 5px !important;
+        border-radius: 12px;
+    }
+
+    .class-card h3,
+    .class-card .number {
+        font-size: 18px !important;
+    }
+
+    .class-card p,
+    .class-card span {
+        font-size: 9px !important;
+    }
+
+    body {
+        overflow-x: hidden !important;
+    }
+}
+
+
+
+/* MOBILE NAVBAR */
+
+@media screen and (max-width: 768px) {
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: #081b4b;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 100%;
+        padding: 20px;
+        z-index: 999;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        z-index: 1000;
+    }
+}
