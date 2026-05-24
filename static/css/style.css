@@ -1010,56 +1010,82 @@ img {
 
 
 /* ===================================
-   LIVE CLASS + QUIZ MOBILE FIX
+   LIVE CLASS PAGE RESPONSIVE FIX
 =================================== */
 
-/* QUIZ GRID */
-
-.quiz-grid{
+.liveclass-layout{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-    gap:1.25rem;
+    grid-template-columns:1fr 1.6fr;
+    gap:1.5rem;
+    align-items:start;
+}
+
+/* TOP BUTTONS */
+
+.live-top-buttons{
+    display:flex;
+    gap:0.75rem;
 }
 
 /* MOBILE */
 
 @media screen and (max-width:768px){
 
-    /* DASH HEADER */
+    /* HEADER */
 
     .dash-header-inner{
         display:flex !important;
         flex-direction:column !important;
-        gap:12px;
+        gap:14px;
         align-items:flex-start !important;
     }
 
-    .dash-header-inner .btn{
+    .dash-header h2{
+        font-size:34px !important;
+        line-height:1.2;
+    }
+
+    .dash-header p{
+        font-size:14px !important;
+    }
+
+    /* BUTTONS */
+
+    .live-top-buttons{
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .live-top-buttons .btn{
         width:100%;
         text-align:center;
     }
 
-    /* GRID FIX */
+    /* MAIN GRID */
 
-    .grid-2,
-    .grid-3,
-    .grid-4{
-        display:grid !important;
-        grid-template-columns:1fr !important;
-        gap:16px !important;
-    }
-
-    /* QUIZ GRID */
-
-    .quiz-grid{
+    .liveclass-layout{
         grid-template-columns:1fr !important;
     }
 
-    /* FORM FIX */
+    /* DASH CARDS */
 
-    form{
-        width:100% !important;
+    .dash-card{
+        width:100%;
+        border-radius:18px;
+        overflow:hidden;
     }
+
+    .dash-card-header{
+        padding:18px !important;
+    }
+
+    .dash-card-body{
+        padding:18px !important;
+    }
+
+    /* FORM */
 
     .form-row{
         display:flex !important;
@@ -1072,15 +1098,15 @@ img {
     }
 
     input,
-    select,
-    textarea{
-        width:100% !important;
+    textarea,
+    select{
+        width:100%;
         padding:14px !important;
         font-size:14px !important;
         border-radius:10px;
     }
 
-    /* BUTTONS */
+    /* BUTTON */
 
     button,
     .btn{
@@ -1089,26 +1115,26 @@ img {
         font-size:14px !important;
     }
 
-    /* DASH CARDS */
+    /* LIVE CLASS CARD */
 
-    .dash-card,
-    .stat-card{
+    #liveClassesWidget > div,
+    [id^="lc-card-"] > div{
         width:100%;
-        border-radius:16px;
-        overflow:hidden;
     }
 
-    /* TABLE */
+    /* OPEN LINK SECTION */
 
-    .table-wrap{
-        overflow-x:auto;
+    [id^="lc-card-"] input{
+        font-size:12px !important;
     }
 
-    table{
-        min-width:600px;
+    /* FLEX FIX */
+
+    [id^="lc-card-"] div[style*="display:flex"]{
+        flex-wrap:wrap !important;
     }
 
-    /* FIX EMPTY RIGHT SPACE */
+    /* FIX OVERFLOW */
 
     body{
         overflow-x:hidden !important;

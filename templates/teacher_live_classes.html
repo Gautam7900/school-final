@@ -8,16 +8,15 @@
         <h2>📹 Live Class Manager</h2>
         <p>{{ session.teacher_name }} · {{ session.teacher_sub }}</p>
       </div>
-      <div style="display:flex;gap:0.75rem;">
-        <a href="/live_classes" class="btn btn-outline btn-sm" target="_blank">👁 Student View</a>
+       <div class="live-top-buttons">
+          <a href="/live_classes" class="btn btn-outline btn-sm" target="_blank">👁 Student View</a>
         <a href="/teacher/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
       </div>
     </div>
   </div>
 
   <div class="dash-main">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;align-items:start;">
-
+    <div class="liveclass-layout">
       <!-- ADD FORM -->
       <div class="dash-card">
         <div class="dash-card-header"><h3>➕ Schedule New Class</h3></div>

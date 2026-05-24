@@ -10,8 +10,8 @@
   </div>
   <div class="dash-main">
     {% if quizzes %}
-   <div class="quiz-grid">     
-     {% for q in quizzes %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;">
+      {% for q in quizzes %}
       <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;">
         <div style="background:{% if q['status']=='Active' %}linear-gradient(135deg,var(--navy),var(--navy-lt)){% else %}#888{% endif %};padding:1rem 1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
