@@ -5,15 +5,14 @@
   <div class="dash-header">
     <div class="dash-header-inner">
       <div><h2>🏆 Student Achievements</h2><p>Add and manage awards, medals and recognitions</p></div>
-      <div style="display:flex;gap:0.75rem;">
+      <div class="achievement-top-buttons">       
         <a href="/achievements" class="btn btn-outline btn-sm" target="_blank">👁 Public View</a>
         <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
       </div>
     </div>
   </div>
   <div class="dash-main">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;align-items:start;">
-
+  <div class="achievement-layout">
       <!-- ADD FORM -->
       <div class="dash-card">
         <div class="dash-card-header"><h3>➕ Add Achievement</h3></div>
@@ -66,10 +65,10 @@
         <div class="dash-card-header">
           <h3>🏆 All Achievements <span style="font-size:0.82rem;color:var(--muted);">({{ items|length }})</span></h3>
         </div>
-        <div style="display:flex;flex-direction:column;gap:0.75rem;padding:1rem;">
-          {% for item in items %}
-          <div id="ach-{{ item['id'] }}" style="border:1.5px solid #eee;border-radius:10px;padding:1rem;display:flex;gap:1rem;align-items:center;">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">
+        <div class="achievement-list">
+            {% for item in items %}
+            <div id="ach-{{ item['id'] }}" class="achievement-item">
+              <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">
               {% if item['photo'] %}
               <img src="/static/uploads/achievements/{{ item['photo'] }}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
               {% elif item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎨{% else %}🌟{% endif %}
