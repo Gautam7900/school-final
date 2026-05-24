@@ -4750,18 +4750,56 @@ def achievers_page():
     if sel_cat != 'All':
         items = [i for i in items if i['category'] == sel_cat]
 
-    return render_template('achievers.html', items=items, cats=cats, sel_cat=sel_cat)
-
+    return render_template('admin_achievements.html', achievements=ach, students=students)
 
 
 
 @app.route('/admin/achievements')
 def admin_achievements():
-    if session.get('role') != 'admin': return redirect('/admin/login')
+
+    # ADMIN CHECK
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
+
     db = get_db()
-    ach      = db.execute('SELECT *, COALESCE(student_name,"") as student_name FROM achievements ORDER BY created_at DESC').fetchall()
-    students = db.execute('SELECT id, name, class_name FROM students ORDER BY class_name, name').fetchall()
-    return render_template('admin_achievements.html', achievements=ach, students=students)
+
+    # ALL ACHIEVEMENTS
+    ach = db.execute('''
+        SELECT *,
+        COALESCE(student_name,"") as student_name
+        FROM achievements
+        ORDER BY created_at DESC
+    ''').fetchall()
+
+    # STUDENTS
+    students = db.execute('''
+        SELECT id, name, class_name
+        FROM students
+        ORDER BY class_name, name
+    ''').fetchall()
+
+    # CLASSES LIST
+    classes = [
+        'UKG',
+        'Class 1',
+        'Class 2',
+        'Class 3',
+        'Class 4',
+        'Class 5',
+        'Class 6',
+        'Class 7',
+        'Class 8',
+        'Class 9',
+        'Class 10'
+    ]
+
+    # RENDER PAGE
+    return render_template(
+        'admin_achievements.html',
+        items=ach,
+        students=students,
+        classes=classes
+    )
 
 @app.route('/admin/add_achievement', methods=['POST'])
 def add_achievement():
@@ -4948,21 +4986,7 @@ def admin_delete_live_class(lcid):
 # ADMIN QUIZ MANAGER
 # ═══════════════════════════════════════════════
 
-@app.route('/admin/achievements')
-def admin_achievements():
 
-    students = []
-    classes = ['UKG','Class 1','Class 2','Class 3','Class 4','Class 5',
-               'Class 6','Class 7','Class 8','Class 9','Class 10']
-
-    items = []
-
-    return render_template(
-        'admin_achievements.html',
-        students=students,
-        classes=classes,
-        items=items
-    )
 
 
 
