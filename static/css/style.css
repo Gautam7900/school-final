@@ -442,6 +442,7 @@ tbody td { padding: 12px 16px; color: var(--text); }
   .hero-inner { grid-template-columns: 1fr; }
   .hero-visual { display: none; }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
+
 }
 
 @media (max-width: 768px) {
@@ -642,5 +643,108 @@ img {
 
     body{
         overflow-x:hidden;
+    }
+}
+
+
+
+/* =================================
+   ADMISSION PAGE RESPONSIVE DESIGN
+================================= */
+
+.admission-layout{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:3rem;
+    align-items:start;
+}
+
+/* MOBILE */
+
+@media screen and (max-width:768px){
+
+    .admission-layout{
+        grid-template-columns:1fr !important;
+        gap:1.5rem;
+    }
+
+    /* HERO */
+
+    .admissions-hero{
+        padding:70px 18px !important;
+        text-align:center;
+    }
+
+    .admissions-hero h1{
+        font-size:36px !important;
+        line-height:1.2;
+    }
+
+    .admissions-hero p{
+        font-size:15px !important;
+    }
+
+    /* CARDS */
+
+    .dash-card,
+    .fee-card{
+        width:100% !important;
+        padding:18px !important;
+        border-radius:16px;
+    }
+
+    /* FORM */
+
+    .form-row{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:12px;
+    }
+
+    .form-group{
+        width:100%;
+    }
+
+    input,
+    textarea,
+    select{
+        width:100%;
+        padding:14px !important;
+        font-size:14px !important;
+        border-radius:10px;
+    }
+
+    /* BUTTON */
+
+    .btn{
+        width:100% !important;
+        padding:14px !important;
+        font-size:15px !important;
+    }
+
+    /* FEE ITEMS */
+
+    .fee-item{
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        font-size:13px;
+    }
+
+    /* DOCUMENTS */
+
+    ul li{
+        font-size:13px !important;
+        line-height:1.6;
+    }
+
+    /* FIX OVERFLOW */
+
+    body{
+        overflow-x:hidden !important;
+    }
+
+    *{
+        box-sizing:border-box;
     }
 }
