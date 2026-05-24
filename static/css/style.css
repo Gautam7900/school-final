@@ -535,40 +535,34 @@ img {
 }
 
 
-/* MOBILE GRID FIX */
+/* MOBILE CLASS BOX FIX */
 
 @media screen and (max-width: 768px) {
 
-    .classes-grid,
-    .cards-grid,
-    .features-grid,
-    .stats-grid,
-    .gallery-grid {
+    .classes-grid {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px;
         width: 100%;
     }
 
-    .class-card,
-    .card,
-    .feature-card {
+    .class-card {
         width: 100% !important;
         min-width: 0 !important;
+        padding: 15px 8px !important;
     }
 
-    section {
-        padding-left: 15px;
-        padding-right: 15px;
+    .class-card h3,
+    .class-card .number {
+        font-size: 22px !important;
     }
 
-    .container {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 15px;
+    .class-card p,
+    .class-card span {
+        font-size: 11px !important;
     }
 
     body {
-        overflow-x: hidden;
+        overflow-x: hidden !important;
     }
 }
