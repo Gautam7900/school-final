@@ -483,16 +483,7 @@ img {
     height: auto;
 }
 
-.container,
-.section,
-.row,
-.hero,
-.navbar,
-.content {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-}
+
 
 /* MOBILE FIX */
 
