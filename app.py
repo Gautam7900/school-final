@@ -4750,56 +4750,17 @@ def achievers_page():
     if sel_cat != 'All':
         items = [i for i in items if i['category'] == sel_cat]
 
-    return render_template('admin_achievements.html', achievements=ach, students=students)
+    # return render_template('admin_achievements.html', achievements=ach, students=students)
 
 
 
-@app.route('/admin/achievements')
+@app.route('/achievements')
 def admin_achievements():
-
-    # ADMIN CHECK
-    if session.get('role') != 'admin':
-        return redirect('/admin/login')
-
+    if session.get('role') != 'admin': return redirect('/admin/login')
     db = get_db()
-
-    # ALL ACHIEVEMENTS
-    ach = db.execute('''
-        SELECT *,
-        COALESCE(student_name,"") as student_name
-        FROM achievements
-        ORDER BY created_at DESC
-    ''').fetchall()
-
-    # STUDENTS
-    students = db.execute('''
-        SELECT id, name, class_name
-        FROM students
-        ORDER BY class_name, name
-    ''').fetchall()
-
-    # CLASSES LIST
-    classes = [
-        'UKG',
-        'Class 1',
-        'Class 2',
-        'Class 3',
-        'Class 4',
-        'Class 5',
-        'Class 6',
-        'Class 7',
-        'Class 8',
-        'Class 9',
-        'Class 10'
-    ]
-
-    # RENDER PAGE
-    return render_template(
-        'admin_achievements.html',
-        items=ach,
-        students=students,
-        classes=classes
-    )
+    ach      = db.execute('SELECT *, COALESCE(student_name,"") as student_name FROM achievements ORDER BY created_at DESC').fetchall()
+    students = db.execute('SELECT id, name, class_name FROM students ORDER BY class_name, name').fetchall()
+    return render_template('admin_achievements.html', achievements=ach, students=students)
 
 @app.route('/admin/add_achievement', methods=['POST'])
 def add_achievement():
