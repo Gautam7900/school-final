@@ -535,39 +535,6 @@ img {
 }
 
 
-/* MOBILE CLASS BOX FIX */
-
-@media screen and (max-width: 768px) {
-
-    .classes-grid {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .class-card {
-        width: 100% !important;
-        min-width: 0 !important;
-        padding: 15px 8px !important;
-    }
-
-    .class-card h3,
-    .class-card .number {
-        font-size: 22px !important;
-    }
-
-    .class-card p,
-    .class-card span {
-        font-size: 11px !important;
-    }
-
-    body {
-        overflow-x: hidden !important;
-    }
-}
-
-
 /* MOBILE CLASS GRID FIX */
 
 @media screen and (max-width: 768px) {
