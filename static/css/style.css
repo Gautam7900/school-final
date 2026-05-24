@@ -2267,18 +2267,226 @@ img {
 
 
 
-.facility-card-link{
+/* FACILITY BOX LINKS */
+
+.facility-link{
     text-decoration:none;
     color:inherit;
     display:block;
 }
 
-.facility-card{
-    cursor:pointer;
+.facility-link .card{
     transition:0.3s ease;
+    cursor:pointer;
+}
+
+.facility-link .card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}
+
+
+
+
+
+
+/* ============================= */
+/* FACILITY PAGES CSS */
+/* ============================= */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:90px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    margin-bottom:18px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3rem;
+    margin-bottom:20px;
+    font-weight:800;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:750px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.05rem;
+}
+
+/* ============================= */
+/* FEATURE CARDS */
+/* ============================= */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+    transition:0.3s ease;
+    height:100%;
 }
 
 .facility-card:hover{
     transform:translateY(-8px);
     box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:78px;
+    height:78px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    margin-bottom:14px;
+    font-size:1.5rem;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* ============================= */
+/* IMAGE GALLERY */
+/* ============================= */
+
+.facility-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-top:40px;
+}
+
+.gallery-box{
+    height:260px;
+    border-radius:24px;
+    overflow:hidden;
+    background:linear-gradient(135deg,#132b6b,#1f3f9b);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:4rem;
+    color:#d4af37;
+    transition:0.3s ease;
+}
+
+.gallery-box:hover{
+    transform:scale(1.03);
+}
+
+/* ============================= */
+/* CTA SECTION */
+/* ============================= */
+
+.facility-cta{
+    background:#081b4b;
+    padding:80px 20px;
+    text-align:center;
+}
+
+.facility-cta h2{
+    color:#fff;
+    font-size:2.5rem;
+    margin-bottom:20px;
+}
+
+.facility-cta p{
+    color:rgba(255,255,255,0.7);
+    max-width:700px;
+    margin:auto;
+    line-height:1.9;
+    margin-bottom:35px;
+}
+
+.facility-btn{
+    display:inline-block;
+    background:#d4af37;
+    color:#081b4b;
+    padding:14px 34px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:800;
+    transition:0.3s ease;
+}
+
+.facility-btn:hover{
+    transform:translateY(-3px);
+    background:#f0c85a;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media(max-width:992px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .facility-gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:70px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2rem;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .facility-card{
+        padding:26px;
+        border-radius:20px;
+    }
+
+    .gallery-box{
+        height:220px;
+    }
+
+    .facility-cta h2{
+        font-size:2rem;
+    }
+
 }
