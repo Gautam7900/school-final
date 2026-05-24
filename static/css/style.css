@@ -4145,3 +4145,247 @@ img {
     }
 
 }
+
+
+
+
+
+
+/* ================================
+   FEATURE BOXES 
+================================ */
+
+.facilities-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+.facility-card-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    transition:0.35s ease;
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 45px rgba(0,0,0,0.12);
+}
+
+.facility-icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.8rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facilities-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facilities-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .facility-card h3{
+        font-size:1.5rem;
+    }
+
+}
+
+
+
+
+
+/* =====================================
+   FEATURE PAGES CSS
+   NCERT / SMART CLASS / MENTORSHIP / ECO
+===================================== */
+
+/* HERO SECTION */
+
+.facility-hero{
+    background:linear-gradient(135deg,#081b4b,#132b6b);
+    padding:100px 20px;
+    text-align:center;
+}
+
+.facility-hero .section-label{
+    color:#d4af37;
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin-bottom:18px;
+    text-transform:uppercase;
+}
+
+.facility-hero h1{
+    color:#fff;
+    font-size:3.2rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.facility-hero p{
+    color:rgba(255,255,255,0.75);
+    max-width:760px;
+    margin:auto;
+    line-height:1.9;
+    font-size:1.08rem;
+}
+
+/* ABOUT SECTION */
+
+.facility-about{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:2rem;
+    align-items:center;
+}
+
+/* FEATURE GRID */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:40px;
+}
+
+/* CARDS */
+
+.facility-card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    height:100%;
+}
+
+.facility-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+.facility-card .card-icon{
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    background:#132b6b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    margin-bottom:24px;
+}
+
+.facility-card h3{
+    color:#081b4b;
+    font-size:1.5rem;
+    margin-bottom:14px;
+    font-weight:700;
+}
+
+.facility-card p{
+    color:#666;
+    line-height:1.9;
+    font-size:1rem;
+}
+
+/* IMAGE */
+
+.gallery-img{
+    width:100%;
+    height:500px;
+    object-fit:cover;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .facility-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .facility-hero{
+        padding:80px 18px;
+    }
+
+    .facility-hero h1{
+        font-size:2.2rem;
+        line-height:1.3;
+    }
+
+    .facility-hero p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .facility-about{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .facility-card{
+        padding:28px;
+        border-radius:20px;
+    }
+
+    .gallery-img{
+        height:300px;
+    }
+
+}

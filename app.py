@@ -4984,6 +4984,31 @@ def transport():
 
 
 
+# app.py
+
+@app.route('/ncert-curriculum')
+def ncert_curriculum():
+    return render_template('ncert_curriculum.html')
+
+
+@app.route('/smart-classes')
+def smart_classes():
+    return render_template('smart_classes.html')
+
+
+@app.route('/mentorship')
+def mentorship():
+    return render_template('mentorship.html')
+
+
+@app.route('/eco-campus')
+def eco_campus():
+    return render_template('eco_campus.html')
+
+
+
+
+
 # ── ADMIN QUIZ MANAGER ─────────────────────────────────────────
 @app.route('/admin/quiz_manager')
 def admin_quiz_manager():

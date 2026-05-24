@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
-{% block title %}Home{% endblock %}
-{% block content %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content
+%}
 
 <!-- HERO -->
 <section class="hero">
@@ -8,25 +7,52 @@
     <div class="hero-content fade-up">
       <div class="hero-badge"><span></span>CBSE Affiliated · Est. 1995</div>
       <h1>Where <em>Excellence</em> Meets Education</h1>
-      <p class="hero-sub">BrightMind School — nurturing curious minds from UKG to Class 10 through innovation, values, and academic rigour.</p>
+      <p class="hero-sub">
+        BrightMind School — nurturing curious minds from UKG to Class 10 through
+        innovation, values, and academic rigour.
+      </p>
       <div class="hero-actions">
-        <a href="{{ '/admissions' }}" class="btn btn-gold">Apply for Admission ↗</a>
+        <a href="{{ '/admissions' }}" class="btn btn-gold"
+          >Apply for Admission ↗</a
+        >
         <a href="{{ '/about' }}" class="btn btn-outline">Learn More</a>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><span class="num">2,500+</span><span class="lbl">Students</span></div>
-        <div class="hero-stat"><span class="num">120+</span><span class="lbl">Teachers</span></div>
-        <div class="hero-stat"><span class="num">98%</span><span class="lbl">Pass Rate</span></div>
-        <div class="hero-stat"><span class="num">29</span><span class="lbl">Years</span></div>
+        <div class="hero-stat">
+          <span class="num">2,500+</span><span class="lbl">Students</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">120+</span><span class="lbl">Teachers</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">98%</span><span class="lbl">Pass Rate</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">29</span><span class="lbl">Years</span>
+        </div>
       </div>
     </div>
     <div class="hero-visual fade-up delay-2">
-      <div class="hero-card"><div class="icon">🎓</div><h4>Academic Excellence</h4><p>Top results in CBSE board examinations every year</p></div>
-      <div class="hero-card"><div class="icon">🏅</div><h4>Sports</h4><p>State-level champions in cricket, athletics & chess</p></div>
-      <div class="hero-card"><div class="icon">🔬</div><h4>Labs</h4><p>Modern science, computer & language labs</p></div>
+      <div class="hero-card">
+        <div class="icon">🎓</div>
+        <h4>Academic Excellence</h4>
+        <p>Top results in CBSE board examinations every year</p>
+      </div>
+      <div class="hero-card">
+        <div class="icon">🏅</div>
+        <h4>Sports</h4>
+        <p>State-level champions in cricket, athletics & chess</p>
+      </div>
+      <div class="hero-card">
+        <div class="icon">🔬</div>
+        <h4>Labs</h4>
+        <p>Modern science, computer & language labs</p>
+      </div>
     </div>
   </div>
 </section>
+
+
 
 <!-- QUICK FEATURES -->
 <section class="section bg-white">
@@ -34,37 +60,62 @@
     <div class="section-header centered">
       <div class="section-label">Why Choose Us</div>
       <h2 class="section-title">A School That Truly Cares</h2>
-      <p class="section-sub">We blend modern pedagogy with timeless values to bring out the best in every child.</p>
+      <p class="section-sub">
+        We blend modern pedagogy with timeless values to bring out the best in
+        every child.
+      </p>
     </div>
-    <div class="grid-4">
-      <div class="card fade-up">
-        <div class="card-body">
-          <div class="card-icon">📚</div>
+
+    <div class="facilities-grid">
+      <!-- NCERT -->
+
+      <a href="/ncert-curriculum" class="facility-card-link">
+        <div class="facility-card">
+          <div class="facility-icon">📚</div>
           <h3>NCERT Curriculum</h3>
-          <p>Comprehensive CBSE syllabus with enriched learning materials and digital resources.</p>
+          <p>
+            Comprehensive CBSE syllabus with enriched learning materials and
+            digital resources.
+          </p>
         </div>
-      </div>
-      <div class="card fade-up delay-1">
-        <div class="card-body">
-          <div class="card-icon">🖥️</div>
+      </a>
+
+      <!-- SMART CLASSES -->
+
+      <a href="/smart-classes" class="facility-card-link">
+        <div class="facility-card">
+          <div class="facility-icon">🖥️</div>
           <h3>Smart Classes</h3>
-          <p>Every classroom equipped with interactive smart boards and digital learning tools.</p>
+          <p>
+            Every classroom equipped with smart boards and digital learning
+            tools.
+          </p>
         </div>
-      </div>
-      <div class="card fade-up delay-2">
-        <div class="card-body">
-          <div class="card-icon">🤝</div>
+      </a>
+
+      <!-- MENTORSHIP -->
+
+      <a href="/mentorship" class="facility-card-link">
+        <div class="facility-card">
+          <div class="facility-icon">🤝</div>
           <h3>Mentorship</h3>
-          <p>Dedicated counsellors and mentors for every student's academic and personal growth.</p>
+          <p>
+            Dedicated mentors for every student's academic and personal growth.
+          </p>
         </div>
-      </div>
-      <div class="card fade-up delay-3">
-        <div class="card-body">
-          <div class="card-icon">🌿</div>
+      </a>
+
+      <!-- ECO CAMPUS -->
+
+      <a href="/eco-campus" class="facility-card-link">
+        <div class="facility-card">
+          <div class="facility-icon">🌿</div>
+
           <h3>Eco Campus</h3>
-          <p>Sprawling green campus with sports grounds, gardens, and open learning spaces.</p>
+
+          <p>Green campus with gardens, sports grounds and open spaces.</p>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -72,7 +123,16 @@
 <!-- LATEST NOTICES -->
 <section class="section bg-warm">
   <div class="section-inner">
-    <div class="section-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div
+      class="section-header"
+      style="
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+      "
+    >
       <div>
         <div class="section-label">Stay Informed</div>
         <h2 class="section-title">Latest Notices</h2>
@@ -84,12 +144,21 @@
       <div class="notice-card fade-up">
         <div class="nc-date">
           <div class="day">{{ notice['created_at'][:10].split('-')[2] }}</div>
-          <div class="mon">{{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][notice['created_at'][:10].split('-')[1]|int - 1] }}</div>
+          <div class="mon">
+            {{
+            ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][notice['created_at'][:10].split('-')[1]|int
+            - 1] }}
+          </div>
         </div>
         <div class="nc-body">
-          <span class="notice-badge badge-{{ notice['category']|lower }}">{{ notice['category'] }}</span>
+          <span class="notice-badge badge-{{ notice['category']|lower }}"
+            >{{ notice['category'] }}</span
+          >
           <h4>{{ notice['title'] }}</h4>
-          <p>{{ notice['content'][:100] }}{% if notice['content']|length > 100 %}…{% endif %}</p>
+          <p>
+            {{ notice['content'][:100] }}{% if notice['content']|length > 100
+            %}…{% endif %}
+          </p>
         </div>
       </div>
       {% endfor %}
@@ -103,13 +172,23 @@
     <div class="section-header centered">
       <div class="section-label">Our Classes</div>
       <h2 class="section-title">UKG to Class 10</h2>
-      <p class="section-sub">Age-appropriate learning journeys designed for holistic development at every stage.</p>
+      <p class="section-sub">
+        Age-appropriate learning journeys designed for holistic development at
+        every stage.
+      </p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;">
-      {% for cls in [('UKG','K'),('1','1'),('2','2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10'),('Special','★')] %}
+    <div
+      style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem"
+    >
+      {% for cls in
+      [('UKG','K'),('1','1'),('2','2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10'),('Special','★')]
+      %}
       <a href="{{ '/academics' }}" class="class-card">
         <div class="cls-num">{{ cls[1] }}</div>
-        <div class="cls-label">{% if cls[0]=='UKG' %}UKG{% elif cls[0]=='Special' %}Arts{% else %}Class {{ cls[0] }}{% endif %}</div>
+        <div class="cls-label">
+          {% if cls[0]=='UKG' %}UKG{% elif cls[0]=='Special' %}Arts{% else
+          %}Class {{ cls[0] }}{% endif %}
+        </div>
         <div class="cls-subs"><strong>6+</strong> Subjects</div>
       </a>
       {% endfor %}
@@ -117,80 +196,226 @@
   </div>
 </section>
 
-
 <!-- ═══════════════════════════════════════════
      ACHIEVERS SECTION — Home Page
 ═══════════════════════════════════════════ -->
-<section style="background:linear-gradient(135deg,#0d1b3e 0%,#1a2f5e 60%,#0d1b3e 100%);padding:5rem 2rem;position:relative;overflow:hidden;">
+<section
+  style="
+    background: linear-gradient(135deg, #0d1b3e 0%, #1a2f5e 60%, #0d1b3e 100%);
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  "
+>
   <!-- Background pattern -->
-  <div style="position:absolute;inset:0;opacity:0.04;background-image:radial-gradient(circle, #c9a84c 1px, transparent 1px);background-size:40px 40px;"></div>
+  <div
+    style="
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: radial-gradient(circle, #c9a84c 1px, transparent 1px);
+      background-size: 40px 40px;
+    "
+  ></div>
 
-  <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
-
+  <div
+    style="max-width: 1280px; margin: 0 auto; position: relative; z-index: 1"
+  >
     <!-- Header -->
-    <div style="text-align:center;margin-bottom:3rem;">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.35);color:#e8c97b;padding:6px 18px;border-radius:30px;font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;">
+    <div style="text-align: center; margin-bottom: 3rem">
+      <div
+        style="
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(201, 168, 76, 0.15);
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          color: #e8c97b;
+          padding: 6px 18px;
+          border-radius: 30px;
+          font-size: 0.78rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          margin-bottom: 1rem;
+        "
+      >
         🏆 Hall of Fame 2024
       </div>
-      <h2 style="color:#fff;font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);margin-bottom:0.5rem;">
-        Our <em style="color:#e8c97b;font-style:normal;">Star Achievers</em>
+      <h2
+        style="
+          color: #fff;
+          font-family: &quot;Cormorant Garamond&quot;, serif;
+          font-size: clamp(2rem, 4vw, 3rem);
+          margin-bottom: 0.5rem;
+        "
+      >
+        Our <em style="color: #e8c97b; font-style: normal">Star Achievers</em>
       </h2>
-      <p style="color:rgba(255,255,255,0.55);font-size:1rem;max-width:520px;margin:0 auto;">
-        Proud moments from Class 5 to Class 10 — Academic, Sports & Cultural excellence
+      <p
+        style="
+          color: rgba(255, 255, 255, 0.55);
+          font-size: 1rem;
+          max-width: 520px;
+          margin: 0 auto;
+        "
+      >
+        Proud moments from Class 5 to Class 10 — Academic, Sports & Cultural
+        excellence
       </p>
     </div>
 
     <!-- Class Tab Filters -->
-    <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;" id="classFilters">
-      {% for cls, num in [('All',14),('Class 5',3),('Class 6',2),('Class 7',2),('Class 8',2),('Class 9',2),('Class 10',3)] %}
-      <button onclick="filterClass('{{ cls }}')"
+    <div
+      style="
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2.5rem;
+      "
+      id="classFilters"
+    >
+      {% for cls, num in [('All',14),('Class 5',3),('Class 6',2),('Class
+      7',2),('Class 8',2),('Class 9',2),('Class 10',3)] %}
+      <button
+        onclick="filterClass('{{ cls }}')"
         id="btn-{{ cls|replace(' ','-') }}"
-        style="padding:8px 18px;border-radius:20px;border:1.5px solid rgba(201,168,76,0.4);background:{% if loop.first %}rgba(201,168,76,0.9);color:#0d1b3e{% else %}transparent;color:#e8c97b{% endif %};font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;font-family:'Source Sans 3',sans-serif;">
-        {{ cls }} {% if cls != 'All' %}<span style="opacity:0.7;">({{ num }})</span>{% endif %}
+        style="padding:8px 18px;border-radius:20px;border:1.5px solid rgba(201,168,76,0.4);background:{% if loop.first %}rgba(201,168,76,0.9);color:#0d1b3e{% else %}transparent;color:#e8c97b{% endif %};font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;font-family:'Source Sans 3',sans-serif;"
+      >
+        {{ cls }} {% if cls != 'All' %}<span style="opacity: 0.7"
+          >({{ num }})</span
+        >{% endif %}
       </button>
       {% endfor %}
     </div>
 
     <!-- Achiever Cards Grid -->
-    <div id="achieverGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;">
+    <div
+      id="achieverGrid"
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.25rem;
+      "
+    >
       {% for item in featured_achievers %}
-      <div class="achiever-card" data-class="{{ item['class_name'] }}"
-        style="background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:14px;overflow:hidden;transition:all 0.3s;backdrop-filter:blur(8px);"
-        onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-5px)'"
-        onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(201,168,76,0.2)';this.style.transform=''">
-
+      <div
+        class="achiever-card"
+        data-class="{{ item['class_name'] }}"
+        style="
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(201, 168, 76, 0.2);
+          border-radius: 14px;
+          overflow: hidden;
+          transition: all 0.3s;
+          backdrop-filter: blur(8px);
+        "
+        onmouseover="
+          this.style.background = 'rgba(255,255,255,0.1)';
+          this.style.borderColor = 'rgba(201,168,76,0.5)';
+          this.style.transform = 'translateY(-5px)';
+        "
+        onmouseout="
+          this.style.background = 'rgba(255,255,255,0.06)';
+          this.style.borderColor = 'rgba(201,168,76,0.2)';
+          this.style.transform = '';
+        "
+      >
         <!-- Category stripe -->
-        <div style="height:4px;background:{% if item['category']=='Academic' %}linear-gradient(90deg,#1565c0,#42a5f5){% elif item['category']=='Sports' %}linear-gradient(90deg,#2e7d32,#66bb6a){% elif item['category']=='Cultural' %}linear-gradient(90deg,#6a1b9a,#ab47bc){% else %}linear-gradient(90deg,#c9a84c,#e8c97b){% endif %};"></div>
+        <div
+          style="height:4px;background:{% if item['category']=='Academic' %}linear-gradient(90deg,#1565c0,#42a5f5){% elif item['category']=='Sports' %}linear-gradient(90deg,#2e7d32,#66bb6a){% elif item['category']=='Cultural' %}linear-gradient(90deg,#6a1b9a,#ab47bc){% else %}linear-gradient(90deg,#c9a84c,#e8c97b){% endif %};"
+        ></div>
 
-        <div style="padding:1.25rem;">
+        <div style="padding: 1.25rem">
           <!-- Student info -->
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
-            <div style="width:46px;height:46px;border-radius:50%;border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:#e8c97b;flex-shrink:0;
-              background:{% if item['category']=='Academic' %}rgba(21,101,192,0.3){% elif item['category']=='Sports' %}rgba(46,125,50,0.3){% elif item['category']=='Cultural' %}rgba(106,27,154,0.3){% else %}rgba(201,168,76,0.2){% endif %};">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 1rem;
+            "
+          >
+            <div
+              style="width:46px;height:46px;border-radius:50%;border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:#e8c97b;flex-shrink:0;
+              background:{% if item['category']=='Academic' %}rgba(21,101,192,0.3){% elif item['category']=='Sports' %}rgba(46,125,50,0.3){% elif item['category']=='Cultural' %}rgba(106,27,154,0.3){% else %}rgba(201,168,76,0.2){% endif %};"
+            >
               {% if item['photo'] %}
-              <img src="/static/uploads/achievements/{{ item['photo'] }}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
-              {% else %}
-              {{ (item['student_name'] or 'S')[0] }}
-              {% endif %}
+              <img
+                src="/static/uploads/achievements/{{ item['photo'] }}"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 50%;
+                  object-fit: cover;
+                "
+              />
+              {% else %} {{ (item['student_name'] or 'S')[0] }} {% endif %}
             </div>
             <div>
-              <div style="font-weight:800;color:#fff;font-size:0.92rem;">{{ item['student_name'] or 'Student' }}</div>
-              <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);">{{ item['class_name'] }}</div>
+              <div style="font-weight: 800; color: #fff; font-size: 0.92rem">
+                {{ item['student_name'] or 'Student' }}
+              </div>
+              <div style="font-size: 0.72rem; color: rgba(255, 255, 255, 0.5)">
+                {{ item['class_name'] }}
+              </div>
             </div>
-            <div style="margin-left:auto;">
-              <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:8px;text-transform:uppercase;">
-                {% if item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎭{% else %}⭐{% endif %}
-                {{ item['category'] }}
+            <div style="margin-left: auto">
+              <span
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  color: rgba(255, 255, 255, 0.7);
+                  font-size: 0.7rem;
+                  font-weight: 700;
+                  padding: 3px 8px;
+                  border-radius: 8px;
+                  text-transform: uppercase;
+                "
+              >
+                {% if item['category']=='Academic' %}📚{% elif
+                item['category']=='Sports' %}⚽{% elif
+                item['category']=='Cultural' %}🎭{% else %}⭐{% endif %} {{
+                item['category'] }}
               </span>
             </div>
           </div>
 
           <!-- Achievement title -->
-          <h4 style="color:#e8c97b;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.4rem;line-height:1.3;">{{ item['title'] }}</h4>
-          <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.5;">{{ item['description'][:80] if item['description'] else '' }}{% if item['description'] and item['description']|length > 80 %}…{% endif %}</p>
+          <h4
+            style="
+              color: #e8c97b;
+              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 0.4rem;
+              line-height: 1.3;
+            "
+          >
+            {{ item['title'] }}
+          </h4>
+          <p
+            style="
+              font-size: 0.8rem;
+              color: rgba(255, 255, 255, 0.5);
+              line-height: 1.5;
+            "
+          >
+            {{ item['description'][:80] if item['description'] else '' }}{% if
+            item['description'] and item['description']|length > 80 %}…{% endif
+            %}
+          </p>
 
           {% if item['achievement_date'] %}
-          <div style="margin-top:0.75rem;font-size:0.72rem;color:rgba(255,255,255,0.35);">📅 {{ item['achievement_date'] }}</div>
+          <div
+            style="
+              margin-top: 0.75rem;
+              font-size: 0.72rem;
+              color: rgba(255, 255, 255, 0.35);
+            "
+          >
+            📅 {{ item['achievement_date'] }}
+          </div>
           {% endif %}
         </div>
       </div>
@@ -198,11 +423,32 @@
     </div>
 
     <!-- View All Button -->
-    <div style="text-align:center;margin-top:2.5rem;">
-      <a href="/achievers"
-        style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#c9a84c,#e8c97b);color:#0d1b3e;padding:14px 36px;border-radius:10px;font-weight:800;font-size:0.95rem;text-decoration:none;transition:all 0.2s;letter-spacing:0.04em;"
-        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(201,168,76,0.4)'"
-        onmouseout="this.style.transform='';this.style.boxShadow=''">
+    <div style="text-align: center; margin-top: 2.5rem">
+      <a
+        href="/achievers"
+        style="
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          background: linear-gradient(135deg, #c9a84c, #e8c97b);
+          color: #0d1b3e;
+          padding: 14px 36px;
+          border-radius: 10px;
+          font-weight: 800;
+          font-size: 0.95rem;
+          text-decoration: none;
+          transition: all 0.2s;
+          letter-spacing: 0.04em;
+        "
+        onmouseover="
+          this.style.transform = 'translateY(-3px)';
+          this.style.boxShadow = '0 8px 24px rgba(201,168,76,0.4)';
+        "
+        onmouseout="
+          this.style.transform = '';
+          this.style.boxShadow = '';
+        "
+      >
         🏆 View All Achievers (Class 5–10) →
       </a>
     </div>
@@ -216,32 +462,41 @@
       <div class="section-label">Portals</div>
       <h2 class="section-title">Access Your Portal</h2>
     </div>
-    <div class="grid-3" style="max-width:900px;margin:0 auto;">
-      <div class="card" style="border-top:4px solid var(--gold);">
-        <div class="card-body" style="text-align:center;">
-          <div style="font-size:3rem;margin-bottom:1rem;">👨‍🎓</div>
+    <div class="grid-3" style="max-width: 900px; margin: 0 auto">
+      <div class="card" style="border-top: 4px solid var(--gold)">
+        <div class="card-body" style="text-align: center">
+          <div style="font-size: 3rem; margin-bottom: 1rem">👨‍🎓</div>
           <h3>Student Portal</h3>
           <p>Check attendance, marks, homework, fee status and more.</p>
-          <br>
-          <a href="{{ '/student/login' }}" class="btn btn-gold btn-sm">Login as Student</a>
+          <br />
+          <a href="{{ '/student/login' }}" class="btn btn-gold btn-sm"
+            >Login as Student</a
+          >
         </div>
       </div>
-      <div class="card" style="border-top:4px solid var(--navy);">
-        <div class="card-body" style="text-align:center;">
-          <div style="font-size:3rem;margin-bottom:1rem;">👩‍🏫</div>
+      <div class="card" style="border-top: 4px solid var(--navy)">
+        <div class="card-body" style="text-align: center">
+          <div style="font-size: 3rem; margin-bottom: 1rem">👩‍🏫</div>
           <h3>Teacher Portal</h3>
           <p>Upload marks, mark attendance, post homework assignments.</p>
-          <br>
-          <a href="{{ '/teacher/login' }}" class="btn btn-navy btn-sm">Login as Teacher</a>
+          <br />
+          <a href="{{ '/teacher/login' }}" class="btn btn-navy btn-sm"
+            >Login as Teacher</a
+          >
         </div>
       </div>
-      <div class="card" style="border-top:4px solid #6a1b9a;">
-        <div class="card-body" style="text-align:center;">
-          <div style="font-size:3rem;margin-bottom:1rem;">⚙️</div>
+      <div class="card" style="border-top: 4px solid #6a1b9a">
+        <div class="card-body" style="text-align: center">
+          <div style="font-size: 3rem; margin-bottom: 1rem">⚙️</div>
           <h3>Admin Panel</h3>
           <p>Manage students, staff, admissions, notices and reports.</p>
-          <br>
-          <a href="{{ '/admin/login' }}" class="btn btn-sm" style="background:#6a1b9a;color:#fff;">Login as Admin</a>
+          <br />
+          <a
+            href="{{ '/admin/login' }}"
+            class="btn btn-sm"
+            style="background: #6a1b9a; color: #fff"
+            >Login as Admin</a
+          >
         </div>
       </div>
     </div>
