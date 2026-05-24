@@ -1153,7 +1153,18 @@ img {
 /* ===================================
    TEACHER ASSIGNMENT RESPONSIVE FIX
 =================================== */
+/* FILTER BUTTON MOBILE FIX */
 
+@media screen and (max-width:768px){
+
+    .filter-btn{
+        width:48% !important;
+        flex:none !important;
+        padding:10px 6px !important;
+        font-size:12px !important;
+    }
+
+}
 .teacher-assignment-layout{
     display:grid;
     grid-template-columns:1fr 1.6fr;
@@ -1280,7 +1291,7 @@ img {
     /* SUMMARY GRID */
 
     .summary-grid{
-        grid-template-columns:repeat(2,1fr) !important;
+        grid-template-columns:1fr !important;
     }
 
     /* FIX OVERFLOW */
@@ -1293,4 +1304,73 @@ img {
         box-sizing:border-box;
         max-width:100%;
     }
+}
+
+
+/* MOBILE TABLE CARD LAYOUT */
+
+@media screen and (max-width:768px){
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr{
+        display:block;
+        width:100%;
+    }
+
+    thead{
+        display:none;
+    }
+
+    tr{
+        background:#fff;
+        margin-bottom:14px;
+        border-radius:14px;
+        padding:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    td{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        padding:10px 0;
+        border-bottom:1px solid #eee;
+        font-size:13px;
+    }
+
+    td:last-child{
+        border-bottom:none;
+    }
+
+    td::before{
+        font-weight:700;
+        color:var(--navy);
+        min-width:80px;
+    }
+
+    td:nth-child(1)::before{
+        content:"Class";
+    }
+
+    td:nth-child(2)::before{
+        content:"Subject";
+    }
+
+    td:nth-child(3)::before{
+        content:"Teacher";
+    }
+
+    td:nth-child(4)::before{
+        content:"Action";
+    }
+
+    table{
+        min-width:100% !important;
+    }
+
 }
