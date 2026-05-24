@@ -8,7 +8,7 @@
         <h2>💰 Fees Management</h2>
         <p>Class-wise · Month-wise · Complete & Remaining Tracker</p>
       </div>
-      <div style="display:flex;gap:1rem;">
+      <div class="fees-top-buttons">        
         <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
         <a href="/admin/logout" class="btn btn-outline btn-sm">Logout</a>
       </div>
@@ -20,8 +20,8 @@
     <!-- ── TOP FILTER BAR ──────────────────────────────── -->
     <div class="dash-card" style="margin-bottom:1.5rem;">
       <div class="dash-card-body" style="padding:1.25rem 1.5rem;">
-        <form method="GET" action="/admin/fees" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
-          <div class="form-group" style="margin:0;flex:1;min-width:140px;">
+         <form method="GET" action="/admin/fees" class="fees-filter-form">
+            <div class="form-group" style="margin:0;flex:1;min-width:140px;">
             <label>Class</label>
             <select class="form-control" name="class_name" onchange="this.form.submit()">
               {% for cls in classes %}
@@ -73,8 +73,7 @@
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:1.5rem;margin-bottom:1.5rem;">
-
+    <div class="fees-layout">
       <!-- ── FEE STRUCTURE EDITOR ─────────────────────── -->
       <div class="dash-card">
         <div class="dash-card-header">

@@ -1694,3 +1694,223 @@ img {
         max-width:100%;
     }
 }
+
+
+
+
+
+/* ===================================
+   FEES MANAGEMENT RESPONSIVE FIX
+=================================== */
+
+.fees-layout{
+    display:grid;
+    grid-template-columns:1fr 1.8fr;
+    gap:1.5rem;
+    margin-bottom:1.5rem;
+}
+
+.fees-top-buttons{
+    display:flex;
+    gap:1rem;
+}
+
+.fees-filter-form{
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    align-items:flex-end;
+}
+
+/* MOBILE */
+
+@media screen and (max-width:768px){
+
+    /* HEADER */
+
+    .dash-header-inner{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:14px;
+        align-items:flex-start !important;
+    }
+
+    .dash-header h2{
+        font-size:30px !important;
+        line-height:1.2;
+    }
+
+    .dash-header p{
+        font-size:14px !important;
+    }
+
+    /* TOP BUTTONS */
+
+    .fees-top-buttons{
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .fees-top-buttons .btn{
+        width:100%;
+        text-align:center;
+    }
+
+    /* FILTER FORM */
+
+    .fees-filter-form{
+        flex-direction:column !important;
+        gap:14px;
+    }
+
+    .fees-filter-form .form-group{
+        width:100%;
+    }
+
+    /* SUMMARY CARDS */
+
+    .grid-4{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:14px;
+    }
+
+    .stat-card{
+        width:100%;
+        padding:18px !important;
+        border-radius:16px;
+    }
+
+    .stat-num{
+        font-size:32px !important;
+        word-break:break-word;
+    }
+
+    /* MAIN GRID */
+
+    .fees-layout{
+        grid-template-columns:1fr !important;
+    }
+
+    /* DASH CARDS */
+
+    .dash-card{
+        width:100%;
+        border-radius:18px;
+        overflow:hidden;
+    }
+
+    .dash-card-header{
+        padding:16px !important;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        align-items:flex-start !important;
+    }
+
+    .dash-card-body{
+        padding:16px !important;
+    }
+
+    /* INPUTS */
+
+    input,
+    select,
+    textarea{
+        width:100%;
+        padding:14px !important;
+        font-size:14px !important;
+        border-radius:10px;
+    }
+
+    /* BUTTON */
+
+    button,
+    .btn{
+        width:100%;
+        padding:14px !important;
+        font-size:14px !important;
+    }
+
+    /* FEE ITEMS */
+
+    .fee-item{
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        font-size:13px;
+    }
+
+    .fee-item .amount{
+        font-weight:700;
+    }
+
+    /* MOBILE TABLE CARD */
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr{
+        display:block;
+        width:100%;
+    }
+
+    thead{
+        display:none;
+    }
+
+    tr{
+        background:#fff;
+        margin-bottom:14px;
+        border-radius:14px;
+        padding:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    td{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        padding:10px 0;
+        border-bottom:1px solid #eee;
+        font-size:13px;
+    }
+
+    td:last-child{
+        border-bottom:none;
+    }
+
+    /* MODALS */
+
+    #payModal > div,
+    #genModal > div,
+    #studentFeeModal > div{
+        width:95% !important;
+        max-width:95% !important;
+        padding:18px !important;
+        border-radius:18px;
+    }
+
+    /* MODAL BUTTONS */
+
+    #payModal .btn,
+    #genModal .btn{
+        width:100%;
+    }
+
+    /* FIX OVERFLOW */
+
+    body{
+        overflow-x:hidden !important;
+    }
+
+    *{
+        box-sizing:border-box;
+        max-width:100%;
+    }
+}
