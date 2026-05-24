@@ -8,7 +8,7 @@
         <h2>👩‍🏫 Teacher — Class & Subject Assignments</h2>
         <p>Assign which teacher teaches which subject in which class</p>
       </div>
-      <div style="display:flex;gap:1rem;">
+      <div class="teacher-assignment-top-buttons">
         <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
         <a href="/admin/logout" class="btn btn-outline btn-sm">Logout</a>
       </div>
@@ -17,8 +17,7 @@
 
   <div class="dash-main">
 
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;align-items:start;">
-
+    <div class="teacher-assignment-layout">
       <!-- ── ASSIGN FORM ────────────────────────────── -->
       <div class="dash-card">
         <div class="dash-card-header"><h3>➕ New Assignment</h3></div>
@@ -90,8 +89,7 @@
         <!-- Class summary grid -->
         <div style="margin-top:1.5rem;">
           <h4 style="color:var(--navy);margin-bottom:1rem;font-family:'Cormorant Garamond',serif;">📊 Class-wise Overview</h4>
-          <div id="classSummary" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;"></div>
-        </div>
+        <div id="classSummary" class="summary-grid"></div>        </div>
       </div>
 
     </div>
