@@ -18,7 +18,7 @@
       <div class="dash-card">
         <div class="dash-card-header"><h3>➕ Add Achievement</h3></div>
         <div class="dash-card-body">
-          <form method="POST" action="/admin/add_achievement" enctype="multipart/form-data">
+          <form method="POST" action="/admin/add_achievements" enctype="multipart/form-data">
             <div class="form-group"><label>Student (Optional)</label>
               <select class="form-control" name="student_id" onchange="fillStudent(this)">
                 <option value="">— Type manually below —</option>
@@ -28,9 +28,15 @@
             <div class="form-row">
               <div class="form-group"><label>Student Name</label><input class="form-control" name="student_name" id="ach_name" placeholder="Enter name" required></div>
               <div class="form-group"><label>Class</label>
-                <select class="form-control" name="class_name" id="ach_class">
-                  {% for cls in classes %}<option >{{ cls }}</option>{% endfor %}
-                </select>
+                 <select class="form-control" name="class_name" required>
+                 <option value="">-- Select Class --</option>
+                 <option>Class 5</option>
+                 <option>Class 6</option>
+                 <option>Class 7</option>
+                 <option>Class 8</option>
+                 <option>Class 9</option>
+                 <option>Class 10</option>
+               </select>
               </div>
             </div>
             <div class="form-group"><label>Achievement Title</label>
@@ -65,8 +71,8 @@
           <div id="ach-{{ item['id'] }}" style="border:1.5px solid #eee;border-radius:10px;padding:1rem;display:flex;gap:1rem;align-items:center;">
             <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">
               {% if item['photo'] %}
-          <img src="{{ url_for('static', filename='uploads/achievements/' + item['photo']) }}"
-                style="width:52px;height:52px;border-radius:50%;object-fit:cover;">{% elif item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎨{% else %}🌟{% endif %}
+              <img src="/static/uploads/achievements/{{ item['photo'] }}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+              {% elif item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎨{% else %}🌟{% endif %}
             </div>
             <div style="flex:1;min-width:0;">
               <div style="font-weight:700;color:var(--navy);font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ item['title'] }}</div>

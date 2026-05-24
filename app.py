@@ -4925,20 +4925,20 @@ def toggle_featured(aid):
 
 
 
-@app.route('/admin/delete_achievement/<int:aid>', methods=['POST'])
-def delete_achievement(aid):
-    if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
-    db = get_db()
-    db.execute('DELETE FROM achievements WHERE id=?',(aid,)); db.commit()
-    return jsonify({'success':True})
+# @app.route('/admin/delete_achievement/<int:aid>', methods=['POST'])
+# def delete_achievement(aid):
+#     if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
+#     db = get_db()
+#     db.execute('DELETE FROM achievements WHERE id=?',(aid,)); db.commit()
+#     return jsonify({'success':True})
 
-@app.route('/admin/toggle_featured/<int:aid>', methods=['POST'])
-def toggle_featured(aid):
-    if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
-    db = get_db()
-    cur = db.execute('SELECT is_featured FROM achievements WHERE id=?',(aid,)).fetchone()
-    db.execute('UPDATE achievements SET is_featured=? WHERE id=?',(0 if cur['is_featured'] else 1, aid)); db.commit()
-    return jsonify({'success':True})
+# @app.route('/admin/toggle_featured/<int:aid>', methods=['POST'])
+# def toggle_featured(aid):
+#     if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
+#     db = get_db()
+#     cur = db.execute('SELECT is_featured FROM achievements WHERE id=?',(aid,)).fetchone()
+#     db.execute('UPDATE achievements SET is_featured=? WHERE id=?',(0 if cur['is_featured'] else 1, aid)); db.commit()
+#     return jsonify({'success':True})
 
 # ═══════════════════════════════════════════════
 # FEATURE 7: ONLINE QUIZ / TEST

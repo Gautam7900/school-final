@@ -30,8 +30,8 @@
         <!-- Top -->
         <div style="background:linear-gradient(135deg,var(--navy),var(--navy-lt));padding:1.5rem;text-align:center;position:relative;">
           {% if item['photo'] %}
-         <img src="{{ url_for('static', filename='uploads/achievements/' + item['photo']) }}"
-             style="width:52px;height:52px;border-radius:50%;object-fit:cover;">
+          <img src="/static/uploads/achievements/{{ item['photo'] }}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:0.75rem;">
+          {% else %}
           <div style="width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 0.75rem;">
             {% if item['category']=='Academic' %}📚{% elif item['category']=='Sports' %}⚽{% elif item['category']=='Cultural' %}🎨{% else %}🌟{% endif %}
           </div>
