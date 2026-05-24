@@ -57,17 +57,37 @@
         </div>
 
         <!-- Quick links -->
-        <div style="background:var(--warm);border-radius:var(--radius);padding:1.75rem;">
-          <h4 style="color:var(--navy);margin-bottom:1rem;">Quick Links</h4>
-          <div style="display:flex;flex-direction:column;gap:0.5rem;">
-            {% for link, url in [('Apply for Admission','admissions'),('Student Login','student_login'),('Teacher Login','teacher_login'),('View Notices','notices')] %}
-            <a href="{{ 'https://maps.google.com' }}" style="display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:0.9rem;padding:8px 0;border-bottom:1px dashed #ddd;">
-              <span style="color:var(--gold-dk);">→</span> {{ link }}
-            </a>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
+       <div style="background:var(--warm);border-radius:var(--radius);padding:1.75rem;">
+  <h4 style="color:var(--navy);margin-bottom:1rem;">Quick Links</h4>
+
+  <div style="display:flex;flex-direction:column;gap:0.5rem;">
+
+    <a href="/admissions"
+      style="display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:0.9rem;padding:8px 0;border-bottom:1px dashed #ddd;text-decoration:none;">
+      <span style="color:var(--gold-dk);">→</span>
+      Apply for Admission
+    </a>
+
+    <a href="/student/login"
+      style="display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:0.9rem;padding:8px 0;border-bottom:1px dashed #ddd;text-decoration:none;">
+      <span style="color:var(--gold-dk);">→</span>
+      Student Login
+    </a>
+
+    <a href="/teacher/login"
+      style="display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:0.9rem;padding:8px 0;border-bottom:1px dashed #ddd;text-decoration:none;">
+      <span style="color:var(--gold-dk);">→</span>
+      Teacher Login
+    </a>
+
+    <a href="/notices"
+      style="display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:0.9rem;padding:8px 0;text-decoration:none;">
+      <span style="color:var(--gold-dk);">→</span>
+      View Notices
+    </a>
+
+  </div>
+</div>
 
       <!-- CONTACT FORM -->
       <div class="dash-card">
