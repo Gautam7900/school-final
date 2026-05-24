@@ -4730,25 +4730,22 @@ def student_quiz_result(qid):
 
 
 @app.route('/achievers')
-@app.route('/admin/achievements')
 def achievers_page():
     db = get_db()
-
-    sel_cat = request.args.get('category', 'All')
-
-    items = db.execute("""
-        SELECT * FROM achievements
-        WHERE class_name IN ('Class 5','Class 6','Class 7','Class 8','Class 9','Class 10')
-        ORDER BY class_name, achievement_date DESC
-    """).fetchall()
-
-    # categories
-    cats_raw = db.execute("SELECT DISTINCT category FROM achievements").fetchall()
+    sel_cat = request.args.get('category','All')
+    cls_list = "('Class 5','Class 6','Class 7','Class 8','Class 9','Class 10')"
+    if sel_cat == 'All':
+        items = db.execute(
+            f"SELECT * FROM achievements WHERE class_name IN {cls_list} ORDER BY class_name, achievement_date DESC"
+        ).fetchall()
+    else:
+        items = db.execute(
+            f"SELECT * FROM achievements WHERE category=? AND class_name IN {cls_list} ORDER BY class_name, achievement_date DESC",
+            (sel_cat,)
+        ).fetchall()
+    cats_raw = db.execute(f"SELECT DISTINCT category FROM achievements WHERE class_name IN {cls_list}").fetchall()
     cats = [r['category'] for r in cats_raw]
-
-    # filter
-    if sel_cat != 'All':
-        items = [i for i in items if i['category'] == sel_cat]
+    return render_template('achievers.html', items=items, cats=cats, sel_cat=sel_cat)
 
     # return render_template('admin_achievements.html', achievements=ach, students=students)
 
@@ -4758,114 +4755,173 @@ def achievers_page():
 # ADMIN ACHIEVEMENTS
 # =========================================
 
-@app.route('/admin/achievements')
-def admin_achievements():
+# @app.route('/admin/achievements')
+# def admin_achievements():
 
-    if session.get('role') != 'admin':
-        return redirect('/admin/login')
+#     if session.get('role') != 'admin':
+#         return redirect('/admin/login')
 
-    db = get_db()
+#     db = get_db()
 
-    try:
-        ach = db.execute('''
-            SELECT *
-            FROM achievements
-            ORDER BY id DESC
-        ''').fetchall()
-    except:
-        ach = []
+#     try:
+#         ach = db.execute('''
+#             SELECT *
+#             FROM achievements
+#             ORDER BY id DESC
+#         ''').fetchall()
+#     except:
+#         ach = []
 
-    try:
-        students = db.execute('''
-            SELECT id, name, class_name
-            FROM students
-            ORDER BY class_name, name
-        ''').fetchall()
-    except:
-        students = []
+#     try:
+#         students = db.execute('''
+#             SELECT id, name, class_name
+#             FROM students
+#             ORDER BY class_name, name
+#         ''').fetchall()
+#     except:
+#         students = []
 
-    classes = [
-        'UKG',
-        'Class 1',
-        'Class 2',
-        'Class 3',
-        'Class 4',
-        'Class 5',
-        'Class 6',
-        'Class 7',
-        'Class 8',
-        'Class 9',
-        'Class 10'
-    ]
+#     classes = [
+#         'UKG',
+#         'Class 1',
+#         'Class 2',
+#         'Class 3',
+#         'Class 4',
+#         'Class 5',
+#         'Class 6',
+#         'Class 7',
+#         'Class 8',
+#         'Class 9',
+#         'Class 10'
+#     ]
 
-    return render_template(
-        'admin_achievements.html',
-        items=ach,
-        students=students,
-        classes=classes
-    )
+#     return render_template(
+#         'admin_achievements.html',
+#         items=ach,
+#         students=students,
+#         classes=classes
+#     )
 
     
+
+# @app.route('/admin/add_achievement', methods=['POST'])
+# def add_achievement():
+#     if session.get('role') != 'admin': return redirect('/admin/login')
+#     db = get_db()
+#     sid        = request.form.get('student_id') or None
+#     sname      = request.form.get('student_name','').strip()
+#     cls        = request.form.get('class_name','')
+#     # If student selected from dropdown, get their name and class
+#     if sid:
+#         s = db.execute('SELECT name, class_name FROM students WHERE id=?',(sid,)).fetchone()
+#         if s:
+#             sname = s['name']
+#             cls   = s['class_name']
+#     # Handle photo upload
+#     photo = None
+#     if 'photo' in request.files and request.files['photo'].filename:
+#         file = request.files['photo']
+#         ext  = file.filename.rsplit('.',1)[-1].lower() if '.' in file.filename else 'jpg'
+#         if ext in {'jpg','jpeg','png','gif','webp'}:
+#             fname = f"ach_{uuid.uuid4().hex[:8]}.{ext}"
+#             path  = os.path.join(app.root_path,'static','uploads','achievements',fname)
+#             os.makedirs(os.path.dirname(path), exist_ok=True)
+#             file.save(path)
+#             photo = fname
+#     db.execute('''INSERT INTO achievements
+#         (student_id,student_name,class_name,title,category,description,achievement_date,is_featured,photo)
+#         VALUES (?,?,?,?,?,?,?,?,?)''',
+#         (sid, sname, cls,
+#          request.form.get('title',''),
+#          request.form.get('category','Academic'),
+#          request.form.get('description',''),
+#          request.form.get('achievement_date',''),
+#          1 if request.form.get('is_featured') else 0,
+#          photo))
+#     db.commit()
+#     flash('Achievement added!','success')
+#     return redirect('/admin/achievements')
+
+# @app.route('/achievers/<int:aid>')
+# def achiever_detail(aid):
+#     db = get_db()
+
+#     # current achiever
+#     item = db.execute("""
+#         SELECT * FROM achievements WHERE id=?
+#     """, (aid,)).fetchone()
+
+#     if not item:
+#         return "Not Found", 404
+
+#     # same class ke aur achievers
+#     others = db.execute("""
+#         SELECT * FROM achievements 
+#         WHERE class_name=? AND id!=?
+#         LIMIT 4
+#     """, (item['class_name'], aid)).fetchall()
+
+#     return render_template('achiever_detail.html', item=item, others=others)
+ 
+
+
+
+
+@app.route('/achievements')
+def achievements():
+    db = get_db()
+    featured = []  # featured column removed
+    all_ach  = db.execute('SELECT a.*, s.name as student_name FROM achievements a LEFT JOIN students s ON a.student_id=s.id ORDER BY a.achievement_date DESC').fetchall()
+    categories = db.execute('SELECT DISTINCT category FROM achievements ORDER BY category').fetchall()
+    sel_cat  = request.args.get('category','All')
+    if sel_cat != 'All':
+        all_ach = [a for a in all_ach if a['category']==sel_cat]
+    return render_template('achievements.html', featured=featured, all_ach=all_ach, categories=categories, sel_cat=sel_cat)
+
+@app.route('/admin/achievements')
+def admin_achievements():
+    if session.get('role') != 'admin': return redirect('/admin/login')
+    db = get_db()
+    ach      = db.execute('SELECT a.*, s.name as student_name FROM achievements a LEFT JOIN students s ON a.student_id=s.id ORDER BY a.created_at DESC').fetchall()
+    students = db.execute('SELECT id, name, class_name FROM students ORDER BY class_name, name').fetchall()
+    return render_template('admin_achievements.html', achievements=ach, students=students)
 
 @app.route('/admin/add_achievement', methods=['POST'])
 def add_achievement():
     if session.get('role') != 'admin': return redirect('/admin/login')
     db = get_db()
-    sid        = request.form.get('student_id') or None
-    sname      = request.form.get('student_name','').strip()
-    cls        = request.form.get('class_name','')
-    # If student selected from dropdown, get their name and class
-    if sid:
-        s = db.execute('SELECT name, class_name FROM students WHERE id=?',(sid,)).fetchone()
-        if s:
-            sname = s['name']
-            cls   = s['class_name']
-    # Handle photo upload
-    photo = None
-    if 'photo' in request.files and request.files['photo'].filename:
-        file = request.files['photo']
-        ext  = file.filename.rsplit('.',1)[-1].lower() if '.' in file.filename else 'jpg'
-        if ext in {'jpg','jpeg','png','gif','webp'}:
-            fname = f"ach_{uuid.uuid4().hex[:8]}.{ext}"
-            path  = os.path.join(app.root_path,'static','uploads','achievements',fname)
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            file.save(path)
-            photo = fname
-    db.execute('''INSERT INTO achievements
-        (student_id,student_name,class_name,title,category,description,achievement_date,is_featured,photo)
-        VALUES (?,?,?,?,?,?,?,?,?)''',
-        (sid, sname, cls,
-         request.form.get('title',''),
-         request.form.get('category','Academic'),
-         request.form.get('description',''),
-         request.form.get('achievement_date',''),
-         1 if request.form.get('is_featured') else 0,
-         photo))
+    sid = request.form.get('student_id') or None
+    db.execute('INSERT INTO achievements (student_id,title,category,description,achievement_date,awarded_by,class_name,is_featured) VALUES (?,?,?,?,?,?,?,?)',
+        (sid, request.form['title'], request.form['category'],
+         request.form.get('description',''), request.form.get('achievement_date',''),
+         request.form.get('awarded_by',''), request.form.get('class_name',''),
+         1 if request.form.get('is_featured') else 0))
     db.commit()
     flash('Achievement added!','success')
     return redirect('/admin/achievements')
 
-@app.route('/achievers/<int:aid>')
-def achiever_detail(aid):
+@app.route('/admin/delete_achievement/<int:aid>', methods=['POST'])
+def delete_achievement(aid):
+    if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
     db = get_db()
+    db.execute('DELETE FROM achievements WHERE id=?',(aid,)); db.commit()
+    return jsonify({'success':True})
 
-    # current achiever
-    item = db.execute("""
-        SELECT * FROM achievements WHERE id=?
-    """, (aid,)).fetchone()
+@app.route('/admin/toggle_featured/<int:aid>', methods=['POST'])
+def toggle_featured(aid):
+    if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
+    db = get_db()
+    cur = db.execute('SELECT is_featured FROM achievements WHERE id=?',(aid,)).fetchone()
+    db.execute('UPDATE achievements SET is_featured=? WHERE id=?',(0 if cur['is_featured'] else 1, aid)); db.commit()
+    return jsonify({'success':True})
 
-    if not item:
-        return "Not Found", 404
 
-    # same class ke aur achievers
-    others = db.execute("""
-        SELECT * FROM achievements 
-        WHERE class_name=? AND id!=?
-        LIMIT 4
-    """, (item['class_name'], aid)).fetchall()
 
-    return render_template('achiever_detail.html', item=item, others=others)
- 
+
+
+
+
+
 
 
 
