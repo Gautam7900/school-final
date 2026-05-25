@@ -222,7 +222,24 @@ def init_db():
            file_name TEXT,
            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        )
-
+       
+    CREATE TABLE students (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           roll_number TEXT UNIQUE,
+           name TEXT,
+           father_name TEXT,
+           mobile TEXT,
+           email TEXT,
+           dob TEXT,
+           class_name TEXT,
+           address TEXT,
+           status TEXT DEFAULT 'Registered',
+           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       );
+                     
+          ALTER TABLE admissions
+          ADD COLUMN pdf_file TEXT;
+                     
 
     ''')
 

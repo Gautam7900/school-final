@@ -3352,6 +3352,9 @@ import os, uuid
 import os
 import uuid
 from flask import send_from_directory
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
 
 
 
@@ -3683,9 +3686,10 @@ def admin_dashboard():
     students    = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
     teachers    = db.execute('SELECT * FROM teachers ORDER BY name').fetchall()
     all_notices = db.execute('SELECT * FROM notices ORDER BY created_at DESC').fetchall()
+    students    = db.execute('SELECT * FROM students ORDER BY id DESC').fetchall()
     return render_template('admin_dashboard.html',
         stats=stats, admissions=admissions, messages=messages,
-        students=students, teachers=teachers, all_notices=all_notices)
+        students=students, teachers=teachers, all_notices=all_notices,students=students)
 
 # ── ADMIN STUDENTS ─────────────────────────────────────────────────────────────
 @app.route('/admin/add_student', methods=['POST'])
@@ -3785,6 +3789,29 @@ def delete_notice(nid):
     return jsonify({'success':True})
 
 # ── ADMIN ADMISSIONS ───────────────────────────────────────────────────────────
+@app.route('/admin/admission/<int:aid>')
+def admin_admission_detail(aid):
+
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
+
+    db = get_db()
+
+    application = db.execute('''
+        SELECT *
+        FROM admissions
+        WHERE id=?
+    ''', (aid,)).fetchone()
+
+    if not application:
+        return "Application Not Found", 404
+
+    return render_template(
+        'admin_admission_detail.html',
+        application=application
+    )
+
+
 @app.route('/admin/update_admission_status', methods=['POST'])
 def update_admission_status():
     if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
@@ -3803,6 +3830,206 @@ def delete_message(mid):
     if session.get('role') != 'admin': return jsonify({'error':'Unauthorized'}), 401
     db = get_db(); db.execute('DELETE FROM contact_messages WHERE id=?', (mid,)); db.commit()
     return jsonify({'success':True})
+
+
+@app.route('/student-registration')
+def student_registration():
+
+    return render_template(
+        'student_registration.html'
+    )
+
+
+
+
+
+
+@app.route('/register_student', methods=['POST'])
+def register_student():
+
+    db = get_db()
+
+    name = request.form['name']
+    class_name = request.form['class_name']
+
+    # CLASS CODE
+
+    class_code = class_name.replace('Class ','C')
+
+    # LAST STUDENT
+
+    last = db.execute('''
+        SELECT roll_number
+        FROM students
+        WHERE class_name=?
+        ORDER BY id DESC
+        LIMIT 1
+    ''', (class_name,)).fetchone()
+
+    # NEXT NUMBER
+
+    if last:
+
+        last_num = int(
+            last['roll_number'].split('-')[1]
+        )
+
+        new_num = last_num + 1
+
+    else:
+
+        new_num = 1
+
+    # FINAL ROLL
+
+    roll_number = f"{class_code}-{new_num:03d}"
+
+    # INSERT STUDENT
+
+    db.execute('''
+        INSERT INTO students
+        (
+            roll_number,
+            name,
+            father_name,
+            mobile,
+            email,
+            dob,
+            class_name,
+            address
+        )
+
+        VALUES (?,?,?,?,?,?,?,?)
+    ''', (
+
+        roll_number,
+        name,
+        request.form['father_name'],
+        request.form['mobile'],
+        request.form['email'],
+        request.form['dob'],
+        class_name,
+        request.form['address']
+    ))
+
+    db.commit()
+
+    flash(
+        f'Registration Successful! Roll No: {roll_number}',
+        'success'
+    )
+
+    return redirect('/admission-form') 
+
+
+
+
+
+    @app.route('/submit_admission', methods=['POST'])
+def submit_admission():
+
+    db = get_db()
+
+    name = request.form['student_name']
+    father = request.form['father_name']
+    class_name = request.form['class_name']
+    mobile = request.form['mobile']
+    address = request.form['address']
+
+    # SAVE TO DATABASE
+
+    cursor = db.execute('''
+        INSERT INTO admissions
+        (
+            student_name,
+            father_name,
+            class_name,
+            mobile,
+            address
+        )
+
+        VALUES (?,?,?,?,?)
+    ''', (
+        name,
+        father,
+        class_name,
+        mobile,
+        address
+    ))
+
+    db.commit()
+
+    admission_id = cursor.lastrowid
+
+    # PDF FILE NAME
+
+    pdf_filename = f"admission_{admission_id}.pdf"
+
+    pdf_path = os.path.join(
+        app.root_path,
+        'static',
+        'pdfs',
+        pdf_filename
+    )
+
+    # CREATE PDF
+
+    doc = SimpleDocTemplate(
+        pdf_path,
+        pagesize=A4
+    )
+
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    elements.append(
+        Paragraph(
+            "<b>BrightMind School Admission Form</b>",
+            styles['Title']
+        )
+    )
+
+    elements.append(Spacer(1,20))
+
+    elements.append(
+        Paragraph(f"<b>Student Name:</b> {name}", styles['BodyText'])
+    )
+
+    elements.append(
+        Paragraph(f"<b>Father Name:</b> {father}", styles['BodyText'])
+    )
+
+    elements.append(
+        Paragraph(f"<b>Class:</b> {class_name}", styles['BodyText'])
+    )
+
+    elements.append(
+        Paragraph(f"<b>Mobile:</b> {mobile}", styles['BodyText'])
+    )
+
+    elements.append(
+        Paragraph(f"<b>Address:</b> {address}", styles['BodyText'])
+    )
+
+    doc.build(elements)
+
+    # SAVE PDF NAME
+
+    db.execute('''
+        UPDATE admissions
+        SET pdf_file=?
+        WHERE id=?
+    ''', (
+        pdf_filename,
+        admission_id
+    ))
+
+    db.commit()
+
+    flash('Admission submitted successfully!', 'success')
+
+    return redirect('/admissions')   
 
 # ── ADMIN TEACHER ASSIGNMENTS ──────────────────────────────────────────────────
 @app.route('/admin/teacher_assignments')
