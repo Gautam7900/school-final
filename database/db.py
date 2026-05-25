@@ -246,7 +246,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         subject TEXT
-    );
+       );
 
     CREATE TABLE IF NOT EXISTS admissions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -255,12 +255,11 @@ def init_db():
         class_name TEXT,
         mobile TEXT,
         address TEXT
-    );
+        );
                      
-          ALTER TABLE admissions
-          ADD COLUMN pdf_file TEXT;
+        ALTER TABLE admissions
+        ADD COLUMN pdf_file TEXT;
                      
-
     ''')
 
     if db.execute('SELECT COUNT(*) FROM students').fetchone()[0] == 0:
