@@ -185,315 +185,374 @@ block content %}
           <div id="attMsg" style="margin-top: 0.75rem; font-size: 0.9rem"></div>
         </div>
       </div>
-
-      <!-- SYLLABUS UPLOAD -->
-      <div class="dash-card">
-        <div class="dash-card-header">
-          <h3>📘 Upload Syllabus</h3>
-        </div>
-
-        <div class="dash-card-body">
-          <form
-            action="/teacher/upload_syllabus"
-            method="POST"
-            enctype="multipart/form-data"
-          >
+      <!-- ASSIGN HOMEWORK -->
+      <div class="grid-2">
+        <div class="dash-card">
+          <div class="dash-card-header"><h3>📚 Assign Homework</h3></div>
+          <div class="dash-card-body">
             <div class="form-row">
               <div class="form-group">
                 <label>Class</label>
-
-                <select class="form-control" name="class_name" required>
+                <select class="form-control" id="hwClass">
                   {% for cls in classes %}
                   <option>{{ cls['class_name'] }}</option>
                   {% endfor %}
                 </select>
               </div>
-
               <div class="form-group">
                 <label>Subject</label>
-
                 <input
-                  type="text"
                   class="form-control"
-                  name="subject"
+                  type="text"
+                  id="hwSubject"
                   placeholder="e.g. Mathematics"
-                  required
                 />
               </div>
             </div>
-
             <div class="form-group">
-              <label>Syllabus Title</label>
-
-              <input
-                type="text"
+              <label>Task Description</label>
+              <textarea
                 class="form-control"
-                name="title"
-                placeholder="e.g. Class 10 Maths Syllabus"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label>Upload PDF</label>
-
-              <input
-                type="file"
-                class="form-control"
-                name="pdf"
-                accept=".pdf"
-                required
-              />
-            </div>
-
-            <button class="btn btn-gold">📤 Upload Syllabus</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- ASSIGN HOMEWORK -->
-    <div class="grid-2">
-      <div class="dash-card">
-        <div class="dash-card-header"><h3>📚 Assign Homework</h3></div>
-        <div class="dash-card-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Class</label>
-              <select class="form-control" id="hwClass">
-                {% for cls in classes %}
-                <option>{{ cls['class_name'] }}</option>
-                {% endfor %}
-              </select>
+                id="hwDesc"
+                rows="3"
+                placeholder="Describe the homework assignment..."
+              ></textarea>
             </div>
             <div class="form-group">
-              <label>Subject</label>
-              <input
-                class="form-control"
-                type="text"
-                id="hwSubject"
-                placeholder="e.g. Mathematics"
-              />
+              <label>Due Date</label>
+              <input class="form-control" type="date" id="hwDue" />
             </div>
+            <button class="btn btn-gold" onclick="uploadHomework()">
+              Assign Homework
+            </button>
+            <div
+              id="hwMsg"
+              style="margin-top: 0.75rem; font-size: 0.9rem"
+            ></div>
           </div>
-          <div class="form-group">
-            <label>Task Description</label>
-            <textarea
-              class="form-control"
-              id="hwDesc"
-              rows="3"
-              placeholder="Describe the homework assignment..."
-            ></textarea>
-          </div>
-          <div class="form-group">
-            <label>Due Date</label>
-            <input class="form-control" type="date" id="hwDue" />
-          </div>
-          <button class="btn btn-gold" onclick="uploadHomework()">
-            Assign Homework
-          </button>
-          <div id="hwMsg" style="margin-top: 0.75rem; font-size: 0.9rem"></div>
-        </div>
-      </div>
-
-      <!-- EXISTING HOMEWORK -->
-      <div class="dash-card">
-        <div class="dash-card-header"><h3>📋 Recent Homework</h3></div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Subject</th>
-                <th>Due</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for hw in homework[:10] %}
-              <tr>
-                <td>{{ hw['class_name'] }}</td>
-                <td>{{ hw['subject'] }}</td>
-                <td style="color: var(--orange); font-weight: 600">
-                  {{ hw['due_date'] }}
-                </td>
-              </tr>
-              {% endfor %} {% if not homework %}
-              <tr>
-                <td
-                  colspan="3"
-                  style="
-                    text-align: center;
-                    color: var(--muted);
-                    padding: 1.5rem;
-                  "
-                >
-                  No homework yet.
-                </td>
-              </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- UPLOADED SYLLABUS -->
-
-      <div class="dash-card">
-        <div class="dash-card-header">
-          <h3>📚 Uploaded Syllabus</h3>
         </div>
 
-        <div class="dash-card-body">
+        <!-- EXISTING HOMEWORK -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>📋 Recent Homework</h3>
+          </div>
+
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Class</th>
                   <th>Subject</th>
-                  <th>Title</th>
+                  <th>Due</th>
                   <th>Action</th>
                 </tr>
               </thead>
 
               <tbody>
-                {% for s in syllabus_list %}
+                {% for hw in homework[:10] %}
 
                 <tr>
-                  <td>{{ s['class_name'] }}</td>
+                  <td>{{ hw['class_name'] }}</td>
 
-                  <td>{{ s['subject'] }}</td>
+                  <td>{{ hw['subject'] }}</td>
 
-                  <td>{{ s['title'] }}</td>
+                  <td style="color: var(--orange); font-weight: 600">
+                    {{ hw['due_date'] }}
+                  </td>
 
+                  <!-- ACTION BUTTONS -->
                   <td>
-                    <form
-                      action="/teacher/delete_syllabus/{{ s['id'] }}"
-                      method="POST"
-                    >
-                      <button
-                        class="btn btn-sm"
-                        style="background: #c62828; color: white"
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                      <!-- EDIT BUTTON -->
+
+                      <a
+                        href="/teacher/edit_homework/{{ hw['id'] }}"
+                        style="
+                          background: #132b6b;
+                          color: white;
+                          padding: 8px 14px;
+                          border-radius: 10px;
+                          text-decoration: none;
+                          font-size: 0.85rem;
+                          font-weight: 700;
+                        "
                       >
-                        Delete
-                      </button>
-                    </form>
+                        ✏️ Edit
+                      </a>
+
+                      <!-- DELETE BUTTON -->
+
+                      <form
+                        action="/teacher/delete_homework/{{ hw['id'] }}"
+                        method="POST"
+                        onsubmit="return confirm('Delete this homework?');"
+                      >
+                        <button
+                          type="submit"
+                          style="
+                            background: #c62828;
+                            color: white;
+                            border: none;
+                            padding: 8px 14px;
+                            border-radius: 10px;
+                            font-size: 0.85rem;
+                            font-weight: 700;
+                            cursor: pointer;
+                          "
+                        >
+                          🗑 Delete
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
 
-                {% endfor %}
+                {% endfor %} {% if not homework %}
+
+                <tr>
+                  <td
+                    colspan="4"
+                    style="
+                      text-align: center;
+                      color: var(--muted);
+                      padding: 1.5rem;
+                    "
+                  >
+                    No homework yet.
+                  </td>
+                </tr>
+
+                {% endif %}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- SYLLABUS UPLOAD -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>📘 Upload Syllabus</h3>
+          </div>
+
+          <div class="dash-card-body">
+            <form
+              action="/teacher/upload_syllabus"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Class</label>
+
+                  <select class="form-control" name="class_name" required>
+                    {% for cls in classes %}
+                    <option>{{ cls['class_name'] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Subject</label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="subject"
+                    placeholder="e.g. Mathematics"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Syllabus Title</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  placeholder="e.g. Class 10 Maths Syllabus"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Upload PDF</label>
+
+                <input
+                  type="file"
+                  class="form-control"
+                  name="pdf"
+                  accept=".pdf"
+                  required
+                />
+              </div>
+
+              <button class="btn btn-gold">📤 Upload Syllabus</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- UPLOADED SYLLABUS -->
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>📚 Uploaded Syllabus</h3>
+          </div>
+
+          <div class="dash-card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Title</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for s in syllabus_list %}
+
+                  <tr>
+                    <td>{{ s['class_name'] }}</td>
+
+                    <td>{{ s['subject'] }}</td>
+
+                    <td>{{ s['title'] }}</td>
+
+                    <td>
+                      <form
+                        action="/teacher/delete_syllabus/{{ s['id'] }}"
+                        method="POST"
+                      >
+                        <button
+                          class="btn btn-sm"
+                          style="background: #c62828; color: white"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  {% endblock %} {% block scripts %}
+  <script>
+    // Set today as default attendance date
+    document.getElementById("attDate").value = new Date()
+      .toISOString()
+      .split("T")[0];
+
+    function filterStudents() {
+      const cls = document.getElementById("attClass").value;
+      document.querySelectorAll(".att-row").forEach((row) => {
+        row.style.display = !cls || row.dataset.class === cls ? "" : "none";
+      });
+    }
+
+    async function uploadMarks() {
+      const sid = document.getElementById("marksStudent").value;
+      const sub = document.getElementById("marksSubject").value;
+      const marks = document.getElementById("marksObtained").value;
+      const max = document.getElementById("marksMax").value;
+      const exam = document.getElementById("marksExamType").value;
+      if (!sid || !sub || !marks) {
+        showMsg("marksMsg", "Please fill all fields.", "error");
+        return;
+      }
+      const res = await fetch("/teacher/upload_marks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: sid,
+          subject: sub,
+          marks: parseFloat(marks),
+          max_marks: parseFloat(max),
+          exam_type: exam,
+        }),
+      });
+      const data = await res.json();
+      showMsg(
+        "marksMsg",
+        data.success
+          ? "✅ Marks uploaded successfully!"
+          : "❌ Error: " + data.error,
+        data.success ? "success" : "error",
+      );
+    }
+
+    async function markAttendance() {
+      const date = document.getElementById("attDate").value;
+      if (!date) {
+        showMsg("attMsg", "Please select a date.", "error");
+        return;
+      }
+      const records = [];
+      document.querySelectorAll("[data-sid]").forEach((inp) => {
+        if (inp.checked)
+          records.push({ student_id: inp.dataset.sid, status: inp.value });
+      });
+      const res = await fetch("/teacher/attendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, records }),
+      });
+      const data = await res.json();
+      showMsg(
+        "attMsg",
+        data.success ? "✅ Attendance saved!" : "❌ " + data.error,
+        data.success ? "success" : "error",
+      );
+    }
+
+    async function uploadHomework() {
+      const cls = document.getElementById("hwClass").value;
+      const sub = document.getElementById("hwSubject").value;
+      const desc = document.getElementById("hwDesc").value;
+      const due = document.getElementById("hwDue").value;
+      if (!sub || !desc || !due) {
+        showMsg("hwMsg", "Please fill all fields.", "error");
+        return;
+      }
+      const res = await fetch("/teacher/upload_homework", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          class_name: cls,
+          subject: sub,
+          description: desc,
+          due_date: due,
+        }),
+      });
+      const data = await res.json();
+      showMsg(
+        "hwMsg",
+        data.success ? "✅ Homework assigned!" : "❌ " + data.error,
+        data.success ? "success" : "error",
+      );
+      if (data.success) {
+        document.getElementById("hwSubject").value = "";
+        document.getElementById("hwDesc").value = "";
+        document.getElementById("hwDue").value = "";
+      }
+    }
+
+    function showMsg(id, msg, type) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.style.color = type === "success" ? "#2e7d32" : "#c62828";
+    }
+  </script>
+  {% endblock %}
 </div>
-{% endblock %} {% block scripts %}
-<script>
-  // Set today as default attendance date
-  document.getElementById("attDate").value = new Date()
-    .toISOString()
-    .split("T")[0];
-
-  function filterStudents() {
-    const cls = document.getElementById("attClass").value;
-    document.querySelectorAll(".att-row").forEach((row) => {
-      row.style.display = !cls || row.dataset.class === cls ? "" : "none";
-    });
-  }
-
-  async function uploadMarks() {
-    const sid = document.getElementById("marksStudent").value;
-    const sub = document.getElementById("marksSubject").value;
-    const marks = document.getElementById("marksObtained").value;
-    const max = document.getElementById("marksMax").value;
-    const exam = document.getElementById("marksExamType").value;
-    if (!sid || !sub || !marks) {
-      showMsg("marksMsg", "Please fill all fields.", "error");
-      return;
-    }
-    const res = await fetch("/teacher/upload_marks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        student_id: sid,
-        subject: sub,
-        marks: parseFloat(marks),
-        max_marks: parseFloat(max),
-        exam_type: exam,
-      }),
-    });
-    const data = await res.json();
-    showMsg(
-      "marksMsg",
-      data.success
-        ? "✅ Marks uploaded successfully!"
-        : "❌ Error: " + data.error,
-      data.success ? "success" : "error",
-    );
-  }
-
-  async function markAttendance() {
-    const date = document.getElementById("attDate").value;
-    if (!date) {
-      showMsg("attMsg", "Please select a date.", "error");
-      return;
-    }
-    const records = [];
-    document.querySelectorAll("[data-sid]").forEach((inp) => {
-      if (inp.checked)
-        records.push({ student_id: inp.dataset.sid, status: inp.value });
-    });
-    const res = await fetch("/teacher/attendance", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, records }),
-    });
-    const data = await res.json();
-    showMsg(
-      "attMsg",
-      data.success ? "✅ Attendance saved!" : "❌ " + data.error,
-      data.success ? "success" : "error",
-    );
-  }
-
-  async function uploadHomework() {
-    const cls = document.getElementById("hwClass").value;
-    const sub = document.getElementById("hwSubject").value;
-    const desc = document.getElementById("hwDesc").value;
-    const due = document.getElementById("hwDue").value;
-    if (!sub || !desc || !due) {
-      showMsg("hwMsg", "Please fill all fields.", "error");
-      return;
-    }
-    const res = await fetch("/teacher/upload_homework", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        class_name: cls,
-        subject: sub,
-        description: desc,
-        due_date: due,
-      }),
-    });
-    const data = await res.json();
-    showMsg(
-      "hwMsg",
-      data.success ? "✅ Homework assigned!" : "❌ " + data.error,
-      data.success ? "success" : "error",
-    );
-    if (data.success) {
-      document.getElementById("hwSubject").value = "";
-      document.getElementById("hwDesc").value = "";
-      document.getElementById("hwDue").value = "";
-    }
-  }
-
-  function showMsg(id, msg, type) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.style.color = type === "success" ? "#2e7d32" : "#c62828";
-  }
-</script>
-{% endblock %}

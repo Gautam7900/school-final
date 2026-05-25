@@ -3524,6 +3524,28 @@ def upload_homework():
         (d['class_name'],d['subject'],d['description'],d['due_date'],session['teacher_id']))
     db.commit(); return jsonify({'success':True})
 
+# DELETE HOMEWORK ROUTE
+
+@app.route('/teacher/delete_homework/<int:hid>', methods=['POST'])
+def delete_homework(hid):
+
+    if session.get('role') != 'teacher':
+        return redirect('/teacher/login')
+
+    db = get_db()
+
+    db.execute(
+        'DELETE FROM homework WHERE id=?',
+        (hid,)
+    )
+
+    db.commit()
+
+    flash('Homework deleted successfully!', 'success')
+
+    return redirect('/teacher/dashboard')
+
+
 
 @app.route('/teacher/upload_syllabus', methods=['POST'])
 def upload_syllabus():
