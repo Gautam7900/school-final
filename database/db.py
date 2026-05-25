@@ -15,13 +15,7 @@ def init_db():
     db = sqlite3.connect(DATABASE)
     db.row_factory = sqlite3.Row
     db.executescript('''
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL, class_name TEXT NOT NULL,
-            roll_number TEXT UNIQUE NOT NULL, parent_name TEXT,
-            contact TEXT, password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
+        
         CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, subject TEXT NOT NULL,
