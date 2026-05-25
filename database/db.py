@@ -224,6 +224,7 @@ def init_db():
            name TEXT,
            parent_name TEXT,
            mobile TEXT,
+           password TEXT,
            email TEXT,
            dob TEXT,
            class_name TEXT,
