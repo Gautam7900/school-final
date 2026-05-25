@@ -3693,8 +3693,7 @@ def admin_dashboard():
     teachers    = db.execute('SELECT * FROM teachers ORDER BY name').fetchall()
     all_notices = db.execute('SELECT * FROM notices ORDER BY created_at DESC').fetchall()
     students    = db.execute('SELECT * FROM students ORDER BY id DESC').fetchall()
-    return render_template('admin_dashboard.html',students=students,teachers=teachers,all_notices=all_notices,admissions=admissions,messages=messages,stats=stats)
-
+    return render_template('admin_dashboard.html',students=students,teachers=teachers,all_notices=all_notices)
 # ── ADMIN STUDENTS ─────────────────────────────────────────────────────────────
 @app.route('/admin/add_student', methods=['POST'])
 def add_student():
