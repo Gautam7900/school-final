@@ -3492,53 +3492,54 @@ def teacher_login():
 
 
 
-@app.route('/teacher/dashboard')
-def teacher_dashboard():
-
-    if session.get('role') != 'teacher':
-        return redirect('/teacher/login')
-
-    db = get_db()
-
-    students = db.execute('''
-        SELECT * FROM students
-        ORDER BY class_name, roll_number
-    ''').fetchall()
-
-    classes = db.execute('''
-        SELECT DISTINCT class_name
-        FROM students
-        ORDER BY class_name
-    ''').fetchall()
-
-    homework = db.execute('''
-        SELECT *
-        FROM homework
-        ORDER BY created_at DESC
-    ''').fetchall()
-
-    syllabus_list = db.execute('''
-        SELECT *
-        FROM syllabus
-        ORDER BY id DESC
-    ''').fetchall()
-
-    return render_template(
-        'teacher_dashboard.html',
-        students=students,
-        classes=classes,
-        homework=homework,
-        syllabus_list=syllabus_list
-    )
-
 # @app.route('/teacher/dashboard')
 # def teacher_dashboard():
-#     if session.get('role') != 'teacher': return redirect('/teacher/login')
+
+#     if session.get('role') != 'teacher':
+#         return redirect('/teacher/login')
+
 #     db = get_db()
-#     classes  = db.execute('SELECT DISTINCT class_name FROM students ORDER BY class_name').fetchall()
-#     students = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
-#     homework = db.execute('SELECT h.*,t.name as tname FROM homework h JOIN teachers t ON h.teacher_id=t.id ORDER BY due_date DESC').fetchall()
-#     return render_template('teacher_dashboard.html', classes=classes, students=students, homework=homework)
+
+#     students = db.execute('''
+#         SELECT * FROM students
+#         ORDER BY class_name, roll_number
+#     ''').fetchall()
+
+#     classes = db.execute('''
+#         SELECT DISTINCT class_name
+#         FROM students
+#         ORDER BY class_name
+#     ''').fetchall()
+
+#     homework = db.execute('''
+#         SELECT *
+#         FROM homework
+#         ORDER BY created_at DESC
+#     ''').fetchall()
+
+    # syllabus_list = db.execute('''
+    #     SELECT *
+    #     FROM syllabus
+    #     ORDER BY id DESC
+    # ''').fetchall()
+
+#     return render_template(
+#         'teacher_dashboard.html',
+#         students=students,
+#         classes=classes,
+#         homework=homework,
+#         syllabus_list=syllabus_list
+#     )
+
+@app.route('/teacher/dashboard')
+def teacher_dashboard():
+    if session.get('role') != 'teacher': return redirect('/teacher/login')
+    db = get_db()
+    classes  = db.execute('SELECT DISTINCT class_name FROM students ORDER BY class_name').fetchall()
+    students = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
+    homework = db.execute('SELECT h.*,t.name as tname FROM homework h JOIN teachers t ON h.teacher_id=t.id ORDER BY due_date DESC').fetchall()
+    syllabus_list = db.execute('SELECT * FROM syllabus ORDER BY id DESC').fetchall()
+    return render_template('teacher_dashboard.html', classes=classes, students=students, homework=homework, syllabus_list=syllabus_list)
 
 @app.route('/teacher/upload_marks', methods=['POST'])
 def upload_marks():
@@ -3685,9 +3686,7 @@ def delete_syllabus(sid):
     return redirect('/teacher/dashboard')
 
 
-@app.route('/teacher/logout')
-def teacher_logout():
-    session.clear(); return redirect('/')
+
 
 # ── ADMIN LOGIN ────────────────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET','POST'])
