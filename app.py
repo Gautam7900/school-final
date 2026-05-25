@@ -3523,6 +3523,8 @@ def upload_homework():
     db.execute('INSERT INTO homework (class_name,subject,description,due_date,teacher_id) VALUES (?,?,?,?,?)',
         (d['class_name'],d['subject'],d['description'],d['due_date'],session['teacher_id']))
     db.commit(); return jsonify({'success':True})
+
+
 @app.route('/teacher/upload_syllabus', methods=['POST'])
 def upload_syllabus():
 
@@ -3578,7 +3580,7 @@ def upload_syllabus():
 
 
 
-    @app.route('/teacher/delete_syllabus/<int:sid>', methods=['POST'])
+@app.route('/teacher/delete_syllabus/<int:sid>', methods=['POST'])
 def delete_syllabus(sid):
 
     if session.get('role') != 'teacher':
