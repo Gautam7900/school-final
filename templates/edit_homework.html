@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block title %}Edit Homework{% endblock %} {% block
+content %}
+
+<section class="section bg-warm">
+  <div class="section-inner">
+    <div style="max-width: 700px; margin: auto">
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>✏️ Edit Homework</h3>
+        </div>
+
+        <div class="dash-card-body">
+          <form method="POST">
+            <div class="form-group">
+              <label>Class</label>
+
+              <input
+                type="text"
+                name="class_name"
+                class="form-control"
+                value="{{ homework['class_name'] }}"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Subject</label>
+
+              <input
+                type="text"
+                name="subject"
+                class="form-control"
+                value="{{ homework['subject'] }}"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Due Date</label>
+
+              <input
+                type="date"
+                name="due_date"
+                class="form-control"
+                value="{{ homework['due_date'] }}"
+                required
+              />
+            </div>
+
+            <button class="btn btn-gold">💾 Update Homework</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
