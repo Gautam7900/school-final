@@ -219,7 +219,7 @@ def init_db():
            id INTEGER PRIMARY KEY AUTOINCREMENT,
            roll_number TEXT UNIQUE,
            name TEXT,
-           father_name TEXT,
+           parent_name TEXT,
            mobile TEXT,
            email TEXT,
            dob TEXT,
@@ -228,6 +228,8 @@ def init_db():
            status TEXT DEFAULT 'Registered',
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
+       
+    
                      
         ALTER TABLE admissions
         ADD COLUMN pdf_file TEXT;
