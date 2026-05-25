@@ -163,9 +163,10 @@
             </tr>
           </thead>
 <tbody>
+
 {% for a in admissions %}
 
-<tr>
+<tr id="adm-row-{{ a['id'] }}">
 
     <td>{{ loop.index }}</td>
 
@@ -173,27 +174,19 @@
         <strong>{{ a['name'] }}</strong>
     </td>
 
-    <td>
-        {{ a['class_name'] }}
-    </td>
+    <td>{{ a['class_name'] }}</td>
 
-    <td>
-        {{ a['parent_name'] }}
-    </td>
+    <td>{{ a['parent_name'] }}</td>
 
-    <td>
-        {{ a['contact'] }}
-    </td>
+    <td>{{ a['contact'] }}</td>
 
-    <td>
-        {{ a.get('email') }}
-    </td>
+    <td>{{ a.get('email', '-') }}</td>
 
     <td>
 
-        {% if a['pdf_file'] %}
+        {% if a.get('pdf_file') %}
 
-        <a href="/static/uploads/admissions/{{ a.get('pdf_file') }}"
+        <a href="/static/uploads/admissions/{{ a['pdf_file'] }}"
            target="_blank"
            class="btn btn-sm btn-navy">
 
@@ -237,12 +230,10 @@
     </td>
 
     <td>
-        {{ a.get('created_at') }}
+        {{ a.get('created_at', '-') }}
     </td>
 
     <td style="display:flex;gap:8px;">
-
-        <!-- VIEW FORM BUTTON -->
 
         <a href="/admin/admission/{{ a['id'] }}"
            class="btn btn-sm btn-gold">
@@ -250,8 +241,6 @@
            👁 View Form
 
         </a>
-
-        <!-- DELETE BUTTON -->
 
         <button
             onclick="deleteAdmission({{ a['id'] }})"
@@ -283,11 +272,6 @@
 {% endif %}
 
 </tbody>
-            {% endfor %}
-            {% if not admissions %}
-            <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2.5rem;">No applications yet.</td></tr>
-            {% endif %}
-          </tbody>
         </table>
       </div>
     </div>
@@ -600,7 +584,7 @@ async function deleteStudent(id, name) {
 // ── TEACHER: Delete ───────────────────────────────────────
 async function deleteTeacher(id, name) {
   if (!confirm(`Delete teacher "${name}"? This cannot be undone.`)) return;
-  const res = await fetch('/admin/delete_teacher_ajax/' + id, {method:'POST'});
+  const res = await fetch('/admin/delete_teacher/' + id, {method:'POST'});
   const data = await res.json();
   if (data.success) {
     document.getElementById('tch-row-' + id).remove();
