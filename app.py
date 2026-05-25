@@ -3491,46 +3491,6 @@ def teacher_login():
     return render_template('teacher_login.html')
 
 
-
-# @app.route('/teacher/dashboard')
-# def teacher_dashboard():
-
-#     if session.get('role') != 'teacher':
-#         return redirect('/teacher/login')
-
-#     db = get_db()
-
-#     students = db.execute('''
-#         SELECT * FROM students
-#         ORDER BY class_name, roll_number
-#     ''').fetchall()
-
-#     classes = db.execute('''
-#         SELECT DISTINCT class_name
-#         FROM students
-#         ORDER BY class_name
-#     ''').fetchall()
-
-#     homework = db.execute('''
-#         SELECT *
-#         FROM homework
-#         ORDER BY created_at DESC
-#     ''').fetchall()
-
-    # syllabus_list = db.execute('''
-    #     SELECT *
-    #     FROM syllabus
-    #     ORDER BY id DESC
-    # ''').fetchall()
-
-#     return render_template(
-#         'teacher_dashboard.html',
-#         students=students,
-#         classes=classes,
-#         homework=homework,
-#         syllabus_list=syllabus_list
-#     )
-
 @app.route('/teacher/dashboard')
 def teacher_dashboard():
     if session.get('role') != 'teacher': return redirect('/teacher/login')
@@ -3541,6 +3501,7 @@ def teacher_dashboard():
     syllabus_list = db.execute('SELECT * FROM syllabus ORDER BY id DESC').fetchall()
     return render_template('teacher_dashboard.html', classes=classes, students=students, homework=homework, syllabus_list=syllabus_list)
 
+
 @app.route('/teacher/upload_marks', methods=['POST'])
 def upload_marks():
     if session.get('role') != 'teacher': return jsonify({'error':'Unauthorized'}), 401
@@ -3548,6 +3509,7 @@ def upload_marks():
     db.execute('INSERT OR REPLACE INTO marks (student_id,subject,marks,max_marks,exam_type) VALUES (?,?,?,?,?)',
         (d['student_id'],d['subject'],d['marks'],d['max_marks'],d['exam_type']))
     db.commit(); return jsonify({'success':True})
+
 
 @app.route('/teacher/attendance', methods=['POST'])
 def mark_attendance():
@@ -3558,6 +3520,7 @@ def mark_attendance():
             (r['student_id'],d['date'],r['status']))
     db.commit(); return jsonify({'success':True})
 
+
 @app.route('/teacher/upload_homework', methods=['POST'])
 def upload_homework():
     if session.get('role') != 'teacher': return jsonify({'error':'Unauthorized'}), 401
@@ -3567,6 +3530,7 @@ def upload_homework():
     db.commit(); return jsonify({'success':True})
 
 # DELETE HOMEWORK ROUTE
+
 
 @app.route('/teacher/delete_homework/<int:hid>', methods=['POST'])
 def delete_homework(hid):
@@ -3686,7 +3650,9 @@ def delete_syllabus(sid):
     return redirect('/teacher/dashboard')
 
 
-
+@app.route('/teacher/logout')
+def teacher_logout():
+    session.clear(); return redirect('/')
 
 # ── ADMIN LOGIN ────────────────────────────────────────────────────────────────
 @app.route('/admin/login', methods=['GET','POST'])
