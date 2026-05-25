@@ -3547,6 +3547,55 @@ def delete_homework(hid):
 
 
 
+
+# TEACHER DASHBOARD
+
+@app.route('/teacher/dashboard')
+def teacher_dashboard():
+
+    if session.get('role') != 'teacher':
+        return redirect('/teacher/login')
+
+    db = get_db()
+
+    teacher_id = session.get('teacher_id')
+
+    students = db.execute('''
+        SELECT * FROM students
+        ORDER BY class_name, roll_number
+    ''').fetchall()
+
+    classes = db.execute('''
+        SELECT DISTINCT class_name
+        FROM students
+        ORDER BY class_name
+    ''').fetchall()
+
+    homework = db.execute('''
+        SELECT *
+        FROM homework
+        ORDER BY created_at DESC
+    ''').fetchall()
+
+    # IMPORTANT PART
+    syllabus_list = db.execute('''
+        SELECT *
+        FROM syllabus
+        ORDER BY id DESC
+    ''').fetchall()
+
+    return render_template(
+        'teacher_dashboard.html',
+
+        students=students,
+        classes=classes,
+        homework=homework,
+
+        # THIS WAS MISSING
+        syllabus_list=syllabus_list
+    )
+
+
 @app.route('/teacher/upload_syllabus', methods=['POST'])
 def upload_syllabus():
 

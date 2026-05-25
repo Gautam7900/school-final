@@ -235,7 +235,10 @@ block content %}
 
       <!-- EXISTING HOMEWORK -->
       <div class="dash-card">
-        <div class="dash-card-header"><h3>📋 Recent Homework</h3></div>
+        <div class="dash-card-header">
+          <h3>📋 Recent Homework</h3>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -243,21 +246,74 @@ block content %}
                 <th>Class</th>
                 <th>Subject</th>
                 <th>Due</th>
+                <th>Action</th>
               </tr>
             </thead>
+
             <tbody>
               {% for hw in homework[:10] %}
+
               <tr>
                 <td>{{ hw['class_name'] }}</td>
+
                 <td>{{ hw['subject'] }}</td>
+
                 <td style="color: var(--orange); font-weight: 600">
                   {{ hw['due_date'] }}
                 </td>
+
+                <!-- ACTION BUTTONS -->
+                <td>
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                    <!-- EDIT BUTTON -->
+
+                    <a
+                      href="/teacher/edit_homework/{{ hw['id'] }}"
+                      style="
+                        background: #132b6b;
+                        color: white;
+                        padding: 8px 14px;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-size: 0.85rem;
+                        font-weight: 700;
+                      "
+                    >
+                      ✏️ Edit
+                    </a>
+
+                    <!-- DELETE BUTTON -->
+
+                    <form
+                      action="/teacher/delete_homework/{{ hw['id'] }}"
+                      method="POST"
+                      onsubmit="return confirm('Delete this homework?');"
+                    >
+                      <button
+                        type="submit"
+                        style="
+                          background: #c62828;
+                          color: white;
+                          border: none;
+                          padding: 8px 14px;
+                          border-radius: 10px;
+                          font-size: 0.85rem;
+                          font-weight: 700;
+                          cursor: pointer;
+                        "
+                      >
+                        🗑 Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
               </tr>
+
               {% endfor %} {% if not homework %}
+
               <tr>
                 <td
-                  colspan="3"
+                  colspan="4"
                   style="
                     text-align: center;
                     color: var(--muted);
@@ -267,11 +323,73 @@ block content %}
                   No homework yet.
                 </td>
               </tr>
+
               {% endif %}
             </tbody>
           </table>
         </div>
       </div>
+
+      <!-- templates/edit_homework.html -->
+
+      {% extends 'base.html' %} {% block title %}Edit Homework{% endblock %} {%
+      block content %}
+
+      <section class="section bg-warm">
+        <div class="section-inner">
+          <div style="max-width: 700px; margin: auto">
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3>✏️ Edit Homework</h3>
+              </div>
+
+              <div class="dash-card-body">
+                <form method="POST">
+                  <div class="form-group">
+                    <label>Class</label>
+
+                    <input
+                      type="text"
+                      name="class_name"
+                      class="form-control"
+                      value="{{ homework['class_name'] }}"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Subject</label>
+
+                    <input
+                      type="text"
+                      name="subject"
+                      class="form-control"
+                      value="{{ homework['subject'] }}"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Due Date</label>
+
+                    <input
+                      type="date"
+                      name="due_date"
+                      class="form-control"
+                      value="{{ homework['due_date'] }}"
+                      required
+                    />
+                  </div>
+
+                  <button class="btn btn-gold">💾 Update Homework</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% endblock %}
 
       <!-- SYLLABUS UPLOAD -->
       <div class="dash-card">
@@ -339,7 +457,6 @@ block content %}
       </div>
 
       <!-- UPLOADED SYLLABUS -->
-      <!-- UPLOADED SYLLABUS -->
 
       <div class="dash-card">
         <div class="dash-card-header">
@@ -373,6 +490,13 @@ block content %}
                       action="/teacher/delete_syllabus/{{ s['id'] }}"
                       method="POST"
                     >
+                      <a
+                        href="/static/uploads/syllabus/{{ s['file_name'] }}"
+                        target="_blank"
+                        class="btn btn-sm btn-gold"
+                      >
+                        View PDF
+                      </a>
                       <button
                         class="btn btn-sm"
                         style="background: #c62828; color: white"
