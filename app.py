@@ -3349,6 +3349,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from database.db import init_db, get_db
 import os, uuid
+import os
+import uuid
+from flask import send_from_directory
+
+
 
 app = Flask(__name__)
 app.secret_key = 'brightmind_school_2024'
@@ -3459,11 +3464,13 @@ def student_dashboard():
     attendance = db.execute('SELECT * FROM attendance WHERE student_id=? ORDER BY date DESC LIMIT 30', (sid,)).fetchall()
     homework   = db.execute('SELECT * FROM homework WHERE class_name=? ORDER BY due_date DESC', (session['student_class'],)).fetchall()
     fees       = db.execute('SELECT * FROM fees WHERE student_id=? ORDER BY fee_month', (sid,)).fetchall()
+    syllabus   = db.execute("SELECT * FROM syllabus WHERE class_name=? ORDER BY uploaded_at DESC", (session['student_class'],)).fetchall()
+    syllabus_list = db.execute("SELECT * FROM syllabus ORDER BY uploaded_at DESC").fetchall()
     total   = len(attendance)
     present = sum(1 for a in attendance if a['status'] == 'Present')
     pct     = round((present/total*100) if total else 0, 1)
     return render_template('student_dashboard.html',
-        marks=marks, attendance=attendance, homework=homework, fees=fees,
+        marks=marks, attendance=attendance, homework=homework, fees=fees, syllabus=syllabus, syllabus_list=syllabus_list,
         attend_pct=pct, total_days=total, present_days=present)
 
 @app.route('/student/logout')
@@ -3516,6 +3523,97 @@ def upload_homework():
     db.execute('INSERT INTO homework (class_name,subject,description,due_date,teacher_id) VALUES (?,?,?,?,?)',
         (d['class_name'],d['subject'],d['description'],d['due_date'],session['teacher_id']))
     db.commit(); return jsonify({'success':True})
+@app.route('/teacher/upload_syllabus', methods=['POST'])
+def upload_syllabus():
+
+    if session.get('role') != 'teacher':
+        return redirect('/teacher/login')
+
+    db = get_db()
+
+    class_name = request.form.get('class_name')
+    subject    = request.form.get('subject')
+    title      = request.form.get('title')
+
+    file = request.files.get('pdf')
+
+    if not file:
+        flash('No file selected', 'error')
+        return redirect('/teacher/dashboard')
+
+    # CREATE FOLDER
+    upload_folder = os.path.join(
+        app.root_path,
+        'static',
+        'uploads',
+        'syllabus'
+    )
+
+    os.makedirs(upload_folder, exist_ok=True)
+
+    # UNIQUE FILE NAME
+    ext = file.filename.rsplit('.',1)[-1]
+
+    filename = f"{uuid.uuid4().hex}.{ext}"
+
+    file.save(os.path.join(upload_folder, filename))
+
+    db.execute("""
+        INSERT INTO syllabus
+        (class_name, subject, title, file_name)
+        VALUES (?, ?, ?, ?)
+    """, (
+        class_name,
+        subject,
+        title,
+        filename
+    ))
+
+    db.commit()
+
+    flash('Syllabus uploaded successfully!', 'success')
+
+    return redirect('/teacher/dashboard')
+
+
+
+
+    @app.route('/teacher/delete_syllabus/<int:sid>', methods=['POST'])
+def delete_syllabus(sid):
+
+    if session.get('role') != 'teacher':
+        return redirect('/teacher/login')
+
+    db = get_db()
+
+    item = db.execute(
+        'SELECT * FROM syllabus WHERE id=?',
+        (sid,)
+    ).fetchone()
+
+    if item:
+
+        try:
+            os.remove(os.path.join(
+                app.root_path,
+                'static',
+                'uploads',
+                'syllabus',
+                item['file_name']
+            ))
+        except:
+            pass
+
+        db.execute(
+            'DELETE FROM syllabus WHERE id=?',
+            (sid,)
+        )
+
+        db.commit()
+
+    flash('Syllabus deleted!', 'success')
+
+    return redirect('/teacher/dashboard')
 
 
 @app.route('/teacher/logout')

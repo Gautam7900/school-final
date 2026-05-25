@@ -212,6 +212,18 @@ def init_db():
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
 
+  
+
+       CREATE TABLE IF NOT EXISTS syllabus (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           class_name TEXT,
+           subject TEXT,
+           title TEXT,
+           file_name TEXT,
+           uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       )
+
+
     ''')
 
     if db.execute('SELECT COUNT(*) FROM students').fetchone()[0] == 0:
