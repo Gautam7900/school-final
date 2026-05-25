@@ -15,6 +15,9 @@ def init_db():
     db = sqlite3.connect(DATABASE)
     db.row_factory = sqlite3.Row
     db.executescript('''
+                     
+                     
+     
         
         CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -235,6 +238,19 @@ def init_db():
         ADD COLUMN pdf_file TEXT;
                      
     ''')
+    try:
+        db.execute("ALTER TABLE students ADD COLUMN parent_name TEXT")
+    except:
+        pass
+
+    try:
+        db.execute("ALTER TABLE students ADD COLUMN contact TEXT")
+    except:
+        pass
+
+    db.commit()
+    
+    
 
     if db.execute('SELECT COUNT(*) FROM students').fetchone()[0] == 0:
         db.executescript('''
