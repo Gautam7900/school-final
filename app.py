@@ -569,6 +569,7 @@ def submit_admission():
     class_name = request.form.get('class_name')
     contact = request.form.get('mobile')
     address = request.form.get('address')
+    email = request.form.get('email')
 
     cursor = db.execute('''
         INSERT INTO admissions
@@ -578,15 +579,17 @@ def submit_admission():
             parent_name,
             contact,
             address,
+            email,
             status
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (
         name,
         class_name,
         parent_name,
         contact,
         address,
+        email,
         'Pending'
     ))
 

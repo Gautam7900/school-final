@@ -164,46 +164,45 @@
           </thead>
 <tbody>
 
-{% for a in admissions %}
+      {% for a in admissions %}
 
-<tr id="adm-row-{{ a['id'] }}">
+            <tr id="adm-row-{{ a['id'] }}">
 
-    <td>{{ loop.index }}</td>
+                <td>{{ loop.index }}</td>
 
-    <td>
-        <strong>{{ a['name'] }}</strong>
-    </td>
+                <td>
+                    <strong>{{ a['name'] }}</strong>
+                </td>
+            
+                <td>{{ a['class_name'] }}</td>
 
-    <td>{{ a['class_name'] }}</td>
+                <td>{{ a['parent_name'] }}</td>
 
-    <td>{{ a['parent_name'] }}</td>
+                <td>{{ a['contact'] }}</td>
 
-    <td>{{ a['contact'] }}</td>
+                <td>
+    {{ a['email'] if a['email'] else '-' }}
+</td>
 
-    <td>{{ a.get('email', '-') }}</td>
+<td>
 
-    <td>
+    {% if a['pdf_file'] %}
 
-        {% if a.get('pdf_file') %}
+    <a href="/static/uploads/admissions/{{ a['pdf_file'] }}"
+       target="_blank"
+       class="btn btn-sm btn-navy">
 
-        <a href="/static/uploads/admissions/{{ a['pdf_file'] }}"
-           target="_blank"
-           class="btn btn-sm btn-navy">
+       📄 View PDF
 
-           📄 View PDF
+    </a>
 
-        </a>
+    {% else %}
 
-        {% else %}
+    <span style="color:gray;">No PDF</span>
 
-        <span style="color:gray;">No PDF</span>
+    {% endif %}
 
-        {% endif %}
-
-    </td>
-
-    <td>
-
+</td>
         <select
             onchange="updateAdmissionStatus({{ a['id'] }}, this.value)"
             class="form-control"
