@@ -3355,7 +3355,17 @@ from flask import send_from_directory
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
+import os
 
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer
+)
+
+from reportlab.lib.styles import getSampleStyleSheet
+
+from reportlab.lib.pagesizes import A4
 
 
 app = Flask(__name__)
@@ -3924,8 +3934,7 @@ def register_student():
 
 
 
-
-    @app.route('/submit_admission', methods=['POST'])
+@app.route('/submit_admission', methods=['POST'])
 def submit_admission():
 
     db = get_db()
