@@ -212,7 +212,7 @@ def init_db():
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
 
-       CREATE TABLE IF NOT EXISTS syllabus (
+        CREATE TABLE IF NOT EXISTS syllabus (
            id INTEGER PRIMARY KEY AUTOINCREMENT,
            class_name TEXT,
            subject TEXT,
@@ -221,7 +221,7 @@ def init_db():
            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
        
-    CREATE TABLE students (
+        CREATE TABLE students (
            id INTEGER PRIMARY KEY AUTOINCREMENT,
            roll_number TEXT UNIQUE,
            name TEXT,
@@ -234,28 +234,6 @@ def init_db():
            status TEXT DEFAULT 'Registered',
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
-       
-       
-    CREATE TABLE IF NOT EXISTS students (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        class_name TEXT
-        );
-
-    CREATE TABLE IF NOT EXISTS teachers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        subject TEXT
-       );
-
-    CREATE TABLE IF NOT EXISTS admissions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_name TEXT,
-        father_name TEXT,
-        class_name TEXT,
-        mobile TEXT,
-        address TEXT
-        );
                      
         ALTER TABLE admissions
         ADD COLUMN pdf_file TEXT;
