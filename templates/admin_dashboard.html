@@ -162,10 +162,7 @@
                 <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {% for a in admissions %}
-            <tbody>
-
+<tbody>
 {% for a in admissions %}
 
 <tr>
@@ -189,14 +186,14 @@
     </td>
 
     <td>
-        {{ a['email'] }}
+        {{ a.get('email') }}
     </td>
 
     <td>
 
         {% if a['pdf_file'] %}
 
-        <a href="/static/uploads/admissions/{{ a['pdf_file'] }}"
+        <a href="/static/uploads/admissions/{{ a.get('pdf_file') }}"
            target="_blank"
            class="btn btn-sm btn-navy">
 
@@ -240,7 +237,7 @@
     </td>
 
     <td>
-        {{ a['created_at'] }}
+        {{ a.get('created_at') }}
     </td>
 
     <td style="display:flex;gap:8px;">

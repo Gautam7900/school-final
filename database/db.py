@@ -254,6 +254,21 @@ def init_db():
        db.execute("ALTER TABLE students ADD COLUMN password TEXT")
     except:
       pass
+  
+    try:
+        db.execute("ALTER TABLE admissions ADD COLUMN email TEXT")
+    except:
+        pass
+
+    try:
+        db.execute("ALTER TABLE admissions ADD COLUMN pdf_file TEXT")
+    except:
+        pass
+
+    try:
+        db.execute("ALTER TABLE admissions ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    except:
+        pass
 
 
     db.commit()
