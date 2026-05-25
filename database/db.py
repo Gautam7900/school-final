@@ -248,6 +248,13 @@ def init_db():
         db.execute("ALTER TABLE students ADD COLUMN contact TEXT")
     except:
         pass
+    
+    
+    try:
+       db.execute("ALTER TABLE students ADD COLUMN password TEXT")
+    except:
+      pass
+
 
     db.commit()
     
