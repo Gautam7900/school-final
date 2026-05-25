@@ -3345,7 +3345,15 @@
 
 
 
+import os
 
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer
+)
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from database.db import init_db, get_db
 import os, uuid
@@ -3356,18 +3364,6 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 import os
-
-from reportlab.platypus import (
-    SimpleDocTemplate,
-    Paragraph,
-    Spacer
-)
-
-from reportlab.lib.styles import getSampleStyleSheet
-
-from reportlab.lib.pagesizes import A4
-
-
 app = Flask(__name__)
 app.secret_key = 'brightmind_school_2024'
 
@@ -3939,13 +3935,11 @@ def submit_admission():
 
     db = get_db()
 
-    name = request.form['student_name']
-    father = request.form['father_name']
-    class_name = request.form['class_name']
-    mobile = request.form['mobile']
-    address = request.form['address']
-
-    # SAVE TO DATABASE
+    student_name = request.form.get('student_name')
+    father_name  = request.form.get('father_name')
+    class_name   = request.form.get('class_name')
+    mobile       = request.form.get('mobile')
+    address      = request.form.get('address')
 
     cursor = db.execute('''
         INSERT INTO admissions
@@ -3956,11 +3950,10 @@ def submit_admission():
             mobile,
             address
         )
-
-        VALUES (?,?,?,?,?)
+        VALUES (?, ?, ?, ?, ?)
     ''', (
-        name,
-        father,
+        student_name,
+        father_name,
         class_name,
         mobile,
         address
@@ -3970,18 +3963,20 @@ def submit_admission():
 
     admission_id = cursor.lastrowid
 
-    # PDF FILE NAME
+    # PDF CREATE
 
-    pdf_filename = f"admission_{admission_id}.pdf"
-
-    pdf_path = os.path.join(
+    pdf_folder = os.path.join(
         app.root_path,
         'static',
-        'pdfs',
-        pdf_filename
+        'pdfs'
     )
 
-    # CREATE PDF
+    os.makedirs(pdf_folder, exist_ok=True)
+
+    pdf_path = os.path.join(
+        pdf_folder,
+        f"admission_{admission_id}.pdf"
+    )
 
     doc = SimpleDocTemplate(
         pdf_path,
@@ -3994,51 +3989,56 @@ def submit_admission():
 
     elements.append(
         Paragraph(
-            "<b>BrightMind School Admission Form</b>",
+            "BrightMind School Admission Form",
             styles['Title']
         )
     )
 
-    elements.append(Spacer(1,20))
+    elements.append(Spacer(1, 20))
 
     elements.append(
-        Paragraph(f"<b>Student Name:</b> {name}", styles['BodyText'])
+        Paragraph(
+            f"<b>Student Name:</b> {student_name}",
+            styles['BodyText']
+        )
     )
 
     elements.append(
-        Paragraph(f"<b>Father Name:</b> {father}", styles['BodyText'])
+        Paragraph(
+            f"<b>Father Name:</b> {father_name}",
+            styles['BodyText']
+        )
     )
 
     elements.append(
-        Paragraph(f"<b>Class:</b> {class_name}", styles['BodyText'])
+        Paragraph(
+            f"<b>Class:</b> {class_name}",
+            styles['BodyText']
+        )
     )
 
     elements.append(
-        Paragraph(f"<b>Mobile:</b> {mobile}", styles['BodyText'])
+        Paragraph(
+            f"<b>Mobile:</b> {mobile}",
+            styles['BodyText']
+        )
     )
 
     elements.append(
-        Paragraph(f"<b>Address:</b> {address}", styles['BodyText'])
+        Paragraph(
+            f"<b>Address:</b> {address}",
+            styles['BodyText']
+        )
     )
 
     doc.build(elements)
 
-    # SAVE PDF NAME
+    flash(
+        'Admission submitted successfully!',
+        'success'
+    )
 
-    db.execute('''
-        UPDATE admissions
-        SET pdf_file=?
-        WHERE id=?
-    ''', (
-        pdf_filename,
-        admission_id
-    ))
-
-    db.commit()
-
-    flash('Admission submitted successfully!', 'success')
-
-    return redirect('/admissions')   
+    return redirect('/admissions')
 
 # ── ADMIN TEACHER ASSIGNMENTS ──────────────────────────────────────────────────
 @app.route('/admin/teacher_assignments')
