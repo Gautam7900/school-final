@@ -1,14 +1,70 @@
 {% extends 'base.html' %} {% block title %}Student Dashboard{% endblock %} {%
+
+<style>
+
+.student-profile-section{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+}
+
+.student-profile-photo{
+
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #d4af37;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+
+}
+
+.student-avatar{
+
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#d4af37;
+    color:#081c4b;
+    font-size:2rem;
+    font-weight:800;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+}
+
+</style>
+
 block content %}
 <div class="dashboard">
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
-      <div>
-        <h2>Welcome, {{ session.student_name }} 👋</h2>
-        <p>
-          {{ session.student_class }} · Roll: {% for m in marks %}{% endfor %}
-          {{ session.get('student_id') }} | Academic Year 2024–25
-        </p>
+      <div class="student-profile-section">
+        {% if student['photo'] %}
+
+        <img
+          src="/static/uploads/students/{{ student['photo'] }}"
+          class="student-profile-photo"
+        />
+
+        {% else %}
+
+        <div class="student-avatar">{{ session.student_name[0] }}</div>
+
+        {% endif %}
+
+        <div>
+          <h2>Welcome, {{ session.student_name }} 👋</h2>
+
+          <p>
+            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
+            | Academic Year 2024–25
+          </p>
+        </div>
       </div>
       <a
         href="/student/quizzes"
@@ -298,7 +354,8 @@ block content %}
     <!-- LIVE CLASSES WIDGET -->
     <div
       class="dash-card live-class-card"
-      style="margin-top: 1.5rem; border-left: 4px solid #0f9d58">
+      style="margin-top: 1.5rem; border-left: 4px solid #0f9d58"
+    >
       <div class="dash-card-header">
         <h3>📹 Live &amp; Upcoming Classes</h3>
         <a
@@ -309,7 +366,8 @@ block content %}
             font-weight: 700;
             text-decoration: none;
           "
-          >View All →</a>
+          >View All →</a
+        >
       </div>
       <div id="liveClassesWidget" style="padding: 1rem">
         <p style="color: var(--muted); font-size: 0.9rem; text-align: center">

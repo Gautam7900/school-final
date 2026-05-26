@@ -118,23 +118,124 @@ def student_login():
         flash('Invalid credentials.', 'error')
     return render_template('student_login.html')
 
+# @app.route('/student/dashboard')
+# def student_dashboard():
+#     if session.get('role') != 'student': return redirect('/student/login')
+#     db  = get_db()
+#     sid = session['student_id']
+#     marks      = db.execute('SELECT * FROM marks WHERE student_id=?', (sid,)).fetchall()
+#     attendance = db.execute('SELECT * FROM attendance WHERE student_id=? ORDER BY date DESC LIMIT 30', (sid,)).fetchall()
+#     homework   = db.execute('SELECT * FROM homework WHERE class_name=? ORDER BY due_date DESC', (session['student_class'],)).fetchall()
+#     fees       = db.execute('SELECT * FROM fees WHERE student_id=? ORDER BY fee_month', (sid,)).fetchall()
+#     syllabus   = db.execute("SELECT * FROM syllabus WHERE class_name=? ORDER BY uploaded_at DESC", (session['student_class'],)).fetchall()
+#     syllabus_list = db.execute("SELECT * FROM syllabus ORDER BY uploaded_at DESC").fetchall()
+#     total   = len(attendance)
+#     present = sum(1 for a in attendance if a['status'] == 'Present')
+#     pct     = round((present/total*100) if total else 0, 1)
+#     return render_template('student_dashboard.html',
+#         marks=marks, attendance=attendance, homework=homework, fees=fees, syllabus=syllabus, syllabus_list=syllabus_list,
+#         attend_pct=pct, total_days=total, present_days=present)
+
+
 @app.route('/student/dashboard')
 def student_dashboard():
-    if session.get('role') != 'student': return redirect('/student/login')
-    db  = get_db()
-    sid = session['student_id']
-    marks      = db.execute('SELECT * FROM marks WHERE student_id=?', (sid,)).fetchall()
-    attendance = db.execute('SELECT * FROM attendance WHERE student_id=? ORDER BY date DESC LIMIT 30', (sid,)).fetchall()
-    homework   = db.execute('SELECT * FROM homework WHERE class_name=? ORDER BY due_date DESC', (session['student_class'],)).fetchall()
-    fees       = db.execute('SELECT * FROM fees WHERE student_id=? ORDER BY fee_month', (sid,)).fetchall()
-    syllabus   = db.execute("SELECT * FROM syllabus WHERE class_name=? ORDER BY uploaded_at DESC", (session['student_class'],)).fetchall()
-    syllabus_list = db.execute("SELECT * FROM syllabus ORDER BY uploaded_at DESC").fetchall()
-    total   = len(attendance)
-    present = sum(1 for a in attendance if a['status'] == 'Present')
-    pct     = round((present/total*100) if total else 0, 1)
-    return render_template('student_dashboard.html',
-        marks=marks, attendance=attendance, homework=homework, fees=fees, syllabus=syllabus, syllabus_list=syllabus_list,
-        attend_pct=pct, total_days=total, present_days=present)
+
+    if 'student_id' not in session:
+        return redirect('/student/login')
+
+    db = get_db()
+
+    # STUDENT DATA
+    student = db.execute(
+        '''
+        SELECT *
+        FROM students
+        WHERE id = ?
+        ''',
+        (session['student_id'],)
+    ).fetchone()
+
+    # MARKS
+    marks = db.execute(
+        '''
+        SELECT *
+        FROM marks
+        WHERE student_id = ?
+        ORDER BY id DESC
+        ''',
+        (session['student_id'],)
+    ).fetchall()
+
+    # HOMEWORK
+    homework = db.execute(
+        '''
+        SELECT *
+        FROM homework
+        WHERE class_name = ?
+        ORDER BY id DESC
+        ''',
+        (session['student_class'],)
+    ).fetchall()
+
+    # FEES
+    fees = db.execute(
+        '''
+        SELECT *
+        FROM fees
+        WHERE student_id = ?
+        ORDER BY id DESC
+        ''',
+        (session['student_id'],)
+    ).fetchall()
+
+    # ATTENDANCE
+    attendance = db.execute(
+        '''
+        SELECT *
+        FROM attendance
+        WHERE student_id = ?
+        ORDER BY date DESC
+        LIMIT 30
+        ''',
+        (session['student_id'],)
+    ).fetchall()
+
+    total_days = len(attendance)
+
+    present_days = len([
+        a for a in attendance
+        if a['status'] == 'Present'
+    ])
+
+    attend_pct = 0
+
+    if total_days > 0:
+        attend_pct = round((present_days / total_days) * 100)
+
+    # SYLLABUS
+    syllabus = db.execute(
+        '''
+        SELECT *
+        FROM syllabus
+        WHERE class_name = ?
+        ORDER BY id DESC
+        ''',
+        (session['student_class'],)
+    ).fetchall()
+
+    return render_template(
+        'student_dashboard.html',
+
+        student=student,
+        marks=marks,
+        homework=homework,
+        fees=fees,
+        attendance=attendance,
+        total_days=total_days,
+        present_days=present_days,
+        attend_pct=attend_pct,
+        syllabus=syllabus
+    )
 
 @app.route('/student/logout')
 def student_logout():
