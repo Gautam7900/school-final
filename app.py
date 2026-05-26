@@ -5,6 +5,7 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
+from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
@@ -446,26 +447,22 @@ def delete_notice(nid):
     return jsonify({'success':True})
 
 # ── ADMIN ADMISSIONS ───────────────────────────────────────────────────────────
-@app.route('/admin/admission/<int:aid>')
-def admin_admission_detail(aid):
+@app.route('/admin/admission-form/<int:aid>')
+def admin_admission_form(aid):
 
     if session.get('role') != 'admin':
         return redirect('/admin/login')
 
     db = get_db()
 
-    application = db.execute('''
-        SELECT *
-        FROM admissions
-        WHERE id=?
-    ''', (aid,)).fetchone()
-
-    if not application:
-        return "Application Not Found", 404
+    admission = db.execute(
+        'SELECT * FROM admissions WHERE id=?',
+        (aid,)
+    ).fetchone()
 
     return render_template(
-        'admin_admission_detail.html',
-        application=application
+        'admin_admission_form.html',
+        admission=admission
     )
 
 
@@ -559,46 +556,182 @@ def register_student():
 
 
 
-
 @app.route('/submit_admission', methods=['POST'])
 def submit_admission():
 
     db = get_db()
 
-    name = request.form.get('student_name')
-    parent_name = request.form.get('father_name')
+    name = request.form.get('name')
     class_name = request.form.get('class_name')
-    contact = request.form.get('mobile')
-    address = request.form.get('address')
+    parent_name = request.form.get('parent_name')
+    contact = request.form.get('contact')
     email = request.form.get('email')
+    address = request.form.get('address')
 
-    cursor = db.execute('''
-        INSERT INTO admissions
-        (
-            name,
-            class_name,
-            parent_name,
-            contact,
-            address,
-            email,
-            status
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (
+    # PDF FILE NAME
+    pdf_filename = f"admission_{uuid.uuid4().hex}.pdf"
+
+    form_pdf_filename = f"form_{uuid.uuid4().hex}.pdf"
+
+    # PDF PATH
+    pdf_path = os.path.join(
+        app.root_path,
+        'static',
+        'uploads',
+        'admissions',
+        pdf_filename
+    )
+
+    # CREATE PDF
+    c = canvas.Canvas(pdf_path)
+
+    c.drawString(100, 800, "BrightMind School Admission Form")
+
+    c.drawString(100, 760, f"Student Name: {name}")
+
+    c.drawString(100, 740, f"Class: {class_name}")
+
+    c.drawString(100, 720, f"Parent: {parent_name}")
+
+    c.drawString(100, 700, f"Contact: {contact}")
+
+    c.drawString(100, 680, f"Email: {email}")
+    
+    c.drawString(100, 660, f"Address: {address}")
+
+    c.save()
+
+    # DATABASE INSERT
+    db.execute("""
+    INSERT INTO admissions
+    (name, class_name, parent_name,
+    contact, email, address, status, pdf_file)
+
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+
         name,
         class_name,
         parent_name,
         contact,
-        address,
         email,
-        'Pending'
+        address,
+        'Pending',
+        pdf_filename
+
     ))
 
     db.commit()
 
-    flash('Admission submitted successfully!', 'success')
+    flash('Admission form submitted!', 'success')
 
     return redirect('/admissions')
+
+
+
+
+
+
+
+
+@app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
+def complete_admission(aid):
+
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
+
+    db = get_db()
+
+    name = request.form.get('name')
+    class_name = request.form.get('class_name')
+    parent_name = request.form.get('parent_name')
+    contact = request.form.get('contact')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    # AUTO ROLL NUMBER
+    total = db.execute(
+        'SELECT COUNT(*) FROM students'
+    ).fetchone()[0] + 1
+
+    roll_number = f"{class_name[:2].upper()}-{1000 + total}"
+
+    # ADD STUDENT
+    db.execute("""
+    INSERT INTO students
+    (name, class_name, roll_number,
+     password, parent_name, contact)
+
+    VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+
+        name,
+        class_name,
+        roll_number,
+        password,
+        parent_name,
+        contact
+
+    ))
+
+    # UPDATE ADMISSION STATUS
+    db.execute("""
+    UPDATE admissions
+    SET status='Approved'
+    WHERE id=?
+    """, (aid,))
+
+    db.commit()
+
+    flash('Admission completed successfully!', 'success')
+
+    return redirect('/admin/dashboard')
+
+
+
+
+# @app.route('/submit_admission', methods=['POST'])
+# def submit_admission():
+#     db = get_db()
+#     name = request.form.get('student_name')
+#     parent_name = request.form.get('father_name')
+#     class_name = request.form.get('class_name')
+#     contact = request.form.get('mobile')
+#     address = request.form.get('address')
+#     email = request.form.get('email')
+#     pdf_file = request.form.get('pdf_file')
+#     form_pdf = request.form.get('form_pdf')
+#     cursor = db.execute('''
+#         INSERT INTO admissions
+#         (
+#             name,
+#             class_name,
+#             parent_name,
+#             contact,
+#             address,
+#             email,
+#             pdf_file,
+#             form_pdf,
+#             status
+#         )
+#         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+#     ''', (
+#         name,
+#         class_name,
+#         parent_name,
+#         contact,
+#         address,
+#         email,
+#         pdf_file,
+#         form_pdf,
+#         'Pending'
+#     ))
+
+#     db.commit()
+
+#     flash('Admission submitted successfully!', 'success')
+
+#     return redirect('/admissions')
 
 
 

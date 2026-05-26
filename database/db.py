@@ -224,6 +224,9 @@ def init_db():
                 
         ALTER TABLE admissions
         ADD COLUMN pdf_file TEXT;
+        
+       ALTER TABLE admissions
+       ADD COLUMN form_pdf TEXT;
                      
     ''')
     

@@ -180,14 +180,23 @@
                 </button>
               </td>
               <td>
-                <a href="/admin/download_admission_pdf/{{ a['id'] }}" target="_blank" style="background:#e3f2fd;color:#1565c0;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;text-decoration:none;">
-                  📄 Download PDF
-                </a>
+
+                   <a href="/download/admission-pdf/{{ a['id'] }}" class="btn btn-sm btn-navy">
+
+                    📄 Download PDF
+
+                    </a>
+
               </td>
               <td>
-                <a href="/admin/download_formfilling_pdf/{{ a['id'] }}" target="_blank" style="background:#e3f2fd;color:#1565c0;border:none;border-radius:6px;padding:5px 10px;font-size:0.8rem;font-weight:700;cursor:pointer;text-decoration:none;">
-                  📄 Download Formfilling PDF
-                </a>
+
+                   <a href="/admin/admission-form/{{ a['id'] }}"
+                       class="btn btn-sm btn-gold">
+
+                        📝 Complete Admission
+
+                    </a>
+
               </td>
             </tr>
             {% endfor %}
