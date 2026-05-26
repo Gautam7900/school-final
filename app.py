@@ -692,26 +692,25 @@ def complete_admission(aid):
 
     name = request.form.get('name')
     class_name = request.form.get('class_name')
-    parent_name = request.form.get('parent_name')
+    father_name = request.form.get('father_name')
     contact = request.form.get('contact')
-    email = request.form.get('email')
     password = request.form.get('password')
 
     # AUTO ROLL NUMBER
+
     total = db.execute(
         'SELECT COUNT(*) FROM students'
     ).fetchone()[0] + 1
 
-    roll_number = f"{class_name[:2].upper()}-{1000 + total}"
+    class_code = class_name.replace('Class ', 'C')
 
-    # ADD STUDENT
+    roll_number = f"{class_code}-{1000 + total}"
+
+    # CREATE STUDENT
+
     db.execute("""
-    INSERT INTO students
-    (name, class_name, roll_number,
-     password, parent_name, contact)
 
-    VALUES (?, ?, ?, ?, ?, ?)
-    """, (
+    INSERT INTO students (
 
         name,
         class_name,
@@ -720,22 +719,41 @@ def complete_admission(aid):
         parent_name,
         contact
 
+    )
+
+    VALUES (?, ?, ?, ?, ?, ?)
+
+    """, (
+
+        name,
+        class_name,
+        roll_number,
+        password,
+        father_name,
+        contact
+
     ))
 
     # UPDATE ADMISSION STATUS
+
     db.execute("""
+
     UPDATE admissions
+
     SET status='Approved'
+
     WHERE id=?
+
     """, (aid,))
 
     db.commit()
 
-    flash('Admission completed successfully!', 'success')
+    flash(
+        f'Admission completed! Roll Number: {roll_number}',
+        'success'
+    )
 
     return redirect('/admin/dashboard')
-
-
 
 
 # @app.route('/submit_admission', methods=['POST'])
