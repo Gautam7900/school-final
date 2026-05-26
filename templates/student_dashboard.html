@@ -23,10 +23,10 @@
   }
 
   .student-photo{
-    width:70px;
-    height:70px;
+    width:10px;
+    height:10px;
 
-    border-radius:50%;
+    border-radius:10%;
 
     object-fit:cover;
 
@@ -124,7 +124,7 @@
     <div class="dash-header-inner dashboard-top">
       <div class="student-profile-section">
 
-     <div class="profile-top">
+       <div class="profile-top">
       <a href="{{ url_for('student_profile', sid=student['id']) }}">
          {% if student['photo'] %}
 
