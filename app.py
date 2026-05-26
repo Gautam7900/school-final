@@ -248,6 +248,34 @@ def student_dashboard():
         syllabus=syllabus
     )
 
+
+@app.route('/student/profile/<int:sid>')
+def student_profile(sid):
+
+    if 'student_id' not in session:
+        return redirect('/student/login')
+
+    db = get_db()
+
+    student = db.execute(
+        '''
+        SELECT *
+        FROM students
+        WHERE id = ?
+        ''',
+        (sid,)
+    ).fetchone()
+
+    if not student:
+        return "Student not found"
+
+    return render_template(
+        'student_profile.html',
+        student=student
+    )
+
+
+
 @app.route('/student/logout')
 def student_logout():
     session.clear(); return redirect('/')

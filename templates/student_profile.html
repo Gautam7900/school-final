@@ -13,16 +13,14 @@
 
           <img
             src="/static/uploads/students/{{ student['photo'] }}"
-            style="
-              width: 150px;
-              height: 150px;
-              border-radius: 50%;
-              object-fit: cover;
-              border: 5px solid #d4af37;
-            "
+            class="student-photo"
           />
 
           {% else %}
+
+          <div class="student-avatar">{{ student['name'][0] }}</div>
+
+          {% endif %}
 
           <div
             style="
