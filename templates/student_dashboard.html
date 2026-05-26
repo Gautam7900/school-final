@@ -1,48 +1,33 @@
 {% extends 'base.html' %} {% block title %}Student Dashboard{% endblock %}
-
-<style>
-
-</style>
-
 {% block content %}
 <div class="dashboard">
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
       <div class="student-profile-section">
+        <a href="{{ url_for('student_profile', sid=student['id']) }}">
+          {% if student['photo'] %}
 
-       <div class="profile-top">
-      <a href="{{ url_for('student_profile', sid=student['id']) }}">
-         {% if student['photo'] %}
+          <img
+            src="/static/uploads/students/{{ student['photo'] }}"
+            class="student-photo"
+          />
 
-         <img
-           src="/static/uploads/students/{{ student['photo'] }}"
-           class="student-photo"
-         />
+          {% else %}
 
-         {% else %}
+          <div class="student-avatar">{{ student['name'][0] }}</div>
 
-         <div class="student-avatar">{{ student['name'][0] }}</div>
+          {% endif %}
+        </a>
 
-         {% endif %}
+        <div class="student-info">
+          <h2>Welcome, {{ session.student_name }} 👋</h2>
 
-          </a>
-        </div>
-
-    <div>
-
-        <h2>
-            Welcome, {{ session.student_name }} 👋
-        </h2>
-
-        <p>
-            {{ session.student_class }}
-            · Roll: {{ session.get('student_id') }}
+          <p>
+            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
             | Academic Year 2024–25
-        </p>
-
-    </div>
-
-</div>
+          </p>
+        </div>
+      </div>
       <a
         href="/student/quizzes"
         class="btn btn-sm"
