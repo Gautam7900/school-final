@@ -1,51 +1,70 @@
 {% extends 'base.html' %} {% block title %}Student Dashboard{% endblock %}
 
 <style>
- .student-photo {
-    width: 160px;
-    height: 160px;
 
-    border-radius: 50%;
+<style>
 
-    object-fit: cover;
-
-    border: 6px solid #d4af37;
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-
-    cursor: pointer;
-
-    transition: 0.3s;
+.profile-wrapper {
+    max-width: 900px;
+    margin: auto;
   }
+
+  .profile-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .profile-top {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .student-photo{
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid #d4af37;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+  
 
   .student-photo:hover {
     transform: scale(1.05);
   }
 
-  .student-avatar {
-    width: 160px;
-    height: 160px;
+.student-avatar{
+    width:70px;
+    height:70px;
 
-    border-radius: 50%;
+    border-radius:50%;
 
-    background: #d4af37;
+    background:#d4af37;
 
-    color: #081c4b;
+    color:#081c4b;
 
-    font-size: 4rem;
+    font-size:2rem;
 
-    font-weight: 700;
+    font-weight:700;
 
-    display: flex;
+    display:flex;
 
-    align-items: center;
+    align-items:center;
 
-    justify-content: center;
-
-    margin: auto;
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  }
+    justify-content:center;
+}
+  
 
   .profile-name {
     margin-top: 20px;
@@ -61,6 +80,42 @@
     margin-bottom: 20px;
   }
 
+  .form-control {
+    width: 100%;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    border: 1px solid #ddd;
+
+    font-size: 16px;
+  }
+
+  .btn-save {
+    background: #081c4b;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 30px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+  }
+
+  .student-profile-section{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
 </style>
 
 {% block content %}
@@ -68,32 +123,40 @@
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
       <div class="student-profile-section">
-        <div class="profile-top">
-          {% if student['photo'] %}
 
-          <img
-            src="/static/uploads/students/{{ student['photo'] }}"
-            class="student-photo"
-          />
+     <div class="profile-top">
+      <a href="{{ url_for('student_profile', sid=student['id']) }}">
+         {% if student['photo'] %}
 
-          {% else %}
+         <img
+           src="/static/uploads/students/{{ student['photo'] }}"
+           class="student-photo"
+         />
 
-          <div class="student-avatar">{{ student['name'][0] }}</div>
+         {% else %}
 
-          {% endif %}
+         <div class="student-avatar">{{ student['name'][0] }}</div>
 
-          <div class="profile-name">{{ student['name'] }}</div>
+         {% endif %}
+
+          </a>
         </div>
 
-        <div>
-          <h2>Welcome, {{ session.student_name }} 👋</h2>
+    <div>
 
-          <p>
-            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
+        <h2>
+            Welcome, {{ session.student_name }} 👋
+        </h2>
+
+        <p>
+            {{ session.student_class }}
+            · Roll: {{ session.get('student_id') }}
             | Academic Year 2024–25
-          </p>
-        </div>
-      </div>
+        </p>
+
+    </div>
+
+</div>
       <a
         href="/student/quizzes"
         class="btn btn-sm"
