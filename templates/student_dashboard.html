@@ -2,8 +2,19 @@
 
 <style>
 
-.student-photo{
+<style>
 
+.student-profile-section{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.student-top-profile{
+    margin-right:10px;
+}
+
+.student-photo{
     width:110px;
     height:110px;
 
@@ -18,18 +29,13 @@
     cursor:pointer;
 
     transition:0.3s;
-
 }
 
 .student-photo:hover{
-
     transform:scale(1.05);
-
 }
 
-
 .student-avatar{
-
     width:110px;
     height:110px;
 
@@ -48,59 +54,13 @@
     align-items:center;
 
     justify-content:center;
-
-    cursor:pointer;
-
-
-    .student-top-profile{
-
-    margin-right:20px;
-
-}
-
-.student-photo{
-
-    width:110px;
-
-    height:110px;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    border:5px solid #d4af37;
 
     box-shadow:0 5px 15px rgba(0,0,0,0.3);
 
     cursor:pointer;
-
 }
 
-.student-avatar{
-
-    width:110px;
-
-    height:110px;
-
-    border-radius:50%;
-
-    background:#d4af37;
-
-    color:#081c4b;
-
-    font-size:2.5rem;
-
-    font-weight:700;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-}
+</style>
 </style>
 
 {% block content %}
@@ -108,32 +68,45 @@
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
       <div class="student-profile-section">
-        {% if student['photo'] %}
-        <div>
-          <div class="student-top-profile">
-            <a href="{{ url_for('student_profile', sid=student['id']) }}">
-              {% if student['photo'] %}
 
-              <img
+    <div class="student-top-profile">
+
+        <a href="{{ url_for('student_profile', sid=student['id']) }}">
+
+            {% if student['photo'] %}
+
+            <img
                 src="/static/uploads/students/{{ student['photo'] }}"
                 class="student-photo"
-              />
+            >
 
-              {% else %}
+            {% else %}
 
-              <div class="student-avatar">{{ student['name'][0] }}</div>
+            <div class="student-avatar">
+                {{ student['name'][0] }}
+            </div>
 
-              {% endif %}
-            </a>
-          </div>
-          <h2>Welcome, {{ session.student_name }} 👋</h2>
+            {% endif %}
 
-          <p>
-            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
+        </a>
+
+    </div>
+
+    <div>
+
+        <h2>
+            Welcome, {{ session.student_name }} 👋
+        </h2>
+
+        <p>
+            {{ session.student_class }}
+            · Roll: {{ session.get('student_id') }}
             | Academic Year 2024–25
-          </p>
-        </div>
-      </div>
+        </p>
+
+    </div>
+
+</div>
       <a
         href="/student/quizzes"
         class="btn btn-sm"

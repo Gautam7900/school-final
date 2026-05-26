@@ -899,6 +899,16 @@ def update_student_profile(sid):
 
 
 
+
+
+
+
+
+
+
+
+
+
 @app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
 def complete_admission(aid):
 
