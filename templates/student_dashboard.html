@@ -1,56 +1,84 @@
 {% extends 'base.html' %} {% block title %}Student Dashboard{% endblock %}
 
 <style>
-  .student-profile-section {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
 
-  .student-profile-photo {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #d4af37;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
+.student-top-profile{
+    margin-bottom:15px;
+}
 
-  .student-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: #d4af37;
-    color: #081c4b;
-    font-size: 2rem;
-    font-weight: 800;
+.student-photo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #d4af37;
+    cursor:pointer;
+    transition:0.3s;
+}
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.student-photo:hover{
+    transform:scale(1.05);
+}
+
+.student-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#d4af37;
+    color:#081c4b;
+    font-size:2rem;
+    font-weight:700;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
+
 </style>
 
 {% block content %}
 <div class="dashboard">
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
-      <div class="dash-header">
-        <div class="dash-header-inner">
-          <div>
-            <h2>✏️ Edit Teacher Profile</h2>
-            <p>{{ teacher['name'] }} — {{ teacher['subject'] }}</p>
+      <div class="student-profile-section">
+        {% if student['photo'] %}
+
+        <img
+          src="/static/uploads/students/{{ student['photo'] }}"
+          class="student-profile-photo"
+        />
+
+        {% else %}
+
+        <div class="student-avatar">{{ session.student_name[0] }}</div>
+
+        {% endif %}
+
+        <div>
+          <div class="student-top-profile">
+            <a href="/student/profile/{{ student['id'] }}">
+              {% if student['photo'] %}
+
+              <img
+                src="/static/uploads/students/{{ student['photo'] }}"
+                class="student-photo"
+              />
+
+              {% else %}
+
+              <div class="student-avatar">{{ student['name'][0] }}</div>
+
+              {% endif %}
+            </a>
           </div>
-          <div class="teacher-edit-buttons">
-            <a
-              href="{{ '/teachers/' + teacher['id']|string }}"
-              class="btn btn-outline btn-sm"
-              >👁 View Profile</a
-            >
-            <a href="/admin/dashboard" class="btn btn-outline btn-sm"
-              >← Dashboard</a
-            >
-          </div>
+          <h2>Welcome, {{ session.student_name }} 👋</h2>
+
+          <p>
+            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
+            | Academic Year 2024–25
+          </p>
         </div>
       </div>
       <a

@@ -1,63 +1,92 @@
-{% if student['photo'] %}
+{% extends 'base.html' %} {% block content %}
 
-<img src="/static/uploads/students/{{ student['photo'] }}"
-     class="profile-photo">
+<div class="dashboard">
+  <div class="dash-main" style="max-width: 900px">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>👨‍🎓 Student Profile</h3>
+      </div>
 
-{% else %}
+      <div class="dash-card-body">
+        <div style="text-align: center; margin-bottom: 30px">
+          {% if student['photo'] %}
 
-<div class="profile-avatar">
+          <img
+            src="/static/uploads/students/{{ student['photo'] }}"
+            style="
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 5px solid #d4af37;
+            "
+          />
 
-    {{ student['name'][0] }}
+          {% else %}
 
+          <div
+            style="
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              background: #d4af37;
+              color: #081c4b;
+              font-size: 3rem;
+              font-weight: 700;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: auto;
+            "
+          >
+            {{ student['name'][0] }}
+          </div>
+
+          {% endif %}
+        </div>
+
+        <form
+          method="POST"
+          action="/student/update_profile/{{ student['id'] }}"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group">
+            <label>Profile Photo</label>
+            <input type="file" name="photo" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              value="{{ student['name'] }}"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Aadhaar Number</label>
+            <input
+              type="text"
+              name="aadhaar"
+              value="{{ student['aadhaar'] }}"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" class="form-control">
+{{ student['address'] }}</textarea
+            >
+          </div>
+
+          <button type="submit" class="btn btn-gold">💾 Save Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
-{% endif %}
-
-<div class="profile-grid">
-
-    <div class="profile-item">
-        <h4>Class</h4>
-        <p>{{ student['class_name'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Parent Name</h4>
-        <p>{{ student['parent_name'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Contact</h4>
-        <p>{{ student['contact'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Password</h4>
-        <p>{{ student['password'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Aadhaar Number</h4>
-        <p>{{ student['aadhaar'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Address</h4>
-        <p>{{ student['address'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>City</h4>
-        <p>{{ student['city'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>State</h4>
-        <p>{{ student['state'] }}</p>
-    </div>
-
-    <div class="profile-item">
-        <h4>Pincode</h4>
-        <p>{{ student['pincode'] }}</p>
-    </div>
-
-</div>
+{% endblock %}

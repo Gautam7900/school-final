@@ -1,5 +1,6 @@
 import os
-
+from werkzeug.utils import secure_filename
+import os
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -19,6 +20,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 import os
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.secret_key = 'brightmind_school_2024'
 
 with app.app_context():
@@ -176,6 +178,15 @@ def student_dashboard():
         ''',
         (session['student_class'],)
     ).fetchall()
+    
+    student = db.execute(
+    '''
+    SELECT *
+    FROM students
+    WHERE id = ?
+    ''',
+    (session['student_id'],)
+).fetchone()
 
     # FEES
     fees = db.execute(
@@ -782,23 +793,78 @@ def submit_admission():
 
 
 
-@app.route('/student/profile/<int:sid>')
-def student_profile(sid):
+@app.route('/student/update_profile/<int:sid>', methods=['POST'])
+def update_student_profile(sid):
 
     db = get_db()
 
-    student = db.execute(
-        'SELECT * FROM students WHERE id=?',
-        (sid,)
-    ).fetchone()
+    name = request.form.get('name')
+    aadhaar = request.form.get('aadhaar')
+    address = request.form.get('address')
 
-    if not student:
-        return "Student Not Found"
+    photo_name = None
 
-    return render_template(
-        'student_profile.html',
-        student=student
-    )
+    if 'photo' in request.files:
+
+        photo = request.files['photo']
+
+        if photo.filename != '':
+
+            filename = secure_filename(photo.filename)
+
+            upload_path = os.path.join(
+                app.config['UPLOAD_FOLDER'],
+                'students',
+                filename
+            )
+
+            photo.save(upload_path)
+
+            photo_name = filename
+
+    if photo_name:
+
+        db.execute(
+            '''
+            UPDATE students
+            SET name=?,
+                aadhaar=?,
+                address=?,
+                photo=?
+            WHERE id=?
+            ''',
+            (
+                name,
+                aadhaar,
+                address,
+                photo_name,
+                sid
+            )
+        )
+
+    else:
+
+        db.execute(
+            '''
+            UPDATE students
+            SET name=?,
+                aadhaar=?,
+                address=?
+            WHERE id=?
+            ''',
+            (
+                name,
+                aadhaar,
+                address,
+                sid
+            )
+        )
+
+    db.commit()
+
+    return redirect(f'/student/profile/{sid}')
+
+
 
 @app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
 def complete_admission(aid):
