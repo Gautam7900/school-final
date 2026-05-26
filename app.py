@@ -336,7 +336,7 @@ def edit_student_profile(sid):
         return redirect(f'/student/details/{sid}')
 
     return render_template(
-        'student_details.html',
+        'edit_student_profile.html',
         student=student
     )
 
