@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+.details-page{
+    max-width:900px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.details-card{
+    background:#fff;
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.profile-top{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.profile-photo{
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:5px solid #d4af37;
+}
+
+.profile-avatar{
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    background:#d4af37;
+
+    color:#081c4b;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:50px;
+
+    font-weight:700;
+
+    margin:auto;
+}
+
+.student-name{
+    margin-top:20px;
+    font-size:32px;
+    font-weight:700;
+    color:#081c4b;
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.detail-box{
+    background:#f8f9fc;
+    padding:20px;
+    border-radius:12px;
+}
+
+.detail-box h4{
+    color:#888;
+    margin-bottom:10px;
+}
+
+.detail-box p{
+    font-size:18px;
+    font-weight:600;
+    color:#081c4b;
+}
+
+.edit-btn{
+    margin-top:30px;
+    display:inline-block;
+    background:#081c4b;
+    color:white;
+    padding:14px 28px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+}
+
+</style>
+
+<div class="details-page">
+
+    <div class="details-card">
+
+        <div class="profile-top">
+
+            {% if student['photo'] %}
+
+            <img
+                src="/static/uploads/students/{{ student['photo'] }}"
+                class="profile-photo"
+            >
+
+            {% else %}
+
+            <div class="profile-avatar">
+                {{ student['name'][0] }}
+            </div>
+
+            {% endif %}
+
+            <div class="student-name">
+                {{ student['name'] }}
+            </div>
+
+        </div>
+
+        <div class="details-grid">
+
+            <div class="detail-box">
+                <h4>Class</h4>
+                <p>{{ student['class_name'] }}</p>
+            </div>
+
+            <div class="detail-box">
+                <h4>Roll Number</h4>
+                <p>{{ student['roll_number'] }}</p>
+            </div>
+
+            <div class="detail-box">
+                <h4>Parent Name</h4>
+                <p>{{ student['parent_name'] }}</p>
+            </div>
+
+            <div class="detail-box">
+                <h4>Contact</h4>
+                <p>{{ student['contact'] }}</p>
+            </div>
+
+            <div class="detail-box">
+                <h4>Aadhaar</h4>
+                <p>{{ student['aadhaar'] }}</p>
+            </div>
+
+            <div class="detail-box">
+                <h4>Address</h4>
+                <p>{{ student['address'] }}</p>
+            </div>
+
+            
+
+        </div>
+
+        <a
+            href="/student/edit-profile/{{ student['id'] }}"
+            class="edit-btn"
+        >
+            ✏️ Edit Profile
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

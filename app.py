@@ -6,6 +6,8 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
+from werkzeug.utils import secure_filename
+import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
@@ -247,6 +249,101 @@ def student_dashboard():
         attend_pct=attend_pct,
         syllabus=syllabus
     )
+
+
+
+@app.route('/student/details/<int:sid>')
+def student_details(sid):
+
+    db = get_db()
+
+    student = db.execute(
+        "SELECT * FROM students WHERE id=?",
+        (sid,)
+    ).fetchone()
+
+    return render_template(
+        'student_details.html',
+        student=student
+    )
+
+
+@app.route('/student/edit-profile/<int:sid>', methods=['GET','POST'])
+def edit_student_profile(sid):
+
+    db = get_db()
+
+    student = db.execute(
+        "SELECT * FROM students WHERE id=?",
+        (sid,)
+    ).fetchone()
+
+    if request.method == 'POST':
+
+        name = request.form['name']
+        parent_name = request.form['parent_name']
+        contact = request.form['contact']
+        aadhaar = request.form['aadhaar']
+        address = request.form['address']
+
+        photo = student['photo']
+
+        if 'photo' in request.files:
+
+            file = request.files['photo']
+
+            if file.filename != '':
+
+                filename = secure_filename(file.filename)
+
+                upload_folder = os.path.join(
+                    app.root_path,
+                    'static',
+                    'uploads',
+                    'students'
+                )
+
+                os.makedirs(upload_folder, exist_ok=True)
+
+                file.save(
+                    os.path.join(upload_folder, filename)
+                )
+
+                photo = filename
+
+        db.execute("""
+            UPDATE students
+            SET
+                name=?,
+                parent_name=?,
+                contact=?,
+                aadhaar=?,
+                address=?,
+                photo=?
+            WHERE id=?
+        """, (
+            name,
+            parent_name,
+            contact,
+            aadhaar,
+            address,
+            photo,
+            sid
+        ))
+
+        db.commit()
+
+        return redirect(f'/student/details/{sid}')
+
+    return render_template(
+        'edit_student_profile.html',
+        student=student
+    )
+
+
+
+
+
 
 
 @app.route('/student/profile/<int:sid>')

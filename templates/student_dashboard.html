@@ -4,7 +4,7 @@
   <div class="dash-header">
     <div class="dash-header-inner dashboard-top">
       <div class="student-profile-section">
-        <a href="{{ url_for('student_profile', sid=student['id']) }}">
+        <a href="/student/details/{{ student['id'] }}">
           {% if student['photo'] %}
 
           <img
