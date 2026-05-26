@@ -1,176 +1,284 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <style>
+  body {
+    background: #f4f7fc;
+  }
 
-.details-page{
-    max-width:900px;
-    margin:auto;
-    padding:40px 20px;
-}
+  .details-page {
+    max-width: 1100px;
+    margin: auto;
+    padding: 50px 20px;
+  }
 
-.details-card{
-    background:#fff;
-    border-radius:20px;
-    padding:40px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-}
+  .details-card {
+    background: white;
 
-.profile-top{
-    text-align:center;
-    margin-bottom:40px;
-}
+    border-radius: 28px;
 
-.profile-photo{
-    width:140px;
-    height:140px;
+    overflow: hidden;
 
-    border-radius:50%;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  }
 
-    object-fit:cover;
+  /* TOP COVER */
 
-    border:5px solid #d4af37;
-}
+  .profile-banner {
+    height: 220px;
 
-.profile-avatar{
-    width:140px;
-    height:140px;
+    background: linear-gradient(135deg, #081c4b, #0d47a1);
 
-    border-radius:50%;
+    position: relative;
+  }
 
-    background:#d4af37;
+  /* PROFILE IMAGE */
 
-    color:#081c4b;
+  .profile-top {
+    text-align: center;
 
-    display:flex;
+    margin-top: -80px;
 
-    align-items:center;
+    position: relative;
 
-    justify-content:center;
+    z-index: 10;
+  }
 
-    font-size:50px;
+  .profile-photo {
+    width: 170px;
+    height: 170px;
 
-    font-weight:700;
+    border-radius: 50%;
 
-    margin:auto;
-}
+    object-fit: cover;
 
-.student-name{
-    margin-top:20px;
-    font-size:32px;
-    font-weight:700;
-    color:#081c4b;
-}
+    border: 6px solid white;
 
-.details-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 
-.detail-box{
-    background:#f8f9fc;
-    padding:20px;
-    border-radius:12px;
-}
+    transition: 0.3s;
+  }
 
-.detail-box h4{
-    color:#888;
-    margin-bottom:10px;
-}
+  .profile-photo:hover {
+    transform: scale(1.05);
+  }
 
-.detail-box p{
-    font-size:18px;
-    font-weight:600;
-    color:#081c4b;
-}
+  .profile-avatar {
+    width: 170px;
+    height: 170px;
 
-.edit-btn{
-    margin-top:30px;
-    display:inline-block;
-    background:#081c4b;
-    color:white;
-    padding:14px 28px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:700;
-}
+    border-radius: 50%;
 
+    background: #d4af37;
+
+    color: #081c4b;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 60px;
+
+    font-weight: 800;
+
+    margin: auto;
+
+    border: 6px solid white;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  /* NAME */
+
+  .student-name {
+    margin-top: 20px;
+
+    font-size: 36px;
+
+    font-weight: 800;
+
+    color: #081c4b;
+  }
+
+  .student-class {
+    color: #666;
+
+    margin-top: 8px;
+
+    font-size: 18px;
+  }
+
+  /* DETAILS */
+
+  .details-content {
+    padding: 40px;
+  }
+
+  .details-grid {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 22px;
+
+    margin-top: 30px;
+  }
+
+  .detail-box {
+    background: #f8f9fd;
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    transition: 0.3s;
+
+    border: 1px solid #eef1f7;
+  }
+
+  .detail-box:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .detail-icon {
+    font-size: 26px;
+
+    margin-bottom: 12px;
+  }
+
+  .detail-box h4 {
+    color: #888;
+
+    margin-bottom: 10px;
+
+    font-size: 14px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+  }
+
+  .detail-box p {
+    font-size: 20px;
+
+    font-weight: 700;
+
+    color: #081c4b;
+
+    word-break: break-word;
+  }
+
+  /* BUTTON */
+
+  .edit-btn-wrap {
+    text-align: center;
+
+    margin-top: 40px;
+  }
+
+  .edit-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: linear-gradient(135deg, #081c4b, #0d47a1);
+
+    color: white;
+
+    padding: 16px 36px;
+
+    border-radius: 14px;
+
+    text-decoration: none;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    transition: 0.3s;
+
+    box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
+  }
+
+  .edit-btn:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 12px 28px rgba(13, 71, 161, 0.4);
+  }
 </style>
 
 <div class="details-page">
+  <div class="details-card">
+    <!-- TOP BANNER -->
 
-    <div class="details-card">
+    <div class="profile-banner"></div>
 
-        <div class="profile-top">
+    <!-- PROFILE SECTION -->
 
-            {% if student['photo'] %}
+    <div class="profile-top">
+      {% if student['photo'] %}
 
-            <img
-                src="/static/uploads/students/{{ student['photo'] }}"
-                class="profile-photo"
-            >
+      <img
+        src="/static/uploads/students/{{ student['photo'] }}"
+        class="profile-photo"
+      />
 
-            {% else %}
+      {% else %}
 
-            <div class="profile-avatar">
-                {{ student['name'][0] }}
-            </div>
+      <div class="profile-avatar">{{ student['name'][0] }}</div>
 
-            {% endif %}
+      {% endif %}
 
-            <div class="student-name">
-                {{ student['name'] }}
-            </div>
+      <div class="student-name">{{ student['name'] }}</div>
 
-        </div>
-
-        <div class="details-grid">
-
-            <div class="detail-box">
-                <h4>Class</h4>
-                <p>{{ student['class_name'] }}</p>
-            </div>
-
-            <div class="detail-box">
-                <h4>Roll Number</h4>
-                <p>{{ student['roll_number'] }}</p>
-            </div>
-
-            <div class="detail-box">
-                <h4>Parent Name</h4>
-                <p>{{ student['parent_name'] }}</p>
-            </div>
-
-            <div class="detail-box">
-                <h4>Contact</h4>
-                <p>{{ student['contact'] }}</p>
-            </div>
-
-            <div class="detail-box">
-                <h4>Aadhaar</h4>
-                <p>{{ student['aadhaar'] }}</p>
-            </div>
-
-            <div class="detail-box">
-                <h4>Address</h4>
-                <p>{{ student['address'] }}</p>
-            </div>
-
-            
-
-        </div>
-
-        <a
-            href="/student/edit-profile/{{ student['id'] }}"
-            class="edit-btn"
-        >
-            ✏️ Edit Profile
-        </a>
-
+      <div class="student-class">
+        {{ student['class_name'] }} • Roll No: {{ student['roll_number'] }}
+      </div>
     </div>
 
+    <!-- DETAILS -->
+
+    <div class="details-content">
+      <div class="details-grid">
+        <div class="detail-box">
+          <div class="detail-icon">👨‍👩‍👦</div>
+          <h4>Parent Name</h4>
+          <p>{{ student['parent_name'] }}</p>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-icon">📞</div>
+          <h4>Contact</h4>
+          <p>{{ student['contact'] }}</p>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-icon">🆔</div>
+          <h4>Aadhaar Number</h4>
+          <p>{{ student['aadhaar'] }}</p>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-icon">🏠</div>
+          <h4>Address</h4>
+          <p>{{ student['address'] }}</p>
+        </div>
+      </div>
+
+      <!-- BUTTON -->
+
+      <div class="edit-btn-wrap">
+        <a href="/student/edit-profile/{{ student['id'] }}" class="edit-btn">
+          ✏️ Edit Profile
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
