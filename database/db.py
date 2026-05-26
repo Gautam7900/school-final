@@ -15,10 +15,13 @@ def init_db():
     db = sqlite3.connect(DATABASE)
     db.row_factory = sqlite3.Row
     db.executescript('''
-                     
-                     
-     
-        
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL, class_name TEXT NOT NULL,
+            roll_number TEXT UNIQUE NOT NULL, parent_name TEXT,
+            contact TEXT, password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );            
         CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, subject TEXT NOT NULL,
@@ -218,63 +221,12 @@ def init_db():
            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
        
-        CREATE TABLE students (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           roll_number TEXT UNIQUE,
-           name TEXT,
-           parent_name TEXT,
-           mobile TEXT,
-           password TEXT,
-           email TEXT,
-           dob TEXT,
-           class_name TEXT,
-           address TEXT,
-           status TEXT DEFAULT 'Registered',
-           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-       );
-       
-    
-                     
+                
         ALTER TABLE admissions
         ADD COLUMN pdf_file TEXT;
                      
     ''')
-    try:
-        db.execute("ALTER TABLE students ADD COLUMN parent_name TEXT")
-    except:
-        pass
-
-    try:
-        db.execute("ALTER TABLE students ADD COLUMN contact TEXT")
-    except:
-        pass
     
-    
-    try:
-       db.execute("ALTER TABLE students ADD COLUMN password TEXT")
-    except:
-      pass
-  
-    try:
-        db.execute("ALTER TABLE admissions ADD COLUMN email TEXT")
-    except:
-        pass
-
-    try:
-        db.execute("ALTER TABLE admissions ADD COLUMN pdf_file TEXT")
-    except:
-        pass
-
-    try:
-        db.execute("ALTER TABLE admissions ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    except:
-        pass
-
-
-    db.commit()
-    
-    
-
     if db.execute('SELECT COUNT(*) FROM students').fetchone()[0] == 0:
         db.executescript('''
             INSERT INTO teachers (name,subject,username,password,email,phone,qualification,experience,bio,joining_date) VALUES
