@@ -4661,3 +4661,16 @@ img {
 
 
 
+.profile-photo{
+
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #fff;
+    margin-bottom:20px;
+
+}
+
+
+

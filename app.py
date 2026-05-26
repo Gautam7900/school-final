@@ -681,7 +681,6 @@ def submit_admission():
 
 
 
-
 @app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
 def complete_admission(aid):
 
@@ -691,10 +690,53 @@ def complete_admission(aid):
     db = get_db()
 
     name = request.form.get('name')
+
     class_name = request.form.get('class_name')
+
     father_name = request.form.get('father_name')
+
     contact = request.form.get('contact')
+
     password = request.form.get('password')
+
+    aadhaar = request.form.get('aadhaar')
+
+    address = request.form.get('address')
+
+    city = request.form.get('city')
+
+    state = request.form.get('state')
+
+    pincode = request.form.get('pincode')
+
+    # PHOTO UPLOAD
+
+    photo = None
+
+    if 'photo' in request.files:
+
+        file = request.files['photo']
+
+        if file.filename:
+
+            ext = file.filename.rsplit('.',1)[-1]
+
+            filename = f"student_{uuid.uuid4().hex}.{ext}"
+
+            upload_folder = os.path.join(
+                app.root_path,
+                'static',
+                'uploads',
+                'students'
+            )
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            file.save(
+                os.path.join(upload_folder, filename)
+            )
+
+            photo = filename
 
     # AUTO ROLL NUMBER
 
@@ -708,7 +750,7 @@ def complete_admission(aid):
 
     # CREATE STUDENT
 
-    db.execute("""
+    cursor = db.execute("""
 
     INSERT INTO students (
 
@@ -717,11 +759,17 @@ def complete_admission(aid):
         roll_number,
         password,
         parent_name,
-        contact
+        contact,
+        photo,
+        aadhaar,
+        address,
+        city,
+        state,
+        pincode
 
     )
 
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
     """, (
 
@@ -730,11 +778,19 @@ def complete_admission(aid):
         roll_number,
         password,
         father_name,
-        contact
+        contact,
+        photo,
+        aadhaar,
+        address,
+        city,
+        state,
+        pincode
 
     ))
 
-    # UPDATE ADMISSION STATUS
+    student_id = cursor.lastrowid
+
+    # UPDATE STATUS
 
     db.execute("""
 
@@ -749,12 +805,11 @@ def complete_admission(aid):
     db.commit()
 
     flash(
-        f'Admission completed! Roll Number: {roll_number}',
+        'Admission Completed Successfully!',
         'success'
     )
 
-    return redirect('/admin/dashboard')
-
+    return redirect(f'/student/profile/{student_id}')
 
 # @app.route('/submit_admission', methods=['POST'])
 # def submit_admission():
