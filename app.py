@@ -336,7 +336,7 @@ def edit_student_profile(sid):
         return redirect(f'/student/details/{sid}')
 
     return render_template(
-        'student_details.html',
+        'student_edit_profile.html',
         student=student
     )
 
@@ -992,10 +992,9 @@ def update_student_profile(sid):
 
     db.commit()
 
-    return redirect(f'/student/profile/{sid}')
+    return redirect(f'/student/details/{sid}')
 
-
-
+##########################################################################################################
 
 
 
