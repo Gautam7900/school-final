@@ -238,8 +238,6 @@ def init_db():
 
         ALTER TABLE admissions ADD COLUMN income TEXT;
 
-        ALTER TABLE admissions ADD COLUMN address TEXT;
-
         ALTER TABLE admissions ADD COLUMN city TEXT;
 
         ALTER TABLE admissions ADD COLUMN state TEXT;
