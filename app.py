@@ -561,75 +561,123 @@ def submit_admission():
 
     db = get_db()
 
+    # STUDENT INFO
     name = request.form.get('name')
+    dob = request.form.get('dob')
+    gender = request.form.get('gender')
     class_name = request.form.get('class_name')
-    parent_name = request.form.get('parent_name')
+    blood_group = request.form.get('blood_group')
+    religion = request.form.get('religion')
+
+    # PARENT INFO
+    father_name = request.form.get('father_name')
+    mother_name = request.form.get('mother_name')
     contact = request.form.get('contact')
     email = request.form.get('email')
+    occupation = request.form.get('occupation')
+    income = request.form.get('income')
+
+    # ADDRESS
     address = request.form.get('address')
+    city = request.form.get('city')
+    state = request.form.get('state')
+    pincode = request.form.get('pincode')
 
-    # PDF FILE NAME
-    pdf_filename = f"admission_{uuid.uuid4().hex}.pdf"
+    # ACADEMIC
+    previous_school = request.form.get('previous_school')
+    last_class = request.form.get('last_class')
+    percentage = request.form.get('percentage')
 
-    form_pdf_filename = f"form_{uuid.uuid4().hex}.pdf"
+    # MEDICAL
+    medical = request.form.get('medical')
+    emergency_contact = request.form.get('emergency_contact')
 
-    # PDF PATH
-    pdf_path = os.path.join(
-        app.root_path,
-        'static',
-        'uploads',
-        'admissions',
-        pdf_filename
+    # SAVE TO DATABASE
+    db.execute("""
+
+    INSERT INTO admissions (
+
+        name,
+        dob,
+        gender,
+        class_name,
+        blood_group,
+        religion,
+
+        father_name,
+        mother_name,
+        contact,
+        email,
+        occupation,
+        income,
+
+        address,
+        city,
+        state,
+        pincode,
+
+        previous_school,
+        last_class,
+        percentage,
+
+        medical,
+        emergency_contact,
+
+        status
+
     )
 
-    # CREATE PDF
-    c = canvas.Canvas(pdf_path)
+    VALUES (
 
-    c.drawString(100, 800, "BrightMind School Admission Form")
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?,
+        ?, ?,
+        ?
 
-    c.drawString(100, 760, f"Student Name: {name}")
+    )
 
-    c.drawString(100, 740, f"Class: {class_name}")
-
-    c.drawString(100, 720, f"Parent: {parent_name}")
-
-    c.drawString(100, 700, f"Contact: {contact}")
-
-    c.drawString(100, 680, f"Email: {email}")
-    
-    c.drawString(100, 660, f"Address: {address}")
-
-    c.save()
-
-    # DATABASE INSERT
-    db.execute("""
-    INSERT INTO admissions
-    (name, class_name, parent_name,
-    contact, email, address, status, pdf_file)
-
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
 
         name,
+        dob,
+        gender,
         class_name,
-        parent_name,
+        blood_group,
+        religion,
+
+        father_name,
+        mother_name,
         contact,
         email,
+        occupation,
+        income,
+
         address,
-        'Pending',
-        pdf_filename
+        city,
+        state,
+        pincode,
+
+        previous_school,
+        last_class,
+        percentage,
+
+        medical,
+        emergency_contact,
+
+        'Pending'
 
     ))
 
     db.commit()
 
-    flash('Admission form submitted!', 'success')
+    flash(
+        'Admission form submitted successfully!',
+        'success'
+    )
 
     return redirect('/admissions')
-
-
-
-
 
 
 

@@ -221,6 +221,41 @@ def init_db():
            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
        
+       
+        ALTER TABLE admissions ADD COLUMN dob TEXT;
+
+        ALTER TABLE admissions ADD COLUMN gender TEXT;
+
+        ALTER TABLE admissions ADD COLUMN blood_group TEXT;
+
+        ALTER TABLE admissions ADD COLUMN religion TEXT;
+
+        ALTER TABLE admissions ADD COLUMN father_name TEXT;
+
+        ALTER TABLE admissions ADD COLUMN mother_name TEXT;
+
+        ALTER TABLE admissions ADD COLUMN occupation TEXT;
+
+        ALTER TABLE admissions ADD COLUMN income TEXT;
+
+        ALTER TABLE admissions ADD COLUMN address TEXT;
+
+        ALTER TABLE admissions ADD COLUMN city TEXT;
+
+        ALTER TABLE admissions ADD COLUMN state TEXT;
+
+        ALTER TABLE admissions ADD COLUMN pincode TEXT;
+
+        ALTER TABLE admissions ADD COLUMN previous_school TEXT;
+
+        ALTER TABLE admissions ADD COLUMN last_class TEXT;
+
+        ALTER TABLE admissions ADD COLUMN percentage TEXT;
+
+        ALTER TABLE admissions ADD COLUMN medical TEXT;
+
+        ALTER TABLE admissions ADD COLUMN emergency_contact TEXT;
+       
                 
         ALTER TABLE admissions
         ADD COLUMN pdf_file TEXT;
