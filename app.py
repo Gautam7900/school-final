@@ -681,6 +681,24 @@ def submit_admission():
 
 
 
+@app.route('/student/profile/<int:sid>')
+def student_profile(sid):
+
+    db = get_db()
+
+    student = db.execute(
+        'SELECT * FROM students WHERE id=?',
+        (sid,)
+    ).fetchone()
+
+    if not student:
+        return "Student Not Found"
+
+    return render_template(
+        'student_profile.html',
+        student=student
+    )
+
 @app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
 def complete_admission(aid):
 
