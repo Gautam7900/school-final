@@ -249,6 +249,23 @@
 
         </tr>
 
+        <td>
+                <div style="display:flex;gap:5px;align-items:center;">
+                  <a href="/student/details/{{ student['id'] }}"
+                    style="background:#e8f5e9;color:#2e7d32;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
+                    👁 Profile
+                  </a>
+                  <a href="/student/edit-profile/{{ student['id'] }}" class="edit-btn"
+                    style="background:#e3f2fd;color:#1565c0;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
+                    ✏️ Edit
+                  </a>
+                  <button onclick="deleteTeacher({{ t['id'] }}, '{{ t['name'] }}')"
+                    style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;cursor:pointer;">
+                    🗑
+                  </button>
+                </div>
+              </td>
+
         {% endfor %}
 
       </tbody>

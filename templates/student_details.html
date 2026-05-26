@@ -1,307 +1,88 @@
-{% extends 'base.html' %} {% block content %}
-
-<style>
-  body {
-    background: #f4f7fc;
-  }
-
-  .details-page {
-    max-width: 1100px;
-    margin: auto;
-    padding: 50px 20px;
-  }
-
-  .details-card {
-    background: white;
-
-    border-radius: 28px;
-
-    overflow: hidden;
-
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  }
-
-  /* TOP COVER */
-
-  .profile-banner {
-    height: 220px;
-
-    background: linear-gradient(135deg, #081c4b, #0d47a1);
-
-    position: relative;
-  }
-
-  /* PROFILE IMAGE */
-
-  .profile-top {
-    text-align: center;
-
-    margin-top: -80px;
-
-    position: relative;
-
-    z-index: 10;
-  }
-
-  .profile-photo {
-    width: 170px;
-    height: 170px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-
-    border: 6px solid white;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
-    transition: 0.3s;
-  }
-
-  .profile-photo:hover {
-    transform: scale(1.05);
-  }
-
-  .profile-avatar {
-    width: 170px;
-    height: 170px;
-
-    border-radius: 50%;
-
-    background: #d4af37;
-
-    color: #081c4b;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 60px;
-
-    font-weight: 800;
-
-    margin: auto;
-
-    border: 6px solid white;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  }
-
-  /* NAME */
-
-  .student-name {
-    margin-top: 20px;
-
-    font-size: 36px;
-
-    font-weight: 800;
-
-    color: #081c4b;
-  }
-
-  .student-class {
-    color: #666;
-
-    margin-top: 8px;
-
-    font-size: 18px;
-  }
-
-  /* DETAILS */
-
-  .details-content {
-    padding: 40px;
-  }
-
-  .details-grid {
-    display: grid;
-
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
-    gap: 22px;
-
-    margin-top: 30px;
-  }
-
-  .detail-box {
-    background: #f8f9fd;
-
-    padding: 25px;
-
-    border-radius: 18px;
-
-    transition: 0.3s;
-
-    border: 1px solid #eef1f7;
-  }
-
-  .detail-box:hover {
-    transform: translateY(-5px);
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  }
-
-  .detail-icon {
-    font-size: 26px;
-
-    margin-bottom: 12px;
-  }
-
-  .detail-box h4 {
-    color: #888;
-
-    margin-bottom: 10px;
-
-    font-size: 14px;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1px;
-  }
-
-  .detail-box p {
-    font-size: 20px;
-
-    font-weight: 700;
-
-    color: #081c4b;
-
-    word-break: break-word;
-  }
-
-  /* BUTTON */
-
-  .edit-btn-wrap {
-    text-align: center;
-
-    margin-top: 40px;
-  }
-
-  .edit-btn {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    background: linear-gradient(135deg, #081c4b, #0d47a1);
-
-    color: white;
-
-    padding: 16px 36px;
-
-    border-radius: 14px;
-
-    text-decoration: none;
-
-    font-size: 17px;
-
-    font-weight: 700;
-
-    transition: 0.3s;
-
-    box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
-  }
-
-  .edit-btn:hover {
-    transform: translateY(-3px);
-
-    box-shadow: 0 12px 28px rgba(13, 71, 161, 0.4);
-  }
-
-  .student-name{
-    margin-top:20px;
-
-    font-size:36px;
-
-    font-weight:800;
-
-    color:#081c4b;
-
-    text-align:center;
-}
-
-.student-class{
-    margin-top:10px;
-
-    font-size:18px;
-
-    color:#666;
-
-    text-align:center;
-
-    font-weight:600;
-}
-</style>
-
-<div class="details-page">
-  <div class="details-card">
-    <!-- TOP BANNER -->
-
-    <div class="profile-banner"></div>
-
-    <!-- PROFILE SECTION -->
-
-    <div class="profile-top">
-      {% if student['photo'] %}
-
-      <img
-        src="/static/uploads/students/{{ student['photo'] }}"
-        class="profile-photo"
-      />
-
-      {% else %}
-
-      <div class="profile-avatar">{{ student['name'][0] }}</div>
-
-      {% endif %}
-
-      <div class="student-class">
-    {{ student['class_name'] }}
-    • Roll No: {{ student['roll_number'] }}
-</div>
-    </div>
-
-    <!-- DETAILS -->
-
-    <div class="details-content">
-      <div class="details-grid">
-        <div class="detail-box">
-          <div class="detail-icon">👨‍👩‍👦</div>
-          <h4>Parent Name</h4>
-          <p>{{ student['parent_name'] }}</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-icon">📞</div>
-          <h4>Contact</h4>
-          <p>{{ student['contact'] }}</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-icon">🆔</div>
-          <h4>Aadhaar Number</h4>
-          <p>{{ student['aadhaar'] }}</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-icon">🏠</div>
-          <h4>Address</h4>
-          <p>{{ student['address'] }}</p>
-        </div>
+{% extends 'base.html' %}
+{% block title %}{{ student['name'] }}{% endblock %}
+{% block content %}
+
+<section style="background:linear-gradient(135deg,var(--navy),#1a3060);padding:3rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="/students" style="color:rgba(255,255,255,0.6);font-size:0.85rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem;">← Back to All Students</a>
+    <div style="display:flex;gap:2.5rem;align-items:center;flex-wrap:wrap;">
+      <div style="flex-shrink:0;">
+        {% if student['photo'] %}
+          <img src="/static/uploads/students/{{ student['photo'] }}" alt="{{ student['name'] }}"
+               style="width:160px;height:160px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        {% else %}
+          <div style="width:160px;height:160px;border-radius:50%;background:rgba(201,168,76,0.15);border:4px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:700;color:var(--gold-lt);">
+            {{ student['name'][0] }}
+          </div>
+        {% endif %}
       </div>
-
-      <!-- BUTTON -->
-
-      <div class="edit-btn-wrap">
-        <a href="/student/edit-profile/{{ student['id'] }}" class="edit-btn">
-          ✏️ Edit Profile
-        </a>
+      <div style="flex:1;min-width:240px;">
+        <div style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:var(--gold-lt);padding:4px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;display:inline-block;margin-bottom:0.75rem;">{{ student['class_name'] }}</div>
+        <h1 style="color:var(--white);margin:0 0 0.5rem;font-size:2.2rem;">{{ student['name'] }}</h1>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;margin:0 0 1rem;">{{ student['roll_number'] }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;">
+          {% if student['date_of_birth'] %}<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;">� Date of Birth: {{ student['date_of_birth'] }}</div>{% endif %}
+          {% if student['admission_date'] %}<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;">📅 Admission Date: {{ student['admission_date'] }}</div>{% endif %}
+          {% if student['email'] %}<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;">📧 {{ student['email'] }}</div>{% endif %}
+          {% if student['phone'] %}<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;">📞 {{ student['phone'] }}</div>{% endif %}
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
+<section class="section bg-warm">
+  <div style="max-width:1100px;margin:0 auto;padding:0 2rem;">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        {% if student['bio'] %}
+        <div class="dash-card">
+          <div class="dash-card-header"><h3>👤 About</h3></div>
+          <div class="dash-card-body"><p style="font-size:1rem;line-height:1.8;color:var(--text);">{{ student['bio'] }}</p></div>
+        </div>
+        {% endif %}
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>📚 Classes & Subjects Assigned</h3>
+            <span style="font-size:0.82rem;color:var(--muted);">{{ assignments|length }} assignments</span>
+          </div>
+          <div class="dash-card-body">
+            {% if assignments %}
+            <div style="display:flex;flex-wrap:wrap;gap:0.6rem;">
+              {% for a in assignments %}
+              <div style="background:var(--navy);color:var(--white);border-radius:10px;padding:0.6rem 1rem;min-width:120px;">
+                <span style="font-size:0.7rem;color:var(--gold-lt);font-weight:700;text-transform:uppercase;">{{ a['class_name'] }}</span><br>
+                <span style="font-size:0.9rem;font-weight:600;">{{ a['subject'] }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}<p style="color:var(--muted);">No class assignments yet.</p>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header"><h3>📋 Details</h3></div>
+        <div class="dash-card-body">
+          {% for label, value in [('Subject',student['subject']),('Qualification',student['qualification']),('Experience',student['experience']),('Joined',student['joining_date']),('Email',student['email']),('Phone',student['phone'])] %}
+          {% if value %}
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--gold-dk);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">{{ label }}</div>
+            <div style="color:var(--text);">{{ value }}</div>
+          </div>
+          {% endif %}
+          {% endfor %}
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--gold-dk);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Classes</div>
+            <div style="font-size:1.5rem;font-weight:800;color:var(--navy);font-family:'Cormorant Garamond',serif;">{{ assignments|length }}</div>
+          </div>
+          {% if session.get('role') == 'admin' %}
+          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;">
+            <a href="/student/edit-profile/{{ student['id'] }}" class="edit-btn" style="display:block;text-align:center;">✏️ Edit Profile & Photo</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
