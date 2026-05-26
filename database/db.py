@@ -222,7 +222,7 @@ def init_db():
        );
        
        
-        ALTER TABLE admissions ADD COLUMN dob TEXT;
+        
 
         ALTER TABLE admissions ADD COLUMN gender TEXT;
 
