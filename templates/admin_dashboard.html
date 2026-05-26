@@ -210,69 +210,116 @@
 
     <!-- ══════════════════════════════════════════════════════
          TAB 2 — STUDENTS  (add + delete)
-    ══════════════════════════════════════════════════════ -->
- <div id="panel-students" class="tab-panel dash-card" style="display:none;">
+  <!-- =========================================
+STUDENTS PANEL
+========================================= -->
 
-  <div class="dash-card-header">
-    <h3>👨‍🎓 Students</h3>
-  </div>
+<div id="panel-students" class="tab-panel dash-card" style="display:none;">
 
-  <div class="table-wrap">
+    <div class="dash-card-header">
+        <h3>👨‍🎓 Students</h3>
+    </div>
 
-    <table>
+    <div class="table-wrap">
 
-      <thead>
-        <tr>
-          <th>Roll</th>
-          <th>Name</th>
-          <th>Class</th>
-          <th>Parent</th>
-          <th>Contact</th>
-        </tr>
-      </thead>
+        <table>
 
-      <tbody>
+            <thead>
+                <tr>
+                    <th>Roll</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Parent</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        {% for s in students %}
+            <tbody>
 
-        <tr>
+                {% for s in students %}
 
-          <td>{{ s['roll_number'] }}</td>
+                <tr>
 
-          <td>{{ s['name'] }}</td>
+                    <td>{{ s['roll_number'] }}</td>
 
-          <td>{{ s['class_name'] }}</td>
+                    <td>{{ s['name'] }}</td>
 
-          <td>{{ s['parent_name'] }}</td>
+                    <td>{{ s['class_name'] }}</td>
 
-          <td>{{ s['contact'] }}</td>
+                    <td>{{ s['parent_name'] }}</td>
 
-        </tr>
+                    <td>{{ s['contact'] }}</td>
 
-        <td>
-                <div style="display:flex;gap:5px;align-items:center;">
-                  <a href="/student/details/{{ student['id'] }}"
-                    style="background:#e8f5e9;color:#2e7d32;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
-                    👁 Profile
-                  </a>
-                  <a href="/student/edit-profile/{{ student['id'] }}" class="edit-btn"
-                    style="background:#e3f2fd;color:#1565c0;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;text-decoration:none;">
-                    ✏️ Edit
-                  </a>
-                  <button onclick="deleteTeacher({{ t['id'] }}, '{{ t['name'] }}')"
-                    style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:5px 9px;font-size:0.8rem;font-weight:700;cursor:pointer;">
-                    🗑
-                  </button>
-                </div>
-              </td>
+                    <td>
 
-        {% endfor %}
+                        <div style="display:flex;gap:8px;align-items:center;">
 
-      </tbody>
+                            <!-- PROFILE BUTTON -->
 
-    </table>
+                            <a
+                                href="/student/details/{{ s['id'] }}"
+                                style="
+                                    background:#e8f5e9;
+                                    color:#2e7d32;
+                                    border-radius:8px;
+                                    padding:7px 12px;
+                                    font-size:0.82rem;
+                                    font-weight:700;
+                                    text-decoration:none;
+                                "
+                            >
+                                👁 Profile
+                            </a>
 
-  </div>
+                            <!-- EDIT BUTTON -->
+
+                            <a
+                                href="/student/edit-profile/{{ s['id'] }}"
+                                style="
+                                    background:#e3f2fd;
+                                    color:#1565c0;
+                                    border-radius:8px;
+                                    padding:7px 12px;
+                                    font-size:0.82rem;
+                                    font-weight:700;
+                                    text-decoration:none;
+                                "
+                            >
+                                ✏️ Edit
+                            </a>
+
+                            <!-- DELETE BUTTON -->
+
+                            <button
+                                onclick="deleteStudent({{ s['id'] }}, '{{ s['name'] }}')"
+                                style="
+                                    background:#fce4ec;
+                                    color:#c62828;
+                                    border:none;
+                                    border-radius:8px;
+                                    padding:7px 12px;
+                                    font-size:0.82rem;
+                                    font-weight:700;
+                                    cursor:pointer;
+                                "
+                            >
+                                🗑 Delete
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
     <!-- ══════════════════════════════════════════════════════
