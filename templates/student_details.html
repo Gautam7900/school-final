@@ -210,6 +210,30 @@
 
     box-shadow: 0 12px 28px rgba(13, 71, 161, 0.4);
   }
+
+  .student-name{
+    margin-top:20px;
+
+    font-size:36px;
+
+    font-weight:800;
+
+    color:#081c4b;
+
+    text-align:center;
+}
+
+.student-class{
+    margin-top:10px;
+
+    font-size:18px;
+
+    color:#666;
+
+    text-align:center;
+
+    font-weight:600;
+}
 </style>
 
 <div class="details-page">
@@ -234,11 +258,10 @@
 
       {% endif %}
 
-      <div class="student-name">{{ student['name'] }}</div>
-
       <div class="student-class">
-        {{ student['class_name'] }} • Roll No: {{ student['roll_number'] }}
-      </div>
+    {{ student['class_name'] }}
+    • Roll No: {{ student['roll_number'] }}
+</div>
     </div>
 
     <!-- DETAILS -->
