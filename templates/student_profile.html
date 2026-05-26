@@ -117,22 +117,22 @@
 <div class="dashboard">
   <div class="profile-wrapper">
     <div class="profile-card">
-      <div class="profile-top">
-        {% if student['photo'] %}
+        <div class="profile-top">
+         {% if student['photo'] %}
 
-        <img
-          src="/static/uploads/students/{{ student['photo'] }}"
-          class="student-photo"
-        />
+         <img
+           src="/static/uploads/students/{{ student['photo'] }}"
+           class="student-photo"
+         />
 
-        {% else %}
+         {% else %}
 
-        <div class="student-avatar">{{ student['name'][0] }}</div>
+         <div class="student-avatar">{{ student['name'][0] }}</div>
 
-        {% endif %}
+         {% endif %}
 
-        <div class="profile-name">{{ student['name'] }}</div>
-      </div>
+          <div class="profile-name">{{ student['name'] }}</div>
+        </div>
 
       <form
         method="POST"
