@@ -845,6 +845,11 @@ def update_student_profile(sid):
                 'students',
                 filename
             )
+            
+            os.makedirs(
+            os.path.dirname(upload_path),
+             exist_ok=True
+                  )
 
             photo.save(upload_path)
 
