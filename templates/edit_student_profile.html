@@ -190,8 +190,10 @@ textarea.form-control{
 
                     <img
                         id="previewImg"
-                        src="/static/uploads/students/{{ student['photo'] }}"
-                        class="student-photo"
+                       
+                        src="{{ url_for('static', filename='uploads/students/' + student['photo']) }}"
+                        class="profile-photo"
+
                     >
 
                     {% else %}
