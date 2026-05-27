@@ -1,60 +1,27 @@
-{% extends 'base.html' %} {% block title %}Teacher Dashboard{% endblock %} 
-
-<style>
-  .teacher-profile{
-    margin-right:20px;
-}
-
-.teacher-photo{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    object-fit:cover;
-    border:4px solid #d4af37;
-    box-shadow:0 4px 20px rgba(0,0,0,0.25);
-}
-
-.teacher-avatar{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    background:#d4af37;
-    color:#081c4b;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:38px;
-    font-weight:700;
-    border:4px solid #d4af37;
-}
-</style>
-
-{%
+{% extends 'base.html' %} {% block title %}Teacher Dashboard{% endblock %} {%
 block content %}
 <div class="dashboard">
   <div class="dash-header">
-<div class="teacher-profile">
+    <div class="student-profile-section">
+              <a href="/teachers/{{ teacher['id'] }}">
+                      {% if teacher['photo'] %}
+ 
+                <img
+                 src="/static/uploads/teachers/{{ teacher['photo'] }}"
+                class="student-photo"/>
 
-  <a href="/teachers/{{ teacher['id'] }}">
+                     {% else %}
 
-    {% if teacher['photo'] %}
+                 <div class="student-avatar">{{ teacher['name'][0] }}</div>
 
-      <img
-        src="{{ url_for('static', filename='uploads/teachers/' + teacher['photo']) }}"
-        class="teacher-photo"
-      >
+                   {% endif %}
+              </a>
 
-    {% else %}
-
-      <div class="teacher-avatar">
-        {{ teacher['name'][0] }}
+        <div>
+        <h2>{{ session.teacher_name }} 👩‍🏫</h2>
+        <p>{{ session.teacher_sub }} Teacher · Academic Year 2024–25</p>
       </div>
-
-    {% endif %}
-
-  </a>
-
-</div>
+    </div>
       <a
         href="/teacher/quizzes"
         class="btn btn-sm"
