@@ -39,7 +39,6 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="/" {% if request.path=='/' %}class="active"{% endif %}>Home</a></li>
       <li><a href="/about" {% if request.path=='/about' %}class="active"{% endif %}>About</a></li>
-      <li><a href="/teachers" {% if request.path.startswith('/teachers') %}class="active"{% endif %}>Teachers</a></li>
       <li><a href="/admissions" {% if request.path=='/admissions' %}class="active"{% endif %}>Admissions</a></li>
       <li><a href="/academics" {% if request.path=='/academics' %}class="active"{% endif %}>Academics</a></li>
       <li><a href="/notices" {% if request.path=='/notices' %}class="active"{% endif %}>Notices</a></li>
