@@ -398,7 +398,6 @@ def teacher_dashboard():
     db = get_db()
     classes  = db.execute('SELECT DISTINCT class_name FROM students ORDER BY class_name').fetchall()
     students = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
-    # teacher = db.execute('SELECT * FROM teachers WHERE id=?', (session['teacher_id'],)).fetchone()
     homework = db.execute('SELECT h.*,t.name as tname FROM homework h JOIN teachers t ON h.teacher_id=t.id ORDER BY due_date DESC').fetchall()
     syllabus_list = db.execute('SELECT * FROM syllabus ORDER BY id DESC').fetchall()
     return render_template('teacher_dashboard.html', classes=classes, students=students, homework=homework, syllabus_list=syllabus_list)
@@ -457,50 +456,6 @@ def delete_homework(hid):
 
 
 # TEACHER DASHBOARD
-
-@app.route('/teacher/edit_homework/<int:hid>', methods=['GET', 'POST'])
-def edit_homework(hid):
-
-    if session.get('role') != 'teacher':
-        return redirect('/teacher/login')
-
-    db = get_db()
-
-    homework = db.execute(
-        'SELECT * FROM homework WHERE id=?',
-        (hid,)
-    ).fetchone()
-
-    if request.method == 'POST':
-
-        db.execute("""
-            UPDATE homework
-            SET
-                class_name=?,
-                subject=?,
-                due_date=?
-            WHERE id=?
-        """, (
-            request.form['class_name'],
-            request.form['subject'],
-            request.form['due_date'],
-            hid
-        ))
-
-        db.commit()
-
-        flash('Homework updated successfully!', 'success')
-
-        return redirect('/teacher/dashboard')
-
-    return render_template(
-        'edit_homework.html',
-        homework=homework
-    )
-
-
-
-
 
 
 @app.route('/teacher/upload_syllabus', methods=['POST'])
@@ -964,6 +919,8 @@ def submit_admission():
 
 
 
+
+
 @app.route('/student/update_profile/<int:sid>', methods=['POST'])
 def update_student_profile(sid):
 
@@ -1037,10 +994,6 @@ def update_student_profile(sid):
     flash('Profile updated successfully!', 'success')
 
     return redirect(f'/student/details/{sid}')
-
-
-
-
     
     
     
