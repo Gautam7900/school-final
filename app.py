@@ -8,7 +8,6 @@ from reportlab.platypus import (
 )
 import os
 from werkzeug.utils import secure_filename
-from werkzeug.utils import secure_filename
 import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
@@ -25,7 +24,6 @@ from reportlab.lib.pagesizes import A4
 import os
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-# app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.secret_key = 'brightmind_school_2024'
 
 with app.app_context():
@@ -920,84 +918,87 @@ def submit_admission():
     return redirect('/admissions')
 
 
-
-
 @app.route('/student/update_profile/<int:sid>', methods=['POST'])
 def update_student_profile(sid):
 
-    db = get_db()
+    try:
 
-    # EXISTING STUDENT
-    student = db.execute(
-        "SELECT * FROM students WHERE id=?",
-        (sid,)
-    ).fetchone()
+        db = get_db()
 
-    # FORM DATA
-    name = request.form.get('name')
-    parent_name = request.form.get('parent_name')
-    contact = request.form.get('contact')
-    aadhaar = request.form.get('aadhaar')
-    address = request.form.get('address')
-    class_name = request.form.get('class_name')
-    roll_number = request.form.get('roll_number')
+        student = db.execute(
+            "SELECT * FROM students WHERE id=?",
+            (sid,)
+        ).fetchone()
 
-    # OLD PHOTO
-    photo_filename = student['photo']
+        if not student:
+            return "Student not found"
 
-    # PHOTO UPLOAD
-    photo = request.files.get('photo')
+        # FORM DATA
+        name = request.form.get('name')
+        parent_name = request.form.get('parent_name')
+        contact = request.form.get('contact')
+        aadhaar = request.form.get('aadhaar')
+        address = request.form.get('address')
+        class_name = request.form.get('class_name')
+        roll_number = request.form.get('roll_number')
 
-    if photo and photo.filename != '':
+        # OLD PHOTO
+        photo_filename = student['photo']
 
-        filename = secure_filename(photo.filename)
+        # PHOTO
+        photo = request.files.get('photo')
 
-        upload_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
-            'students'
-        )
+        if photo and photo.filename != '':
 
-        # FOLDER CREATE
-        os.makedirs(upload_path, exist_ok=True)
+            filename = secure_filename(photo.filename)
 
-        # SAVE PHOTO
-        photo.save(os.path.join(upload_path, filename))
+            upload_path = os.path.join(
+                app.config['UPLOAD_FOLDER'],
+                'students'
+            )
 
-        # NEW PHOTO NAME
-        photo_filename = filename
+            os.makedirs(upload_path, exist_ok=True)
 
-    # UPDATE DATABASE
-    db.execute("""
-        UPDATE students
-        SET
-            name=?,
-            parent_name=?,
-            contact=?,
-            aadhaar=?,
-            address=?,
-            class_name=?,
-            roll_number=?,
-            photo=?
-        WHERE id=?
-    """, (
-        name,
-        parent_name,
-        contact,
-        aadhaar,
-        address,
-        class_name,
-        roll_number,
-        photo_filename,
-        sid
-    ))
+            photo.save(
+                os.path.join(upload_path, filename)
+            )
 
-    db.commit()
+            photo_filename = filename
 
-    flash('Profile updated successfully!', 'success')
+        # UPDATE DATABASE
+        db.execute("""
+            UPDATE students
+            SET
+                name=?,
+                parent_name=?,
+                contact=?,
+                aadhaar=?,
+                address=?,
+                class_name=?,
+                roll_number=?,
+                photo=?
+            WHERE id=?
+        """, (
+            name,
+            parent_name,
+            contact,
+            aadhaar,
+            address,
+            class_name,
+            roll_number,
+            photo_filename,
+            sid
+        ))
 
-    return redirect(f'/student/details/{sid}')
+        db.commit()
 
+        flash('Profile updated successfully!', 'success')
 
+        return redirect(f'/student/details/{sid}')
+
+    except Exception as e:
+
+        return f"ERROR: {str(e)}"
 
 
 
