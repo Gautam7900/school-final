@@ -919,89 +919,83 @@ def submit_admission():
 
 
 
-
 @app.route('/student/update_profile/<int:sid>', methods=['POST'])
 def update_student_profile(sid):
 
-    try:
+    db = get_db()
 
-        db = get_db()
+    student = db.execute(
+        "SELECT * FROM students WHERE id=?",
+        (sid,)
+    ).fetchone()
 
-        student = db.execute(
-            "SELECT * FROM students WHERE id=?",
-            (sid,)
-        ).fetchone()
+    if not student:
+        return "Student not found"
 
-        if not student:
-            return "Student not found"
+    name = request.form.get('name')
+    parent_name = request.form.get('parent_name')
+    contact = request.form.get('contact')
+    aadhaar = request.form.get('aadhaar')
+    address = request.form.get('address')
+    class_name = request.form.get('class_name')
+    roll_number = request.form.get('roll_number')
 
-        # FORM DATA
-        name = request.form.get('name') or student['name']
-        parent_name = request.form.get('parent_name') or student['parent_name']
-        contact = request.form.get('contact') or student['contact']
-        aadhaar = request.form.get('aadhaar') or student['aadhaar']
-        address = request.form.get('address') or student['address']
-        class_name = request.form.get('class_name') or student['class_name']
-        roll_number = request.form.get('roll_number') or student['roll_number']
+    photo_filename = student['photo']
 
-        # OLD PHOTO
-        photo_filename = student['photo']
+    photo = request.files.get('photo')
 
-        # PHOTO
-        photo = request.files.get('photo')
+    if photo and photo.filename != '':
 
-        if photo and photo.filename != '':
+        filename = secure_filename(photo.filename)
 
-            filename = secure_filename(photo.filename)
+        upload_path = os.path.join(
+            app.root_path,
+            'static',
+            'uploads',
+            'students'
+        )
 
-            upload_path = os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                'students'
-            )
+        os.makedirs(upload_path, exist_ok=True)
 
-            os.makedirs(upload_path, exist_ok=True)
+        photo.save(
+            os.path.join(upload_path, filename)
+        )
 
-            photo.save(
-                os.path.join(upload_path, filename)
-            )
+        photo_filename = filename
 
-            photo_filename = filename
+    db.execute("""
+        UPDATE students
+        SET
+            name=?,
+            parent_name=?,
+            contact=?,
+            aadhaar=?,
+            address=?,
+            class_name=?,
+            roll_number=?,
+            photo=?
+        WHERE id=?
+    """, (
+        name,
+        parent_name,
+        contact,
+        aadhaar,
+        address,
+        class_name,
+        roll_number,
+        photo_filename,
+        sid
+    ))
 
-        # UPDATE DATABASE
-        db.execute("""
-            UPDATE students
-            SET
-                name=?,
-                parent_name=?,
-                contact=?,
-                aadhaar=?,
-                address=?,
-                class_name=?,
-                roll_number=?,
-                photo=?
-            WHERE id=?
-        """, (
-            name,
-            parent_name,
-            contact,
-            aadhaar,
-            address,
-            class_name,
-            roll_number,
-            photo_filename,
-            sid
-        ))
+    db.commit()
 
-        db.commit()
+    flash('Profile updated successfully!', 'success')
 
-        flash('Profile updated successfully!', 'success')
+    return redirect(f'/student/details/{sid}')
 
-        return redirect(f'/student/details/{sid}')
 
-    except Exception as e:
 
-        return f"ERROR: {str(e)}"
-    
+
     
     
     
