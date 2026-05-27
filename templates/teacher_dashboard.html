@@ -6,7 +6,14 @@ block content %}
       <div style="display: flex; align-items: center; gap: 20px">
         <!-- TEACHER PHOTO -->
 
-        <a href="/teacher/teacher_profile">
+        <a
+          href="/teacher/profile/{{ session.teacher_id }}"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+          ">
           {% if session.teacher_photo %}
 
           <img
@@ -42,13 +49,17 @@ block content %}
           </div>
 
           {% endif %}
+
+          <div>
+            <h2 style="margin: 0; color: #d4af37">
+              {{ session.teacher_name }} 👩‍🏫
+            </h2>
+
+            <p style="margin: 5px 0 0; color: white">
+              {{ session.teacher_sub }} Teacher · Academic Year 2024–25
+            </p>
+          </div>
         </a>
-
-        <!-- TEACHER INFO -->
-
-      <div>
-        <h2>{{ session.teacher_name }} 👩‍🏫</h2>
-        <p>{{ session.teacher_sub }} Teacher · Academic Year 2024–25</p>
       </div>
       <a
         href="/teacher/quizzes"
