@@ -1,127 +1,53 @@
 {% extends 'base.html' %} {% block title %}Student Dashboard{% endblock %}
-
-<style>
-  .teacher-photo{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    object-fit:cover;
-    border:4px solid #d4af37;
-}
-
-.teacher-avatar{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    background:#d4af37;
-    color:#081c4b;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:40px;
-    font-weight:700;
-}
-
-.dash-header-inner{
-    display:flex;
-    align-items:center;
-    gap:20px;
-}
-
-.dash-actions{
-    display:flex;
-    gap:14px;
-    flex-wrap:wrap;
-    margin-top:20px;
-}
-  
-</style>
 {% block content %}
 <div class="dashboard">
-  <div class="dashboard">
-
   <div class="dash-header">
+    <div class="dash-header-inner dashboard-top">
+      <div class="student-profile-section">
+        <a href="/student/details/{{ student['id'] }}">
+          {% if student['photo'] %}
 
-    <div class="dash-header-inner">
+          <img
+            src="/static/uploads/students/{{ student['photo'] }}"
+            class="student-photo"
+          />
 
-      <!-- TEACHER PHOTO -->
+          {% else %}
 
-      <a href="/teachers/{{ teacher['id'] }}">
+          <div class="student-avatar">{{ student['name'][0] }}</div>
 
-        {% if teacher['photo'] %}
+          {% endif %}
+        </a>
 
-        <img
-          src="{{ url_for('static', filename='uploads/teachers/' + teacher['photo']) }}"
-          class="teacher-photo"
-        />
+        <div class="student-info">
+          <h2>Welcome, {{ session.student_name }} 👋</h2>
 
-        {% else %}
-
-        <div class="teacher-avatar">
-          {{ teacher['name'][0] }}
+          <p>
+            {{ session.student_class }} · Roll: {{ session.get('student_id') }}
+            | Academic Year 2024–25
+          </p>
         </div>
-
-        {% endif %}
-
-      </a>
-
-      <!-- TEACHER INFO -->
-
-      <div>
-        <h2>
-          Welcome, {{ teacher['name'] }} 👩‍🏫
-        </h2>
-
-        <p>
-          {{ teacher['subject'] }} Teacher · Academic Year 2024–25
-        </p>
       </div>
-
-    </div>
-
-    <!-- BUTTONS -->
-
-    <div class="dash-actions">
-
       <a
-        href="/teacher/quizzes"
+        href="/student/quizzes"
         class="btn btn-sm"
-        style="background:#7b1fa2;color:#fff;"
+        style="background: #6a1b9a; color: #fff"
+        >📝 Quizzes</a
       >
-        📝 MY QUIZZES
-      </a>
-
       <a
-        href="/teacher/live_classes"
+        href="/live_classes"
         class="btn btn-sm"
-        style="background:#00a86b;color:#fff;"
+        style="background: #0f9d58; color: #fff"
+        >📹 Live</a
       >
-        📹 LIVE
-      </a>
-
-      <a
-        href="/exam_schedule"
-        class="btn btn-gold btn-sm"
+      <a href="/student/report_card" class="btn btn-gold btn-sm" target="_blank"
+        >📄 Report Card</a
       >
-        📄 EXAM DATESHEET
-      </a>
-
-      <a
-        href="/timetable"
-        class="btn btn-gold btn-sm"
+      <a href="/exam_schedule" class="btn btn-gold btn-sm" target="_blank"
+        >📄 Exam Datesheet</a
       >
-        🗓 TIMETABLE
-      </a>
-
-      <a
-        href="/teacher/logout"
-        class="btn btn-outline btn-sm"
-      >
-        LOGOUT
-      </a>
-
+      <a href="/student/logout" class="btn btn-outline btn-sm">Logout</a>
     </div>
-
   </div>
 
   <div class="dash-main">
