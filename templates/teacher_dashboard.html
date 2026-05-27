@@ -3,6 +3,56 @@ block content %}
 <div class="dashboard">
   <div class="dash-header">
     <div class="dash-header-inner">
+      <div style="display: flex; align-items: center; gap: 20px">
+        <!-- TEACHER PHOTO -->
+
+        <a href="/teacher/profile">
+          {% if session.teacher_photo %}
+
+          <img
+            src="/static/uploads/teachers/{{ session.teacher_photo }}"
+            class="student-photo"
+            style="
+              width: 90px;
+              height: 90px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 4px solid #d4af37;
+            "
+          />
+
+          {% else %}
+
+          <div
+            class="student-avatar"
+            style="
+              width: 90px;
+              height: 90px;
+              border-radius: 50%;
+              background: #d4af37;
+              color: #132b6b;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 42px;
+              font-weight: 800;
+            "
+          >
+            {{ session.teacher_name[0] }}
+          </div>
+
+          {% endif %}
+        </a>
+
+        <!-- TEACHER INFO -->
+
+        <div>
+          <h2>{{ session.teacher_name }} 👩‍🏫</h2>
+
+          <p>{{ session.teacher_sub }} Teacher · Academic Year 2024–25</p>
+        </div>
+      </div>
+
       <div>
         <h2>{{ session.teacher_name }} 👩‍🏫</h2>
         <p>{{ session.teacher_sub }} Teacher · Academic Year 2024–25</p>
@@ -454,8 +504,7 @@ block content %}
     </div>
   </div>
 </div>
-{% endblock %}
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
   // Set today as default attendance date
   document.getElementById("attDate").value = new Date()
