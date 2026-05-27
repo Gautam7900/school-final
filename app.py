@@ -398,9 +398,10 @@ def teacher_dashboard():
     db = get_db()
     classes  = db.execute('SELECT DISTINCT class_name FROM students ORDER BY class_name').fetchall()
     students = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
+    teacher = db.execute('SELECT * FROM teachers WHERE id=?', (session['teacher_id'],)).fetchone()
     homework = db.execute('SELECT h.*,t.name as tname FROM homework h JOIN teachers t ON h.teacher_id=t.id ORDER BY due_date DESC').fetchall()
     syllabus_list = db.execute('SELECT * FROM syllabus ORDER BY id DESC').fetchall()
-    return render_template('teacher_dashboard.html', classes=classes, students=students, homework=homework, syllabus_list=syllabus_list)
+    return render_template('teacher_dashboard.html', teacher=teacher, classes=classes, students=students, homework=homework, syllabus_list=syllabus_list)
 
 
 @app.route('/teacher/upload_marks', methods=['POST'])
