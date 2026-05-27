@@ -458,6 +458,50 @@ def delete_homework(hid):
 
 # TEACHER DASHBOARD
 
+@app.route('/teacher/edit_homework/<int:hid>', methods=['GET', 'POST'])
+def edit_homework(hid):
+
+    if session.get('role') != 'teacher':
+        return redirect('/teacher/login')
+
+    db = get_db()
+
+    homework = db.execute(
+        'SELECT * FROM homework WHERE id=?',
+        (hid,)
+    ).fetchone()
+
+    if request.method == 'POST':
+
+        db.execute("""
+            UPDATE homework
+            SET
+                class_name=?,
+                subject=?,
+                due_date=?
+            WHERE id=?
+        """, (
+            request.form['class_name'],
+            request.form['subject'],
+            request.form['due_date'],
+            hid
+        ))
+
+        db.commit()
+
+        flash('Homework updated successfully!', 'success')
+
+        return redirect('/teacher/dashboard')
+
+    return render_template(
+        'edit_homework.html',
+        homework=homework
+    )
+
+
+
+
+
 
 @app.route('/teacher/upload_syllabus', methods=['POST'])
 def upload_syllabus():
