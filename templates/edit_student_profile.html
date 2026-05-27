@@ -1,389 +1,339 @@
-{% extends 'base.html' %}
-
-{% block title %}Edit Student Profile{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Edit Student Profile{% endblock %} {%
+block content %}
 
 <style>
+  .student-edit-page {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+  }
 
-.student-edit-page{
-    max-width:1100px;
-    margin:auto;
-    padding:40px 20px;
-}
+  .student-edit-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+  }
 
-.student-edit-layout{
-    display:grid;
-    grid-template-columns:320px 1fr;
-    gap:30px;
-}
+  .student-photo-card,
+  .student-form-card {
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
 
-.student-photo-card,
-.student-form-card{
-    background:white;
-    border-radius:22px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    overflow:hidden;
-}
+  .card-header {
+    background: #081c4b;
+    color: white;
+    padding: 20px 25px;
+  }
 
-.card-header{
-    background:#081c4b;
-    color:white;
-    padding:20px 25px;
-}
+  .card-header h3 {
+    margin: 0;
+    font-size: 22px;
+  }
 
-.card-header h3{
-    margin:0;
-    font-size:22px;
-}
+  .card-body {
+    padding: 30px;
+  }
 
-.card-body{
-    padding:30px;
-}
+  .student-photo {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #d4af37;
+    display: block;
+    margin: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
 
-.student-photo{
-    width:170px;
-    height:170px;
-    border-radius:50%;
-    object-fit:cover;
-    border:6px solid #d4af37;
-    display:block;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
+  .student-avatar {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: #d4af37;
+    color: #081c4b;
+    font-size: 65px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
 
-.student-avatar{
-    width:170px;
-    height:170px;
-    border-radius:50%;
-    background:#d4af37;
-    color:#081c4b;
-    font-size:65px;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:auto;
-}
+  .upload-box {
+    margin-top: 25px;
+    border: 2px dashed #d4af37;
+    padding: 25px;
+    border-radius: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
-.upload-box{
-    margin-top:25px;
-    border:2px dashed #d4af37;
-    padding:25px;
-    border-radius:14px;
-    text-align:center;
-    cursor:pointer;
-    transition:0.3s;
-}
+  .upload-box:hover {
+    background: #faf7ee;
+  }
 
-.upload-box:hover{
-    background:#faf7ee;
-}
+  .upload-box h4 {
+    margin-top: 10px;
+    color: #081c4b;
+  }
 
-.upload-box h4{
-    margin-top:10px;
-    color:#081c4b;
-}
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
+  .form-group {
+    margin-bottom: 18px;
+  }
 
-.form-group{
-    margin-bottom:18px;
-}
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #081c4b;
+  }
 
-.form-group label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
-    color:#081c4b;
-}
+  .form-control {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+  }
 
-.form-control{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid #ddd;
-    font-size:15px;
-}
+  textarea.form-control {
+    min-height: 120px;
+  }
 
-textarea.form-control{
-    min-height:120px;
-}
+  .btn-save {
+    background: #081c4b;
+    color: white;
+    border: none;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
 
-.btn-save{
-    background:#081c4b;
-    color:white;
-    border:none;
-    padding:16px 30px;
-    border-radius:12px;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    width:100%;
-    margin-top:10px;
-}
+  .btn-save:hover {
+    background: #0f2f73;
+  }
 
-.btn-save:hover{
-    background:#0f2f73;
-}
+  @media (max-width: 900px) {
+    .student-edit-layout {
+      grid-template-columns: 1fr;
+    }
 
-@media(max-width:900px){
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
-.student-edit-layout{
-    grid-template-columns:1fr;
-}
+  .btn-outline {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 2px solid #081c4b;
+    border-radius: 10px;
+    color: #081c4b;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    background: white;
+  }
 
-.form-grid{
-    grid-template-columns:1fr;
-}
+  .btn-outline:hover {
+    background: #081c4b;
+    color: white;
+  }
 
-}
-
-
-.btn-outline{
-    display:inline-block;
-    padding:10px 18px;
-    border:2px solid #081c4b;
-    border-radius:10px;
-    color:#081c4b;
-    text-decoration:none;
-    font-weight:700;
-    margin-bottom:20px;
-    transition:0.3s;
-    background:white;
-}
-
-.btn-outline:hover{
-    background:#081c4b;
-    color:white;
-}
-
-.btn-sm{
-    font-size:14px;
-}
-
+  .btn-sm {
+    font-size: 14px;
+  }
 </style>
 
 <div class="student-edit-page">
+  <a href="/student/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
 
-    <a href="/student/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+  <div class="student-edit-layout">
+    <!-- LEFT PHOTO CARD -->
 
-    <div class="student-edit-layout">
+    <div class="student-photo-card">
+      <div class="card-header">
+        <h3>📷 Profile Photo</h3>
+      </div>
 
-        <!-- LEFT PHOTO CARD -->
+      <div class="card-body">
+        <div id="photoPreview">
+          {% if student['photo'] %}
 
-        <div class="student-photo-card">
+          <img
+            src="{{ url_for('static', filename='uploads/students/' + student['photo']) }}"
+            class="profile-photo"
+          />
 
-            <div class="card-header">
-                <h3>📷 Profile Photo</h3>
-            </div>
+          {% else %}
 
-            <div class="card-body">
+          <div class="profile-avatar">{{ student['name'][0] }}</div>
 
-                <div id="photoPreview">
-
-                    {% if student['photo'] %}
-
-                    <img
-                        id="previewImg"
-                       
-                        src="{{ url_for('static', filename='uploads/students/' + student['photo']) }}"
-                        class="profile-photo"
-
-                    >
-
-                    {% else %}
-
-                    <div id="previewImg" class="student-avatar">
-                        {{ student['name'][0] }}
-                    </div>
-
-                    {% endif %}
-
-                </div>
-
-                <label>
-
-                    <div class="upload-box">
-
-                        <div style="font-size:40px;">📁</div>
-
-                        <h4>Choose Student Photo</h4>
-
-                        <p style="color:#888;">
-                            JPG, PNG supported
-                        </p>
-
-                    </div>
-
-                    <input
-                        type="file"
-                        name="photo"
-                        id="photoInput"
-                        accept="image/*"
-                        style="display:none;"
-                        onchange="previewPhoto(this)"
-                    >
-
-                </label>
-
-            </div>
-
+          {% endif %}
         </div>
 
-        <!-- RIGHT FORM CARD -->
+        <label>
+          <div class="upload-box">
+            <div style="font-size: 40px">📁</div>
 
-        <div class="student-form-card">
+            <h4>Choose Student Photo</h4>
 
-            <div class="card-header">
-                <h3>✏️ Edit Student Information</h3>
-            </div>
+            <p style="color: #888">JPG, PNG supported</p>
+          </div>
 
-            <div class="card-body">
-
-                <form
-                    method="POST"
-                    action="/student/update_profile/{{ student['id'] }}"
-                    enctype="multipart/form-data"
-                >
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-                            <label>Student Name</label>
-
-                          <input
-                            type="text"
-                            name="name"
-                            value="{{ student['name'] }}"
-                            class="form-control"
-                                  >
-                        </div>
-
-                        <div class="form-group">
-                            <label>Parent Name</label>
-
-                            <input
-                                type="text"
-                                name="parent_name"
-                                value="{{ student['parent_name'] }}"
-                                class="form-control"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label>Contact Number</label>
-
-                            <input
-                                type="text"
-                                name="contact"
-                                value="{{ student['contact'] }}"
-                                class="form-control"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label>Aadhaar Number</label>
-
-                            <input
-                                type="text"
-                                name="aadhaar"
-                                value="{{ student['aadhaar'] }}"
-                                class="form-control"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label>Class</label>
-
-                            <input
-                                type="text"
-                                name="class_name"
-                                value="{{ student['class_name'] }}"
-                                class="form-control"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label>Roll Number</label>
-
-                            <input
-                                type="text"
-                                name="roll_number"
-                                value="{{ student['roll_number'] }}"
-                                class="form-control"
-                            >
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>Address</label>
-
-                        <textarea
-                            name="address"
-                            class="form-control"
-                        >{{ student['address'] }}</textarea>
-
-                    </div>
-
-                    <button type="submit" class="btn-save">
-                        💾 Save Student Profile
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
+          <input
+            type="file"
+            name="photo"
+            id="photoInput"
+            accept="image/*"
+            style="display: none"
+            onchange="previewPhoto(this)"
+          />
+        </label>
+      </div>
     </div>
 
+    <!-- RIGHT FORM CARD -->
+
+    <div class="student-form-card">
+      <div class="card-header">
+        <h3>✏️ Edit Student Information</h3>
+      </div>
+
+      <div class="card-body">
+        <form
+          method="POST"
+          action="/student/update_profile/{{ student['id'] }}"
+          enctype="multipart/form-data"
+        >
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Student Name</label>
+
+              <input
+                type="text"
+                name="name"
+                value="{{ student['name'] }}"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Parent Name</label>
+
+              <input
+                type="text"
+                name="parent_name"
+                value="{{ student['parent_name'] }}"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Contact Number</label>
+
+              <input
+                type="text"
+                name="contact"
+                value="{{ student['contact'] }}"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Aadhaar Number</label>
+
+              <input
+                type="text"
+                name="aadhaar"
+                value="{{ student['aadhaar'] }}"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Class</label>
+
+              <input
+                type="text"
+                name="class_name"
+                value="{{ student['class_name'] }}"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Roll Number</label>
+
+              <input
+                type="text"
+                name="roll_number"
+                value="{{ student['roll_number'] }}"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Address</label>
+
+            <textarea name="address" class="form-control">
+{{ student['address'] }}</textarea
+            >
+          </div>
+
+          <button type="submit" class="btn-save">
+            💾 Save Student Profile
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-
-function previewPhoto(input){
-
+  function previewPhoto(input) {
     const file = input.files[0];
 
-    if(!file) return;
+    if (!file) return;
 
     const reader = new FileReader();
 
-    reader.onload = function(e){
+    reader.onload = function (e) {
+      const preview = document.getElementById("previewImg");
 
-        const preview = document.getElementById('previewImg');
+      if (preview.tagName === "IMG") {
+        preview.src = e.target.result;
+      } else {
+        const img = document.createElement("img");
 
-        if(preview.tagName === 'IMG'){
+        img.src = e.target.result;
 
-            preview.src = e.target.result;
+        img.id = "previewImg";
 
-        } else {
+        img.className = "student-photo";
 
-            const img = document.createElement('img');
-
-            img.src = e.target.result;
-
-            img.id = 'previewImg';
-
-            img.className = 'student-photo';
-
-            preview.parentNode.replaceChild(img, preview);
-
-        }
-
-    }
+        preview.parentNode.replaceChild(img, preview);
+      }
+    };
 
     reader.readAsDataURL(file);
-
-}
-
+  }
 </script>
 
 {% endblock %}
