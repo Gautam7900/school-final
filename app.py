@@ -918,6 +918,8 @@ def submit_admission():
     return redirect('/admissions')
 
 
+
+
 @app.route('/student/update_profile/<int:sid>', methods=['POST'])
 def update_student_profile(sid):
 
@@ -934,13 +936,13 @@ def update_student_profile(sid):
             return "Student not found"
 
         # FORM DATA
-        name = request.form.get('name')
-        parent_name = request.form.get('parent_name')
-        contact = request.form.get('contact')
-        aadhaar = request.form.get('aadhaar')
-        address = request.form.get('address')
-        class_name = request.form.get('class_name')
-        roll_number = request.form.get('roll_number')
+        name = request.form.get('name') or student['name']
+        parent_name = request.form.get('parent_name') or student['parent_name']
+        contact = request.form.get('contact') or student['contact']
+        aadhaar = request.form.get('aadhaar') or student['aadhaar']
+        address = request.form.get('address') or student['address']
+        class_name = request.form.get('class_name') or student['class_name']
+        roll_number = request.form.get('roll_number') or student['roll_number']
 
         # OLD PHOTO
         photo_filename = student['photo']
@@ -999,8 +1001,10 @@ def update_student_profile(sid):
     except Exception as e:
 
         return f"ERROR: {str(e)}"
-
-
+    
+    
+    
+    
 
 @app.route('/admin/complete-admission/<int:aid>', methods=['POST'])
 def complete_admission(aid):
