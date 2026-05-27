@@ -919,78 +919,82 @@ def submit_admission():
 
     return redirect('/admissions')
 
-
-@app.route('/student/update_profile/<int:sid>', methods=['POST'])
-def update_student_profile(sid):
+@app.route('/student/update_profile/<int:id>', methods=['POST'])
+def update_profile(id):
 
     db = get_db()
 
-    student = db.execute(
-        "SELECT * FROM students WHERE id=?",
-        (sid,)
-    ).fetchone()
+    name = request.form['name']
+    parent_name = request.form['parent_name']
+    contact = request.form['contact']
+    aadhaar = request.form['aadhaar']
+    address = request.form['address']
 
-    name = request.form.get('name')
-    parent_name = request.form.get('parent_name')
-    contact = request.form.get('contact')
-    aadhaar = request.form.get('aadhaar')
-    address = request.form.get('address')
-    class_name = request.form.get('class_name')
-    roll_number = request.form.get('roll_number')
+    # PHOTO
+    photo = request.files['photo']
 
-    photo_filename = student['photo']
+    filename = None
 
-    # PHOTO UPLOAD
-    if 'photo' in request.files:
+    if photo and photo.filename != '':
 
-        photo = request.files['photo']
+        filename = secure_filename(photo.filename)
 
-        if photo and photo.filename != '':
-
-            filename = secure_filename(photo.filename)
-
-            upload_path = os.path.join(
+        photo.save(
+            os.path.join(
                 app.config['UPLOAD_FOLDER'],
-                'students'
+                'students',
+                filename
             )
-
-            os.makedirs(upload_path, exist_ok=True)
-
-            photo.save(os.path.join(upload_path, filename))
-
-            photo_filename = filename
+        )
 
     # UPDATE DATABASE
-    db.execute("""
-        UPDATE students
-        SET
-            name=?,
-            parent_name=?,
-            contact=?,
-            aadhaar=?,
-            address=?,
-            class_name=?,
-            roll_number=?,
-            photo=?
-        WHERE id=?
-    """, (
-        name,
-        parent_name,
-        contact,
-        aadhaar,
-        address,
-        class_name,
-        roll_number,
-        photo_filename,
-        sid
-    ))
+    if filename:
+
+        db.execute("""
+            UPDATE students
+            SET
+                name=?,
+                parent_name=?,
+                contact=?,
+                aadhaar=?,
+                address=?,
+                photo=?
+            WHERE id=?
+        """, (
+            name,
+            parent_name,
+            contact,
+            aadhaar,
+            address,
+            filename,
+            id
+        ))
+
+    else:
+
+        db.execute("""
+            UPDATE students
+            SET
+                name=?,
+                parent_name=?,
+                contact=?,
+                aadhaar=?,
+                address=?
+            WHERE id=?
+        """, (
+            name,
+            parent_name,
+            contact,
+            aadhaar,
+            address,
+            id
+        ))
 
     db.commit()
 
-    flash('Profile updated successfully!')
+    flash("Profile updated successfully!", "success")
 
-    return redirect(f'/student/details/{sid}')
-
+    return redirect(f'/student/details/{id}')
 
 
 
