@@ -90,17 +90,27 @@ def teachers_list():
 
 
 
-@app.route('/teachers/teacher_profile/<int:teacher_id>')
-def teacher_profile(teacher_id):
+@app.route('/teacher/profile/<int:tid>')
+def teacher_profile_page(tid):
+
     db = get_db()
-    teacher = db.execute('SELECT * FROM teachers WHERE id=?', (teacher_id,)).fetchone()
-    if not teacher:
-        flash('Teacher not found.', 'error')
-        return redirect('/teachers')
-    assignments = db.execute(
-        'SELECT class_name, subject FROM teacher_assignments WHERE teacher_id=? ORDER BY class_name',
-        (teacher_id,)).fetchall()
-    return render_template('teacher_profile.html', teacher=teacher, assignments=assignments)
+
+    teacher = db.execute(
+        "SELECT * FROM teachers WHERE id=?",
+        (tid,)
+    ).fetchone()
+
+    assignments = db.execute("""
+        SELECT *
+        FROM teacher_assignments
+        WHERE teacher_id=?
+    """, (tid,)).fetchall()
+
+    return render_template(
+        'teacher_profile.html',
+        teacher=teacher,
+        assignments=assignments
+    )
 
 # ── GALLERY PUBLIC ─────────────────────────────────────────────────────────────
 @app.route('/gallery')
