@@ -158,13 +158,16 @@ block content %}
             {% if student['photo'] %}
 
             <img
-              src="/static/uploads/students/{{ student['photo'] }}"
-              class="profile-photo"
+              id="previewImg"
+              src="{{ url_for('static', filename='uploads/students/' + student['photo']) }}"
+              class="student-photo"
             />
 
             {% else %}
 
-            <div class="profile-avatar">{{ student['name'][0] }}</div>
+            <div id="previewImg" class="student-avatar">
+              {{ student['name'][0] }}
+            </div>
 
             {% endif %}
           </div>
