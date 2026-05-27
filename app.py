@@ -6,6 +6,8 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
+import os
+from werkzeug.utils import secure_filename
 from werkzeug.utils import secure_filename
 import os
 from reportlab.pdfgen import canvas
@@ -23,6 +25,7 @@ from reportlab.lib.pagesizes import A4
 import os
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.secret_key = 'brightmind_school_2024'
 
 with app.app_context():
@@ -917,83 +920,78 @@ def submit_admission():
     return redirect('/admissions')
 
 
-
 @app.route('/student/update_profile/<int:sid>', methods=['POST'])
 def update_student_profile(sid):
 
     db = get_db()
 
+    student = db.execute(
+        "SELECT * FROM students WHERE id=?",
+        (sid,)
+    ).fetchone()
+
     name = request.form.get('name')
+    parent_name = request.form.get('parent_name')
+    contact = request.form.get('contact')
     aadhaar = request.form.get('aadhaar')
     address = request.form.get('address')
+    class_name = request.form.get('class_name')
+    roll_number = request.form.get('roll_number')
 
-    photo_name = None
+    photo_filename = student['photo']
 
+    # PHOTO UPLOAD
     if 'photo' in request.files:
 
         photo = request.files['photo']
 
-        if photo.filename != '':
+        if photo and photo.filename != '':
 
             filename = secure_filename(photo.filename)
 
             upload_path = os.path.join(
                 app.config['UPLOAD_FOLDER'],
-                'students',
-                filename
+                'students'
             )
-            
-            os.makedirs(
-            os.path.dirname(upload_path),
-             exist_ok=True
-                  )
 
-            photo.save(upload_path)
+            os.makedirs(upload_path, exist_ok=True)
 
-            photo_name = filename
+            photo.save(os.path.join(upload_path, filename))
 
-    if photo_name:
+            photo_filename = filename
 
-        db.execute(
-            '''
-            UPDATE students
-            SET name=?,
-                aadhaar=?,
-                address=?,
-                photo=?
-            WHERE id=?
-            ''',
-            (
-                name,
-                aadhaar,
-                address,
-                photo_name,
-                sid
-            )
-        )
-
-    else:
-
-        db.execute(
-            '''
-            UPDATE students
-            SET name=?,
-                aadhaar=?,
-                address=?
-            WHERE id=?
-            ''',
-            (
-                name,
-                aadhaar,
-                address,
-                sid
-            )
-        )
+    # UPDATE DATABASE
+    db.execute("""
+        UPDATE students
+        SET
+            name=?,
+            parent_name=?,
+            contact=?,
+            aadhaar=?,
+            address=?,
+            class_name=?,
+            roll_number=?,
+            photo=?
+        WHERE id=?
+    """, (
+        name,
+        parent_name,
+        contact,
+        aadhaar,
+        address,
+        class_name,
+        roll_number,
+        photo_filename,
+        sid
+    ))
 
     db.commit()
-    flash("Profile updated successfully!", "success")
-    return redirect(f"/student/details/{sid}")
-   
+
+    flash('Profile updated successfully!')
+
+    return redirect(f'/student/details/{sid}')
+
+
 
 
 
