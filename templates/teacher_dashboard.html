@@ -1,7 +1,25 @@
 {% extends 'base.html' %} {% block title %}Teacher Dashboard{% endblock %} 
 
 <style>
-  .teacher-photo{
+  .dash-header{
+    background:#081c4b;
+    padding:35px 45px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
+    flex-wrap:nowrap;
+}
+
+.dash-header-inner{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    min-width:max-content;
+}
+
+.teacher-photo,
+.student-photo{
     width:90px;
     height:90px;
     border-radius:50%;
@@ -9,7 +27,8 @@
     border:4px solid #d4af37;
 }
 
-.teacher-avatar{
+.teacher-avatar,
+.student-avatar{
     width:90px;
     height:90px;
     border-radius:50%;
@@ -18,21 +37,38 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:40px;
+    font-size:42px;
     font-weight:700;
 }
 
-.dash-header-inner{
-    display:flex;
-    align-items:center;
-    gap:20px;
+.dash-header h2{
+    color:#d4af37;
+    font-size:3rem;
+    margin:0;
+    white-space:nowrap;
+}
+
+.dash-header p{
+    color:#fff;
+    margin-top:8px;
+    font-size:1.1rem;
+    white-space:nowrap;
 }
 
 .dash-actions{
     display:flex;
-    gap:14px;
-    flex-wrap:wrap;
-    margin-top:20px;
+    align-items:center;
+    gap:18px;
+    flex-wrap:nowrap;
+    margin-left:auto;
+}
+
+.dash-actions .btn{
+    white-space:nowrap;
+    padding:16px 28px;
+    border-radius:14px;
+    font-size:1rem;
+    font-weight:700;
 }
 </style>
 
@@ -40,61 +76,76 @@
 block content %}
 <div class="dashboard">
     <div class="dash-header">
-      <div class="dash-header-inner">
-        <!-- TEACHER PHOTO -->
 
-        <a href="/teachers/{{ teacher['id'] }}">
-          {% if teacher['photo'] %}
+    <!-- LEFT SIDE -->
 
-          <img
-            src="{{ url_for('static', filename='uploads/teachers/' + teacher['photo']) }}"
-            class="teacher-photo"
-          />
+    <div class="dash-header-inner">
 
-          {% else %}
+        <a href="/teacher/profile/{{ teacher['id'] }}">
 
-          <div class="teacher-avatar">{{ teacher['name'][0] }}</div>
+            {% if teacher['photo'] %}
 
-          {% endif %}
+            <img
+                src="{{ url_for('static', filename='uploads/teachers/' + teacher['photo']) }}"
+                class="teacher-photo"
+            >
+
+            {% else %}
+
+            <div class="teacher-avatar">
+                {{ teacher['name'][0] }}
+            </div>
+
+            {% endif %}
+
         </a>
-
-        <!-- TEACHER INFO -->
 
         <div>
-          <h2>Welcome, {{ teacher['name'] }} 👩‍🏫</h2>
+            <h2>
+                Welcome, {{ teacher['name'] }} 👩‍🏫
+            </h2>
 
-          <p>{{ teacher['subject'] }} Teacher · Academic Year 2024–25</p>
+            <p>
+                {{ teacher['subject'] }} Teacher · Academic Year 2024–25
+            </p>
         </div>
-      </div>
 
-      <!-- BUTTONS -->
-
-      <div class="dash-actions">
-        <a
-          href="/teacher/quizzes"
-          class="btn btn-sm"
-          style="background: #7b1fa2; color: #fff"
-        >
-          📝 MY QUIZZES
-        </a>
-
-        <a
-          href="/teacher/live_classes"
-          class="btn btn-sm"
-          style="background: #00a86b; color: #fff"
-        >
-          📹 LIVE
-        </a>
-
-        <a href="/exam_schedule" class="btn btn-gold btn-sm">
-          📄 EXAM DATESHEET
-        </a>
-
-        <a href="/timetable" class="btn btn-gold btn-sm"> 🗓 TIMETABLE </a>
-
-        <a href="/teacher/logout" class="btn btn-outline btn-sm"> LOGOUT </a>
-      </div>
     </div>
+
+    <!-- RIGHT SIDE BUTTONS -->
+
+    <div class="dash-actions">
+
+        <a href="/teacher/quizzes"
+           class="btn btn-sm"
+           style="background:#7b1fa2;color:#fff;">
+            📝 MY QUIZZES
+        </a>
+
+        <a href="/teacher/live_classes"
+           class="btn btn-sm"
+           style="background:#00a86b;color:#fff;">
+            📹 LIVE
+        </a>
+
+        <a href="/exam_schedule"
+           class="btn btn-gold btn-sm">
+            📄 EXAM DATESHEET
+        </a>
+
+        <a href="/timetable"
+           class="btn btn-gold btn-sm">
+            🗓 TIMETABLE
+        </a>
+
+        <a href="/teacher/logout"
+           class="btn btn-outline btn-sm">
+            LOGOUT
+        </a>
+
+    </div>
+
+</div>
 
     <div class="dash-main">
       <div class="grid-2" style="margin-bottom: 2rem; gap: 2rem">
