@@ -346,30 +346,30 @@ def edit_student_profile(sid):
 
 
 
-@app.route('/student/profile/<int:sid>')
-def student_profile(sid):
+# @app.route('/student/profile/<int:sid>')
+# def student_profile(sid):
 
-    if 'student_id' not in session:
-        return redirect('/student/login')
+#     if 'student_id' not in session:
+#         return redirect('/student/login')
 
-    db = get_db()
+#     db = get_db()
 
-    student = db.execute(
-        '''
-        SELECT *
-        FROM students
-        WHERE id = ?
-        ''',
-        (sid,)
-    ).fetchone()
+#     student = db.execute(
+#         '''
+#         SELECT *
+#         FROM students
+#         WHERE id = ?
+#         ''',
+#         (sid,)
+#     ).fetchone()
 
-    if not student:
-        return "Student not found"
+#     if not student:
+#         return "Student not found"
 
-    return render_template(
-        'student_profile.html',
-        student=student
-    )
+#     return render_template(
+#         'student_profile.html',
+#         student=student
+#     )
 
 
 
@@ -991,18 +991,9 @@ def update_student_profile(sid):
         )
 
     db.commit()
-
-    return redirect(f'/student/profile/{sid}')
-
-
-
-
-
-
-
-
-
-
+    flash("Profile updated successfully!", "success")
+    return redirect(f"/student/details/{sid}")
+   
 
 
 
