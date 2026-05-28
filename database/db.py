@@ -15,13 +15,7 @@ def init_db():
     db = sqlite3.connect(DATABASE)
     db.row_factory = sqlite3.Row
     db.executescript('''
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL, class_name TEXT NOT NULL,
-            roll_number TEXT UNIQUE NOT NULL, parent_name TEXT,
-            contact TEXT, password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );            
+                  
         CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, subject TEXT NOT NULL,
@@ -221,6 +215,36 @@ def init_db():
            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
        );
        
+      
+
+       CREATE TABLE IF NOT EXISTS admission_applications (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_name TEXT,
+        parent_name TEXT,
+        class_name TEXT,
+        contact TEXT,
+        email TEXT,
+        status TEXT DEFAULT 'Pending',
+        applied_on TEXT,
+        pdf_file TEXT
+
+    );
+
+    CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        parent_name TEXT,
+        contact TEXT,
+        aadhaar TEXT,
+        address TEXT,
+        class_name TEXT,
+        photo TEXT
+
+    );
+
+     
+       
        
         
 
@@ -269,8 +293,7 @@ def init_db():
 
         ALTER TABLE students ADD COLUMN pincode TEXT;
        
-        ALTER TABLE admission_applications
-        ADD COLUMN pdf_file TEXT;     
+             
        
         
        ALTER TABLE admissions
