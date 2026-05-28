@@ -17,6 +17,19 @@ from flask import (
     send_from_directory
 )
 
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+    Image
+)
+
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 import os
 import random
@@ -824,18 +837,58 @@ def admin_admission_form(app_id):
 
         try:
 
+            import os
+            import random
+
+            from werkzeug.utils import secure_filename
+
+            from reportlab.platypus import (
+                SimpleDocTemplate,
+                Paragraph,
+                Spacer,
+                Table,
+                TableStyle,
+                Image
+            )
+
+            from reportlab.lib import colors
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.lib.pagesizes import A4
+            from reportlab.lib.units import inch
+
+            # ====================================
             # FORM DATA
+            # ====================================
+
             student_name = request.form.get('student_name')
 
             father_name = request.form.get('father_name')
 
+            mother_name = request.form.get('mother_name')
+
             class_name = request.form.get('class_name')
 
+            dob = request.form.get('dob')
+
+            category = request.form.get('category')
+
+            caste = request.form.get('caste')
+
+            religion = request.form.get('religion')
+
+            gender = request.form.get('gender')
+
             contact = request.form.get('contact')
+
+            email = request.form.get('email')
 
             aadhaar = request.form.get('aadhaar')
 
             address = request.form.get('permanent_address')
+
+            correspondence_address = request.form.get(
+                'correspondence_address'
+            )
 
             city = request.form.get('city')
 
@@ -843,18 +896,52 @@ def admin_admission_form(app_id):
 
             pincode = request.form.get('pincode')
 
-            # PHOTO
+            mother_tongue = request.form.get(
+                'mother_tongue'
+            )
+
+            nationality = request.form.get(
+                'nationality'
+            )
+
+            bus_facility = request.form.get(
+                'bus_facility'
+            )
+
+            blood_group = request.form.get(
+                'blood_group'
+            )
+
+            previous_school = request.form.get(
+                'previous_school'
+            )
+
+            emergency_contact = request.form.get(
+                'emergency_contact'
+            )
+
+            # ====================================
+            # PHOTO UPLOAD
+            # ====================================
+
             photo_filename = ""
 
             photo = request.files.get('photo')
 
             if photo and photo.filename != '':
 
-                filename = secure_filename(photo.filename)
+                filename = secure_filename(
+                    photo.filename
+                )
 
-                upload_folder = "static/uploads/students"
+                upload_folder = (
+                    "static/uploads/students"
+                )
 
-                os.makedirs(upload_folder, exist_ok=True)
+                os.makedirs(
+                    upload_folder,
+                    exist_ok=True
+                )
 
                 filepath = os.path.join(
                     upload_folder,
@@ -865,12 +952,21 @@ def admin_admission_form(app_id):
 
                 photo_filename = filename
 
+            # ====================================
             # AUTO GENERATE
-            roll_number = f"{class_name}-{random.randint(100,999)}"
+            # ====================================
+
+            roll_number = (
+                f"{class_name}-"
+                f"{random.randint(100,999)}"
+            )
 
             password = "student123"
 
+            # ====================================
             # INSERT STUDENT
+            # ====================================
+
             db.execute("""
 
                 INSERT INTO students
@@ -886,10 +982,25 @@ def admin_admission_form(app_id):
                     city,
                     state,
                     pincode,
-                    photo
+                    photo,
+                    dob,
+                    category,
+                    caste,
+                    religion,
+                    gender,
+                    correspondence_address,
+                    mother_tongue,
+                    nationality,
+                    bus_facility,
+                    blood_group,
+                    previous_school,
+                    emergency_contact
                 )
 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES
+                (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
 
             """, (
 
@@ -904,104 +1015,465 @@ def admin_admission_form(app_id):
                 city,
                 state,
                 pincode,
-                photo_filename
+                photo_filename,
+                dob,
+                category,
+                caste,
+                religion,
+                gender,
+                correspondence_address,
+                mother_tongue,
+                nationality,
+                bus_facility,
+                blood_group,
+                previous_school,
+                emergency_contact
 
             ))
 
-            # PDF FOLDER
+            # ====================================
+            # PDF GENERATE
+            # ====================================
+
             pdf_folder = "static/pdfs"
 
-            os.makedirs(pdf_folder, exist_ok=True)
+            os.makedirs(
+                pdf_folder,
+                exist_ok=True
+            )
 
-            pdf_filename = f"admission_{app_id}.pdf"
+            pdf_filename = (
+                f"admission_{app_id}.pdf"
+            )
 
             pdf_path = os.path.join(
                 pdf_folder,
                 pdf_filename
             )
 
-            # PDF CREATE
-            c = canvas.Canvas(pdf_path)
+            doc = SimpleDocTemplate(
 
-            c.setFont("Helvetica-Bold", 20)
+                pdf_path,
 
-            c.drawString(
-                150,
-                800,
-                "SCHOOL ADMISSION FORM"
+                pagesize=A4,
+
+                rightMargin=25,
+
+                leftMargin=25,
+
+                topMargin=25,
+
+                bottomMargin=20
+
             )
 
-            c.setFont("Helvetica", 12)
+            styles = getSampleStyleSheet()
 
-            c.drawString(
-                80,
-                740,
-                f"Student Name: {student_name}"
+            elements = []
+
+            # ====================================
+            # SCHOOL TITLE
+            # ====================================
+
+            school_name = Paragraph(
+
+                "<font size='20'>"
+                "<b>BRIGHT MIND SCHOOL</b>"
+                "</font>",
+
+                styles['Title']
+
             )
 
-            c.drawString(
-                80,
-                710,
-                f"Father Name: {father_name}"
+            elements.append(school_name)
+
+            elements.append(
+                Spacer(1, 15)
             )
 
-            c.drawString(
-                80,
-                680,
-                f"Class: {class_name}"
+            # ====================================
+            # FORM TITLE
+            # ====================================
+
+            title_table = Table([
+
+                ["ADMISSION FORM"]
+
+            ], colWidths=[520])
+
+            title_table.setStyle(
+                TableStyle([
+
+                    (
+                        'BACKGROUND',
+                        (0,0),
+                        (-1,-1),
+                        colors.darkblue
+                    ),
+
+                    (
+                        'TEXTCOLOR',
+                        (0,0),
+                        (-1,-1),
+                        colors.white
+                    ),
+
+                    (
+                        'ALIGN',
+                        (0,0),
+                        (-1,-1),
+                        'CENTER'
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica-Bold'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        18
+                    ),
+
+                    (
+                        'BOTTOMPADDING',
+                        (0,0),
+                        (-1,-1),
+                        10
+                    ),
+
+                    (
+                        'TOPPADDING',
+                        (0,0),
+                        (-1,-1),
+                        10
+                    ),
+
+                ])
             )
 
-            c.drawString(
-                80,
-                650,
-                f"Contact: {contact}"
+            elements.append(title_table)
+
+            elements.append(
+                Spacer(1, 20)
             )
 
-            c.drawString(
-                80,
-                620,
-                f"Aadhaar: {aadhaar}"
+            # ====================================
+            # FORM DATA TABLE
+            # ====================================
+
+            data = [
+
+                [
+                    "Admission Form Session",
+                    "2025-2026"
+                ],
+
+                [
+                    "Admission No.",
+                    str(app_id)
+                ],
+
+                [
+                    "Student Name",
+                    student_name
+                ],
+
+                [
+                    "Father Name",
+                    father_name
+                ],
+
+                [
+                    "Mother Name",
+                    mother_name
+                ],
+
+                [
+                    "Date Of Birth",
+                    dob
+                ],
+
+                [
+                    "Class",
+                    class_name
+                ],
+
+                [
+                    "Category",
+                    category
+                ],
+
+                [
+                    "Caste",
+                    caste
+                ],
+
+                [
+                    "Religion",
+                    religion
+                ],
+
+                [
+                    "Gender",
+                    gender
+                ],
+
+                [
+                    "Contact Number",
+                    contact
+                ],
+
+                [
+                    "Email",
+                    email
+                ],
+
+                [
+                    "Aadhaar Number",
+                    aadhaar
+                ],
+
+                [
+                    "Permanent Address",
+                    address
+                ],
+
+                [
+                    "Correspondence Address",
+                    correspondence_address
+                ],
+
+                [
+                    "City",
+                    city
+                ],
+
+                [
+                    "State",
+                    state
+                ],
+
+                [
+                    "Pincode",
+                    pincode
+                ],
+
+                [
+                    "Mother Tongue",
+                    mother_tongue
+                ],
+
+                [
+                    "Nationality",
+                    nationality
+                ],
+
+                [
+                    "Bus Facility",
+                    bus_facility
+                ],
+
+                [
+                    "Blood Group",
+                    blood_group
+                ],
+
+                [
+                    "Previous School",
+                    previous_school
+                ],
+
+                [
+                    "Emergency Contact",
+                    emergency_contact
+                ],
+
+                [
+                    "Roll Number",
+                    roll_number
+                ],
+
+                [
+                    "Password",
+                    password
+                ]
+
+            ]
+
+            table = Table(
+
+                data,
+
+                colWidths=[220, 300]
+
             )
 
-            c.drawString(
-                80,
-                590,
-                f"Address: {address}"
+            table.setStyle(
+                TableStyle([
+
+                    (
+                        'GRID',
+                        (0,0),
+                        (-1,-1),
+                        1,
+                        colors.black
+                    ),
+
+                    (
+                        'BACKGROUND',
+                        (0,0),
+                        (0,-1),
+                        colors.lightgrey
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        11
+                    ),
+
+                    (
+                        'BOTTOMPADDING',
+                        (0,0),
+                        (-1,-1),
+                        8
+                    ),
+
+                    (
+                        'TOPPADDING',
+                        (0,0),
+                        (-1,-1),
+                        8
+                    ),
+
+                ])
             )
 
-            c.drawString(
-                80,
-                560,
-                f"City: {city}"
+            elements.append(table)
+
+            elements.append(
+                Spacer(1, 25)
             )
 
-            c.drawString(
-                80,
-                530,
-                f"State: {state}"
+            # ====================================
+            # STUDENT PHOTO
+            # ====================================
+
+            if photo_filename:
+
+                image_path = os.path.join(
+                    "static/uploads/students",
+                    photo_filename
+                )
+
+                if os.path.exists(image_path):
+
+                    student_img = Image(
+
+                        image_path,
+
+                        width=1.5*inch,
+
+                        height=1.5*inch
+
+                    )
+
+                    elements.append(student_img)
+
+            elements.append(
+                Spacer(1, 30)
             )
 
-            c.drawString(
-                80,
-                500,
-                f"Pincode: {pincode}"
+            # ====================================
+            # DECLARATION
+            # ====================================
+
+            declaration = Paragraph(
+
+                "I hereby declare that all "
+                "information given above "
+                "is true and correct.",
+
+                styles['BodyText']
+
             )
 
-            c.drawString(
-                80,
-                470,
-                f"Roll Number: {roll_number}"
+            elements.append(declaration)
+
+            elements.append(
+                Spacer(1, 50)
             )
 
-            c.drawString(
-                80,
-                440,
-                f"Password: {password}"
+            # ====================================
+            # SIGNATURE SECTION
+            # ====================================
+
+            signature_table = Table([
+
+                [
+
+                    "____________________\nParent Signature",
+
+                    "",
+
+                    "____________________\nPrincipal Signature"
+
+                ]
+
+            ], colWidths=[180, 120, 180])
+
+            signature_table.setStyle(
+                TableStyle([
+
+                    (
+                        'ALIGN',
+                        (0,0),
+                        (-1,-1),
+                        'CENTER'
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        11
+                    )
+
+                ])
             )
 
-            c.save()
+            elements.append(signature_table)
 
+            # ====================================
+            # BUILD PDF
+            # ====================================
+
+            doc.build(elements)
+
+            # ====================================
             # UPDATE ADMISSION STATUS
+            # ====================================
+
             db.execute("""
 
                 UPDATE admissions
@@ -1019,7 +1491,6 @@ def admin_admission_form(app_id):
 
             ))
 
-            # ONLY ONE COMMIT
             db.commit()
 
             flash(
@@ -1027,7 +1498,9 @@ def admin_admission_form(app_id):
                 "success"
             )
 
-            return redirect('/admin/dashboard')
+            return redirect(
+                '/admin/dashboard'
+            )
 
         except Exception as e:
 
@@ -1037,7 +1510,6 @@ def admin_admission_form(app_id):
         'admin_admission_form.html',
         app=app_data
     )
-    
     
     
     
@@ -1264,9 +1736,6 @@ def download_pdf(app_id):
         return "PDF Not Found"
 
     pdf_file = app_data['pdf_file']
-
-    if not pdf_file:
-        return "PDF Not Generated Yet"
 
     return send_from_directory(
         'static/pdfs',
