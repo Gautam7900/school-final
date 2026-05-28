@@ -216,22 +216,29 @@ def init_db():
        );
        
       
+                
 
-       CREATE TABLE IF NOT EXISTS admission_applications (
+CREATE TABLE IF NOT EXISTS admission_applications (
 
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_name TEXT,
-        parent_name TEXT,
-        class_name TEXT,
-        contact TEXT,
-        email TEXT,
-        status TEXT DEFAULT 'Pending',
-        applied_on TEXT,
-        pdf_file TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    );
+    student_name TEXT,
+    parent_name TEXT,
+    class_name TEXT,
+    contact TEXT,
+    email TEXT,
 
-   CREATE TABLE IF NOT EXISTS students (
+    status TEXT DEFAULT 'Pending',
+
+    applied_on TEXT,
+
+    pdf_file TEXT
+
+);
+
+
+
+CREATE TABLE IF NOT EXISTS students (
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -255,12 +262,7 @@ def init_db():
 
 );
 
-     
-       
-       
-        ALTER TABLE students ADD COLUMN roll_number TEXT;
 
-        ALTER TABLE students ADD COLUMN password TEXT;
 
         ALTER TABLE admissions ADD COLUMN gender TEXT;
 

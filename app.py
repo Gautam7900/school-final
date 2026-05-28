@@ -6,6 +6,20 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
+
+import os
+import random
+
+from flask import (
+    render_template,
+    request,
+    redirect,
+    flash,
+    send_from_directory
+)
+
+from werkzeug.utils import secure_filename
+from reportlab.pdfgen import canvas
 import random
 import os
 from werkzeug.utils import secure_filename
@@ -730,7 +744,6 @@ def admin_admission_form(app_id):
 
     db = get_db()
 
-    # GET APPLICATION
     app_data = db.execute(
         "SELECT * FROM admission_applications WHERE id=?",
         (app_id,)
@@ -739,10 +752,8 @@ def admin_admission_form(app_id):
     if not app_data:
         return "Application not found"
 
-    # FORM SUBMIT
     if request.method == 'POST':
 
-        # FORM DATA
         student_name = request.form.get('student_name')
         father_name = request.form.get('father_name')
         mother_name = request.form.get('mother_name')
@@ -755,9 +766,7 @@ def admin_admission_form(app_id):
 
         email = request.form.get('email')
 
-        address = request.form.get(
-            'permanent_address'
-        )
+        address = request.form.get('permanent_address')
 
         aadhaar = request.form.get('aadhaar')
 
@@ -768,19 +777,14 @@ def admin_admission_form(app_id):
 
         if photo and photo.filename != '':
 
-            filename = secure_filename(
-                photo.filename
-            )
+            filename = secure_filename(photo.filename)
 
             upload_folder = os.path.join(
                 app.config['UPLOAD_FOLDER'],
                 'students'
             )
 
-            os.makedirs(
-                upload_folder,
-                exist_ok=True
-            )
+            os.makedirs(upload_folder, exist_ok=True)
 
             photo.save(
                 os.path.join(
@@ -797,7 +801,7 @@ def admin_admission_form(app_id):
         # DEFAULT PASSWORD
         password = "student123"
 
-        # SAVE STUDENT
+        # INSERT STUDENT
         db.execute("""
 
             INSERT INTO students
@@ -831,31 +835,21 @@ def admin_admission_form(app_id):
 
         db.commit()
 
-        # PDF FOLDER
+        # PDF
         pdf_folder = "static/pdfs"
 
-        os.makedirs(
-            pdf_folder,
-            exist_ok=True
-        )
+        os.makedirs(pdf_folder, exist_ok=True)
 
-        # PDF PATH
-        pdf_filename = (
-            f"admission_{app_id}.pdf"
-        )
+        pdf_filename = f"admission_{app_id}.pdf"
 
         pdf_path = os.path.join(
             pdf_folder,
             pdf_filename
         )
 
-        # CREATE PDF
         c = canvas.Canvas(pdf_path)
 
-        c.setFont(
-            "Helvetica-Bold",
-            22
-        )
+        c.setFont("Helvetica-Bold", 22)
 
         c.drawString(
             160,
@@ -863,64 +857,17 @@ def admin_admission_form(app_id):
             "SCHOOL ADMISSION FORM"
         )
 
-        c.setFont(
-            "Helvetica",
-            13
-        )
+        c.setFont("Helvetica", 13)
 
-        c.drawString(
-            80,
-            740,
-            f"Student Name : {student_name}"
-        )
-
-        c.drawString(
-            80,
-            710,
-            f"Father Name : {father_name}"
-        )
-
-        c.drawString(
-            80,
-            680,
-            f"Mother Name : {mother_name}"
-        )
-
-        c.drawString(
-            80,
-            650,
-            f"Class : {class_name}"
-        )
-
-        c.drawString(
-            80,
-            620,
-            f"Date of Birth : {dob}"
-        )
-
-        c.drawString(
-            80,
-            590,
-            f"Contact : {contact}"
-        )
-
-        c.drawString(
-            80,
-            560,
-            f"Email : {email}"
-        )
-
-        c.drawString(
-            80,
-            530,
-            f"Aadhaar : {aadhaar}"
-        )
-
-        c.drawString(
-            80,
-            500,
-            f"Address : {address}"
-        )
+        c.drawString(80, 740, f"Student Name : {student_name}")
+        c.drawString(80, 710, f"Father Name : {father_name}")
+        c.drawString(80, 680, f"Mother Name : {mother_name}")
+        c.drawString(80, 650, f"Class : {class_name}")
+        c.drawString(80, 620, f"DOB : {dob}")
+        c.drawString(80, 590, f"Contact : {contact}")
+        c.drawString(80, 560, f"Email : {email}")
+        c.drawString(80, 530, f"Aadhaar : {aadhaar}")
+        c.drawString(80, 500, f"Address : {address}")
 
         c.drawString(
             80,
@@ -931,7 +878,7 @@ def admin_admission_form(app_id):
         c.drawString(
             80,
             420,
-            f"Student Password : {password}"
+            f"Password : {password}"
         )
 
         c.save()
@@ -956,22 +903,19 @@ def admin_admission_form(app_id):
 
         db.commit()
 
-        flash(
-            "Admission Completed Successfully!"
-        )
+        flash("Admission Completed Successfully!")
 
-        return redirect(
-            '/admin/admissions'
-        )
+        return redirect('/admin/admissions')
 
     return render_template(
         'complete_admission.html',
         app=app_data
     )
-
-
-
-# DOWNLOAD PDF
+    
+    
+    
+    
+    
 @app.route('/download-pdf/<int:app_id>')
 def download_pdf(app_id):
 
@@ -999,6 +943,7 @@ def download_pdf(app_id):
         pdf_file,
         as_attachment=True
     )
+    
 
 
 @app.route('/admin/update_admission_status', methods=['POST'])
