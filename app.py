@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from werkzeug.utils import secure_filename
 import os
 from reportlab.platypus import (
@@ -817,39 +816,59 @@ def delete_notice(nid):
 # =========================
 # ADMIN ADMISSION FORM
 # =========================
+
 @app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
 def admin_admission_form(app_id):
 
-    try:
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
 
-        db = sqlite3.connect("school.db")
-        db.row_factory = sqlite3.Row
+    db = get_db()
 
-        app_data = db.execute(
-            "SELECT * FROM admission_applications WHERE id=?",
-            (app_id,)
-        ).fetchone()
+    app_data = db.execute(
+        "SELECT * FROM admissions WHERE id=?",
+        (app_id,)
+    ).fetchone()
 
-        if not app_data:
-            return "Application Not Found"
+    if not app_data:
+        return "Application Not Found"
 
-        if request.method == 'POST':
+    if request.method == 'POST':
 
-            # ================= FORM DATA =================
+        try:
+
+            import os
+            import random
+
+            from werkzeug.utils import secure_filename
+
+            from reportlab.platypus import (
+                SimpleDocTemplate,
+                Paragraph,
+                Spacer,
+                Table,
+                TableStyle,
+                Image
+            )
+
+            from reportlab.lib import colors
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.lib.pagesizes import A4
+            from reportlab.lib.units import inch
+
+            # ====================================
+            # FORM DATA
+            # ====================================
 
             student_name = request.form.get('student_name')
+
             father_name = request.form.get('father_name')
+
             mother_name = request.form.get('mother_name')
 
             class_name = request.form.get('class_name')
 
             dob = request.form.get('dob')
-
-            contact = request.form.get('contact')
-
-            email = request.form.get('email')
-
-            aadhaar = request.form.get('aadhaar')
 
             category = request.form.get('category')
 
@@ -858,6 +877,12 @@ def admin_admission_form(app_id):
             religion = request.form.get('religion')
 
             gender = request.form.get('gender')
+
+            contact = request.form.get('contact')
+
+            email = request.form.get('email')
+
+            aadhaar = request.form.get('aadhaar')
 
             address = request.form.get('permanent_address')
 
@@ -871,47 +896,76 @@ def admin_admission_form(app_id):
 
             pincode = request.form.get('pincode')
 
-            mother_tongue = request.form.get('mother_tongue')
+            mother_tongue = request.form.get(
+                'mother_tongue'
+            )
 
-            nationality = request.form.get('nationality')
+            nationality = request.form.get(
+                'nationality'
+            )
 
-            bus_facility = request.form.get('bus_facility')
+            bus_facility = request.form.get(
+                'bus_facility'
+            )
 
-            blood_group = request.form.get('blood_group')
+            blood_group = request.form.get(
+                'blood_group'
+            )
 
-            previous_school = request.form.get('previous_school')
+            previous_school = request.form.get(
+                'previous_school'
+            )
 
             emergency_contact = request.form.get(
                 'emergency_contact'
             )
 
-            # ================= PHOTO UPLOAD =================
+            # ====================================
+            # PHOTO UPLOAD
+            # ====================================
 
             photo_filename = ""
-
-            upload_folder = "static/uploads/students"
-
-            os.makedirs(upload_folder, exist_ok=True)
 
             photo = request.files.get('photo')
 
             if photo and photo.filename != '':
 
-                filename = secure_filename(photo.filename)
-
-                photo.save(
-                    os.path.join(upload_folder, filename)
+                filename = secure_filename(
+                    photo.filename
                 )
+
+                upload_folder = (
+                    "static/uploads/students"
+                )
+
+                os.makedirs(
+                    upload_folder,
+                    exist_ok=True
+                )
+
+                filepath = os.path.join(
+                    upload_folder,
+                    filename
+                )
+
+                photo.save(filepath)
 
                 photo_filename = filename
 
-            # ================= AUTO GENERATE =================
+            # ====================================
+            # AUTO GENERATE
+            # ====================================
 
-            roll_number = f"{class_name}-{random.randint(100,999)}"
+            roll_number = (
+                f"{class_name}-"
+                f"{random.randint(100,999)}"
+            )
 
             password = "student123"
 
-            # ================= SAVE STUDENT =================
+            # ====================================
+            # INSERT STUDENT
+            # ====================================
 
             db.execute("""
 
@@ -920,36 +974,32 @@ def admin_admission_form(app_id):
                     name,
                     class_name,
                     roll_number,
-                    password,
                     parent_name,
-                    mother_name,
                     contact,
-                    email,
-                    dob,
+                    password,
                     aadhaar,
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    photo,
+                    dob,
                     category,
                     caste,
                     religion,
                     gender,
-                    address,
                     correspondence_address,
-                    city,
-                    state,
-                    pincode,
                     mother_tongue,
                     nationality,
                     bus_facility,
                     blood_group,
                     previous_school,
-                    emergency_contact,
-                    photo
+                    emergency_contact
                 )
 
                 VALUES
                 (
-                    ?,?,?,?,?,?,?,?,?,?,
-                    ?,?,?,?,?,?,?,?,?,?,
-                    ?,?,?,?,?,?
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
 
             """, (
@@ -957,426 +1007,476 @@ def admin_admission_form(app_id):
                 student_name,
                 class_name,
                 roll_number,
-                password,
                 father_name,
-                mother_name,
                 contact,
-                email,
-                dob,
+                password,
                 aadhaar,
+                address,
+                city,
+                state,
+                pincode,
+                photo_filename,
+                dob,
                 category,
                 caste,
                 religion,
                 gender,
-                address,
                 correspondence_address,
-                city,
-                state,
-                pincode,
                 mother_tongue,
                 nationality,
                 bus_facility,
                 blood_group,
                 previous_school,
-                emergency_contact,
-                photo_filename
+                emergency_contact
 
             ))
 
-            db.commit()
-
-            # ================= PDF GENERATE =================
-
-            from reportlab.lib.pagesizes import A4
-            from reportlab.pdfgen import canvas
-            from reportlab.lib import colors
-            from datetime import date
+            # ====================================
+            # PDF GENERATE
+            # ====================================
 
             pdf_folder = "static/pdfs"
 
-            os.makedirs(pdf_folder, exist_ok=True)
+            os.makedirs(
+                pdf_folder,
+                exist_ok=True
+            )
 
-            pdf_filename = f"admission_{app_id}.pdf"
+            pdf_filename = (
+                f"admission_{app_id}.pdf"
+            )
 
             pdf_path = os.path.join(
                 pdf_folder,
                 pdf_filename
             )
 
-            c = canvas.Canvas(
+            doc = SimpleDocTemplate(
+
                 pdf_path,
-                pagesize=A4
+
+                pagesize=A4,
+
+                rightMargin=25,
+
+                leftMargin=25,
+
+                topMargin=25,
+
+                bottomMargin=20
+
             )
 
-            width, height = A4
+            styles = getSampleStyleSheet()
 
-            # ================= SCHOOL NAME =================
+            elements = []
 
-            c.setFont("Helvetica-Bold", 24)
+            # ====================================
+            # SCHOOL TITLE
+            # ====================================
 
-            c.drawCentredString(
-                width/2,
-                810,
-                "BRIGHT MIND SCHOOL"
+            school_name = Paragraph(
+
+                "<font size='20'>"
+                "<b>BRIGHT MIND SCHOOL</b>"
+                "</font>",
+
+                styles['Title']
+
             )
 
-            # ================= BLUE TITLE BAR =================
+            elements.append(school_name)
 
-            c.setFillColor(colors.darkblue)
-
-            c.rect(40, 770, 520, 30, fill=1)
-
-            c.setFillColor(colors.white)
-
-            c.setFont("Helvetica-Bold", 18)
-
-            c.drawCentredString(
-                width/2,
-                778,
-                "ADMISSION FORM"
+            elements.append(
+                Spacer(1, 15)
             )
 
-            c.setFillColor(colors.black)
+            # ====================================
+            # FORM TITLE
+            # ====================================
 
-            # ================= TOP DETAILS =================
+            title_table = Table([
 
-            c.setFont("Helvetica", 11)
+                ["ADMISSION FORM"]
 
-            c.drawString(
-                50,
-                735,
-                "Admission Form Session"
+            ], colWidths=[520])
+
+            title_table.setStyle(
+                TableStyle([
+
+                    (
+                        'BACKGROUND',
+                        (0,0),
+                        (-1,-1),
+                        colors.darkblue
+                    ),
+
+                    (
+                        'TEXTCOLOR',
+                        (0,0),
+                        (-1,-1),
+                        colors.white
+                    ),
+
+                    (
+                        'ALIGN',
+                        (0,0),
+                        (-1,-1),
+                        'CENTER'
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica-Bold'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        18
+                    ),
+
+                    (
+                        'BOTTOMPADDING',
+                        (0,0),
+                        (-1,-1),
+                        10
+                    ),
+
+                    (
+                        'TOPPADDING',
+                        (0,0),
+                        (-1,-1),
+                        10
+                    ),
+
+                ])
             )
 
-            c.drawString(
-                220,
-                735,
-                "2025-2026"
+            elements.append(title_table)
+
+            elements.append(
+                Spacer(1, 20)
             )
 
-            c.drawString(
-                370,
-                735,
-                "Admission No."
+            # ====================================
+            # FORM DATA TABLE
+            # ====================================
+
+            data = [
+
+                [
+                    "Admission Form Session",
+                    "2025-2026"
+                ],
+
+                [
+                    "Admission No.",
+                    str(app_id)
+                ],
+
+                [
+                    "Student Name",
+                    student_name
+                ],
+
+                [
+                    "Father Name",
+                    father_name
+                ],
+
+                [
+                    "Mother Name",
+                    mother_name
+                ],
+
+                [
+                    "Date Of Birth",
+                    dob
+                ],
+
+                [
+                    "Class",
+                    class_name
+                ],
+
+                [
+                    "Category",
+                    category
+                ],
+
+                [
+                    "Caste",
+                    caste
+                ],
+
+                [
+                    "Religion",
+                    religion
+                ],
+
+                [
+                    "Gender",
+                    gender
+                ],
+
+                [
+                    "Contact Number",
+                    contact
+                ],
+
+                [
+                    "Email",
+                    email
+                ],
+
+                [
+                    "Aadhaar Number",
+                    aadhaar
+                ],
+
+                [
+                    "Permanent Address",
+                    address
+                ],
+
+                [
+                    "Correspondence Address",
+                    correspondence_address
+                ],
+
+                [
+                    "City",
+                    city
+                ],
+
+                [
+                    "State",
+                    state
+                ],
+
+                [
+                    "Pincode",
+                    pincode
+                ],
+
+                [
+                    "Mother Tongue",
+                    mother_tongue
+                ],
+
+                [
+                    "Nationality",
+                    nationality
+                ],
+
+                [
+                    "Bus Facility",
+                    bus_facility
+                ],
+
+                [
+                    "Blood Group",
+                    blood_group
+                ],
+
+                [
+                    "Previous School",
+                    previous_school
+                ],
+
+                [
+                    "Emergency Contact",
+                    emergency_contact
+                ],
+
+                [
+                    "Roll Number",
+                    roll_number
+                ],
+
+                [
+                    "Password",
+                    password
+                ]
+
+            ]
+
+            table = Table(
+
+                data,
+
+                colWidths=[220, 300]
+
             )
 
-            c.drawString(
-                480,
-                735,
-                str(app_id)
+            table.setStyle(
+                TableStyle([
+
+                    (
+                        'GRID',
+                        (0,0),
+                        (-1,-1),
+                        1,
+                        colors.black
+                    ),
+
+                    (
+                        'BACKGROUND',
+                        (0,0),
+                        (0,-1),
+                        colors.lightgrey
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        11
+                    ),
+
+                    (
+                        'BOTTOMPADDING',
+                        (0,0),
+                        (-1,-1),
+                        8
+                    ),
+
+                    (
+                        'TOPPADDING',
+                        (0,0),
+                        (-1,-1),
+                        8
+                    ),
+
+                ])
             )
 
-            c.drawString(
-                50,
-                705,
-                "Date"
+            elements.append(table)
+
+            elements.append(
+                Spacer(1, 25)
             )
 
-            c.drawString(
-                220,
-                705,
-                str(date.today())
-            )
-
-            c.drawString(
-                370,
-                705,
-                "Class"
-            )
-
-            c.drawString(
-                480,
-                705,
-                class_name
-            )
-
-            # ================= PHOTO BOX =================
-
-            c.rect(430, 560, 110, 130)
-
-            c.setFont("Helvetica", 10)
-
-            c.drawCentredString(485, 620, "Student")
-            c.drawCentredString(485, 605, "Photo")
-
-            # ================= STUDENT PHOTO TOP RIGHT =================
+            # ====================================
+            # STUDENT PHOTO
+            # ====================================
 
             if photo_filename:
 
-                try:
+                image_path = os.path.join(
+                    "static/uploads/students",
+                    photo_filename
+                )
 
-                    image_path = os.path.join(
-                        upload_folder,
-                        photo_filename
-                    )
+                if os.path.exists(image_path):
 
-                    c.drawImage(
+                    student_img = Image(
+
                         image_path,
-                        435,
-                        565,
-                        width=100,
-                        height=120
+
+                        width=1.5*inch,
+
+                        height=1.5*inch
+
                     )
 
-                except:
-                    pass
+                    elements.append(student_img)
 
-            # ================= FORM DETAILS =================
-
-            y = 660
-
-            def draw_field(label, value):
-
-                global y
-
-                c.setFont(
-                    "Helvetica-Bold",
-                    11
-                )
-
-                c.drawString(
-                    50,
-                    y,
-                    label
-                )
-
-                c.setFont(
-                    "Helvetica",
-                    11
-                )
-
-                c.drawString(
-                    220,
-                    y,
-                    str(value)
-                )
-
-                c.line(
-                    50,
-                    y-5,
-                    400,
-                    y-5
-                )
-
-            draw_field(
-                "1. Student Name",
-                student_name
+            elements.append(
+                Spacer(1, 30)
             )
 
-            y -= 35
+            # ====================================
+            # DECLARATION
+            # ====================================
 
-            draw_field(
-                "2. Father's Name",
-                father_name
+            declaration = Paragraph(
+
+                "I hereby declare that all "
+                "information given above "
+                "is true and correct.",
+
+                styles['BodyText']
+
             )
 
-            y -= 35
+            elements.append(declaration)
 
-            draw_field(
-                "3. Mother's Name",
-                mother_name
+            elements.append(
+                Spacer(1, 50)
             )
 
-            y -= 35
+            # ====================================
+            # SIGNATURE SECTION
+            # ====================================
 
-            draw_field(
-                "4. Date Of Birth",
-                dob
+            signature_table = Table([
+
+                [
+
+                    "____________________\nParent Signature",
+
+                    "",
+
+                    "____________________\nPrincipal Signature"
+
+                ]
+
+            ], colWidths=[180, 120, 180])
+
+            signature_table.setStyle(
+                TableStyle([
+
+                    (
+                        'ALIGN',
+                        (0,0),
+                        (-1,-1),
+                        'CENTER'
+                    ),
+
+                    (
+                        'FONTNAME',
+                        (0,0),
+                        (-1,-1),
+                        'Helvetica'
+                    ),
+
+                    (
+                        'FONTSIZE',
+                        (0,0),
+                        (-1,-1),
+                        11
+                    )
+
+                ])
             )
 
-            y -= 35
+            elements.append(signature_table)
 
-            draw_field(
-                "5. Aadhaar Number",
-                aadhaar
-            )
+            # ====================================
+            # BUILD PDF
+            # ====================================
 
-            y -= 35
+            doc.build(elements)
 
-            draw_field(
-                "6. Category",
-                category
-            )
-
-            c.drawString(320, y, "7. Caste")
-
-            c.drawString(390, y, caste)
-
-            y -= 35
-
-            draw_field(
-                "8. Religion",
-                religion
-            )
-
-            c.drawString(320, y, "9. Gender")
-
-            c.drawString(390, y, gender)
-
-            y -= 35
-
-            draw_field(
-                "10. Permanent Address",
-                address
-            )
-
-            y -= 45
-
-            draw_field(
-                "11. Correspondence Address",
-                correspondence_address
-            )
-
-            y -= 45
-
-            draw_field(
-                "12. Contact Number",
-                contact
-            )
-
-            c.drawString(320, y, "Email")
-
-            c.drawString(390, y, email)
-
-            y -= 35
-
-            draw_field(
-                "13. Mother Tongue",
-                mother_tongue
-            )
-
-            c.drawString(320, y, "Nationality")
-
-            c.drawString(410, y, nationality)
-
-            y -= 35
-
-            draw_field(
-                "14. Bus Facility",
-                bus_facility
-            )
-
-            y -= 50
-
-            # ================= ADDITIONAL INFO =================
-
-            c.setFillColor(colors.lightgrey)
-
-            c.rect(
-                45,
-                y-10,
-                500,
-                90,
-                fill=1
-            )
-
-            c.setFillColor(colors.black)
-
-            c.setFont(
-                "Helvetica-Bold",
-                12
-            )
-
-            c.drawString(
-                60,
-                y+55,
-                "Additional Information"
-            )
-
-            c.setFont(
-                "Helvetica",
-                11
-            )
-
-            c.drawString(
-                60,
-                y+30,
-                f"Blood Group : {blood_group}"
-            )
-
-            c.drawString(
-                300,
-                y+30,
-                f"Pincode : {pincode}"
-            )
-
-            c.drawString(
-                60,
-                y+5,
-                f"Previous School : {previous_school}"
-            )
-
-            c.drawString(
-                300,
-                y+5,
-                f"Emergency Contact : {emergency_contact}"
-            )
-
-            # ================= LOGIN DETAILS =================
-
-            y -= 50
-
-            c.setFont(
-                "Helvetica-Bold",
-                11
-            )
-
-            c.drawString(
-                60,
-                y,
-                f"Roll Number : {roll_number}"
-            )
-
-            c.drawString(
-                300,
-                y,
-                f"Password : {password}"
-            )
-
-            # ================= DECLARATION =================
-
-            y -= 60
-
-            c.setFont(
-                "Helvetica",
-                11
-            )
-
-            c.drawString(
-                50,
-                y,
-                "I hereby declare that all information given above is true and correct."
-            )
-
-            # ================= SIGNATURES =================
-
-            y -= 80
-
-            c.line(60, y, 180, y)
-
-            c.drawString(
-                75,
-                y-20,
-                "Parent Signature"
-            )
-
-            c.line(360, y, 500, y)
-
-            c.drawString(
-                380,
-                y-20,
-                "Principal Signature"
-            )
-
-            # ================= SAVE PDF =================
-
-            c.save()
-
-            # ================= UPDATE APPLICATION =================
+            # ====================================
+            # UPDATE ADMISSION STATUS
+            # ====================================
 
             db.execute("""
 
-                UPDATE admission_applications
+                UPDATE admissions
 
                 SET
                     status='Approved',
@@ -1394,21 +1494,23 @@ def admin_admission_form(app_id):
             db.commit()
 
             flash(
-                "Admission Completed Successfully!"
+                "Admission Completed Successfully!",
+                "success"
             )
 
             return redirect(
                 '/admin/dashboard'
             )
 
-        return render_template(
-            'admin_admission_form.html',
-            app=app_data
-        )
+        except Exception as e:
 
-    except Exception as e:
+            return f"REAL ERROR: {str(e)}"
 
-        return f"REAL ERROR: {str(e)}"    
+    return render_template(
+        'admin_admission_form.html',
+        app=app_data
+    )
+    
     
     
 #     @app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
