@@ -614,28 +614,88 @@ def admin_logout():
     session.clear(); return redirect('/')
 
 # ── ADMIN DASHBOARD ────────────────────────────────────────────────────────────
+# @app.route('/admin/dashboard')
+# def admin_dashboard():
+#     if session.get('role') != 'admin': return redirect('/admin/login')
+#     db = get_db()
+#     stats = {
+#         'students':   db.execute('SELECT COUNT(*) FROM students').fetchone()[0],
+#         'teachers':   db.execute('SELECT COUNT(*) FROM teachers').fetchone()[0],
+#         'admissions': db.execute("SELECT COUNT(*) FROM admissions WHERE status='Pending'").fetchone()[0],
+#         'notices':    db.execute('SELECT COUNT(*) FROM notices').fetchone()[0],
+#     }
+#     admissions  = db.execute('SELECT * FROM admissions ORDER BY created_at DESC').fetchall()
+#     messages    = db.execute('SELECT * FROM contact_messages ORDER BY created_at DESC').fetchall()
+#     students    = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
+#     teachers    = db.execute('SELECT * FROM teachers ORDER BY name').fetchall()
+#     all_notices = db.execute('SELECT * FROM notices ORDER BY created_at DESC').fetchall()
+#     return render_template('admin_dashboard.html',
+#         stats=stats, admissions=admissions, messages=messages,
+#         students=students, teachers=teachers, all_notices=all_notices)
+    
+    
+    
 @app.route('/admin/dashboard')
 def admin_dashboard():
-    if session.get('role') != 'admin': return redirect('/admin/login')
-    db = get_db()
-    stats = {
-        'students':   db.execute('SELECT COUNT(*) FROM students').fetchone()[0],
-        'teachers':   db.execute('SELECT COUNT(*) FROM teachers').fetchone()[0],
-        'admissions': db.execute("SELECT COUNT(*) FROM admissions WHERE status='Pending'").fetchone()[0],
-        'notices':    db.execute('SELECT COUNT(*) FROM notices').fetchone()[0],
-    }
-    admissions  = db.execute('SELECT * FROM admissions ORDER BY created_at DESC').fetchall()
-    messages    = db.execute('SELECT * FROM contact_messages ORDER BY created_at DESC').fetchall()
-    students    = db.execute('SELECT * FROM students ORDER BY class_name, roll_number').fetchall()
-    teachers    = db.execute('SELECT * FROM teachers ORDER BY name').fetchall()
-    all_notices = db.execute('SELECT * FROM notices ORDER BY created_at DESC').fetchall()
-    return render_template('admin_dashboard.html',
-        stats=stats, admissions=admissions, messages=messages,
-        students=students, teachers=teachers, all_notices=all_notices)
-    
-    
-    
 
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
+
+    db = get_db()
+
+    stats = {
+
+        'students':
+        db.execute(
+            'SELECT COUNT(*) FROM students'
+        ).fetchone()[0],
+
+        'teachers':
+        db.execute(
+            'SELECT COUNT(*) FROM teachers'
+        ).fetchone()[0],
+
+        'admissions':
+        db.execute(
+            "SELECT COUNT(*) FROM admissions WHERE status='Pending'"
+        ).fetchone()[0],
+
+        'notices':
+        db.execute(
+            'SELECT COUNT(*) FROM notices'
+        ).fetchone()[0],
+
+    }
+
+    admissions = db.execute(
+        'SELECT * FROM admissions ORDER BY id DESC'
+    ).fetchall()
+
+    messages = db.execute(
+        'SELECT * FROM contact_messages ORDER BY id DESC'
+    ).fetchall()
+
+    students = db.execute(
+        'SELECT * FROM students ORDER BY id DESC'
+    ).fetchall()
+
+    teachers = db.execute(
+        'SELECT * FROM teachers ORDER BY id DESC'
+    ).fetchall()
+
+    all_notices = db.execute(
+        'SELECT * FROM notices ORDER BY id DESC'
+    ).fetchall()
+
+    return render_template(
+        'admin_dashboard.html',
+        stats=stats,
+        admissions=admissions,
+        messages=messages,
+        students=students,
+        teachers=teachers,
+        all_notices=all_notices
+    )
     
     
 # ── ADMIN STUDENTS ─────────────────────────────────────────────────────────────
