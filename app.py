@@ -966,21 +966,14 @@ def download_pdf(app_id):
     db = get_db()
 
     app_data = db.execute(
-        """
-        SELECT *
-        FROM admissions
-        WHERE id=?
-        """,
+        "SELECT * FROM admissions WHERE id=?",
         (app_id,)
     ).fetchone()
 
     if not app_data:
-        return "Application not found"
+        return "PDF not found"
 
     pdf_file = app_data['pdf_file']
-
-    if not pdf_file:
-        return "PDF not generated"
 
     return send_from_directory(
         'static/pdfs',
