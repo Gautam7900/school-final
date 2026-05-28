@@ -297,6 +297,61 @@ CREATE TABLE IF NOT EXISTS students (
 
 
 
+CREATE TABLE IF NOT EXISTS admission_applications (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- BASIC DETAILS
+    student_name TEXT,
+    class_name TEXT,
+
+    -- FAMILY DETAILS
+    parent_name TEXT,
+    mother_name TEXT,
+
+    -- CONTACT DETAILS
+    contact TEXT,
+    email TEXT,
+
+    -- PERSONAL DETAILS
+    dob TEXT,
+    aadhaar TEXT,
+    category TEXT,
+    caste TEXT,
+    religion TEXT,
+    gender TEXT,
+
+    -- ADDRESS DETAILS
+    permanent_address TEXT,
+    correspondence_address TEXT,
+    city TEXT,
+    state TEXT,
+    pincode TEXT,
+
+    -- OTHER DETAILS
+    mother_tongue TEXT,
+    nationality TEXT,
+    bus_facility TEXT,
+    blood_group TEXT,
+    previous_school TEXT,
+    emergency_contact TEXT,
+
+    -- PHOTO
+    photo TEXT,
+
+    -- STATUS
+    status TEXT DEFAULT 'Pending',
+
+    -- PDF
+    pdf_file TEXT,
+
+    -- DATE
+    applied_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+
+
         ALTER TABLE admissions ADD COLUMN gender TEXT;
 
         ALTER TABLE admissions ADD COLUMN blood_group TEXT;
