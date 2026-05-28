@@ -1,15 +1,21 @@
-import sqlite3, os
+import sqlite3
 from flask import g
 
-DATABASE = os.path.join(os.path.dirname(__file__), 'school.db')
+DATABASE = "school.db"
 
 def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
-        db.execute("PRAGMA foreign_keys = OFF")
-    return db
+
+    if 'db' not in g:
+
+        g.db = sqlite3.connect(
+            DATABASE,
+            timeout=30,
+            check_same_thread=False
+        )
+
+        g.db.row_factory = sqlite3.Row
+
+    return g.db
 
 def init_db():
     db = sqlite3.connect(DATABASE)

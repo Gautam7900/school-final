@@ -6,7 +6,7 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
-
+from flask import g
 from reportlab.pdfgen import canvas
 from flask import send_from_directory
 from flask import (
@@ -824,8 +824,11 @@ def admin_admission_form(app_id):
 
         try:
 
+            # FORM DATA
             student_name = request.form.get('student_name')
+
             father_name = request.form.get('father_name')
+
             class_name = request.form.get('class_name')
 
             contact = request.form.get('contact')
@@ -905,7 +908,7 @@ def admin_admission_form(app_id):
 
             ))
 
-            # PDF CREATE
+            # PDF FOLDER
             pdf_folder = "static/pdfs"
 
             os.makedirs(pdf_folder, exist_ok=True)
@@ -917,22 +920,88 @@ def admin_admission_form(app_id):
                 pdf_filename
             )
 
+            # PDF CREATE
             c = canvas.Canvas(pdf_path)
 
             c.setFont("Helvetica-Bold", 20)
 
-            c.drawString(150, 800, "SCHOOL ADMISSION FORM")
+            c.drawString(
+                150,
+                800,
+                "SCHOOL ADMISSION FORM"
+            )
 
-            c.drawString(80, 740, f"Student Name: {student_name}")
-            c.drawString(80, 710, f"Father Name: {father_name}")
-            c.drawString(80, 680, f"Class: {class_name}")
-            c.drawString(80, 650, f"Contact: {contact}")
-            c.drawString(80, 620, f"City: {city}")
-            c.drawString(80, 590, f"State: {state}")
+            c.setFont("Helvetica", 12)
+
+            c.drawString(
+                80,
+                740,
+                f"Student Name: {student_name}"
+            )
+
+            c.drawString(
+                80,
+                710,
+                f"Father Name: {father_name}"
+            )
+
+            c.drawString(
+                80,
+                680,
+                f"Class: {class_name}"
+            )
+
+            c.drawString(
+                80,
+                650,
+                f"Contact: {contact}"
+            )
+
+            c.drawString(
+                80,
+                620,
+                f"Aadhaar: {aadhaar}"
+            )
+
+            c.drawString(
+                80,
+                590,
+                f"Address: {address}"
+            )
+
+            c.drawString(
+                80,
+                560,
+                f"City: {city}"
+            )
+
+            c.drawString(
+                80,
+                530,
+                f"State: {state}"
+            )
+
+            c.drawString(
+                80,
+                500,
+                f"Pincode: {pincode}"
+            )
+
+            c.drawString(
+                80,
+                470,
+                f"Roll Number: {roll_number}"
+            )
+
+            c.drawString(
+                80,
+                440,
+                f"Password: {password}"
+            )
 
             c.save()
 
-            # UPDATE ADMISSION
+            # UPDATE ADMISSION STATUS
             db.execute("""
 
                 UPDATE admissions
@@ -950,6 +1019,7 @@ def admin_admission_form(app_id):
 
             ))
 
+            # ONLY ONE COMMIT
             db.commit()
 
             flash(
@@ -3039,6 +3109,14 @@ def admin_quiz_results(qid):
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+    
+@app.teardown_appcontext
+def close_db(error):
+
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
 
 
 
