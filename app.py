@@ -747,8 +747,9 @@ def admin_admission_form(app_id):
 
     db = get_db()
 
+    # FIXED TABLE NAME
     app_data = db.execute(
-        "SELECT * FROM admission_applications WHERE id=?",
+        "SELECT * FROM admissions WHERE id=?",
         (app_id,)
     ).fetchone()
 
@@ -759,13 +760,12 @@ def admin_admission_form(app_id):
 
         try:
 
-            # FORM DATA
-            student_name = request.form.get('student_name', '')
-            father_name = request.form.get('father_name', '')
-            class_name = request.form.get('class_name', '')
-            contact = request.form.get('contact', '')
-            address = request.form.get('permanent_address', '')
-            aadhaar = request.form.get('aadhaar', '')
+            student_name = request.form.get('student_name')
+            father_name = request.form.get('father_name')
+            class_name = request.form.get('class_name')
+            contact = request.form.get('contact')
+            address = request.form.get('permanent_address')
+            aadhaar = request.form.get('aadhaar')
 
             # PHOTO
             photo_filename = ""
@@ -791,7 +791,7 @@ def admin_admission_form(app_id):
 
             password = "student123"
 
-            # SAVE STUDENT
+            # INSERT STUDENT
             db.execute("""
 
                 INSERT INTO students
@@ -823,9 +823,7 @@ def admin_admission_form(app_id):
 
             ))
 
-            db.commit()
-
-            # PDF FOLDER
+            # PDF
             pdf_folder = "static/pdfs"
 
             os.makedirs(pdf_folder, exist_ok=True)
@@ -837,37 +835,26 @@ def admin_admission_form(app_id):
                 pdf_filename
             )
 
-            # PDF CREATE
             c = canvas.Canvas(pdf_path)
 
-            c.setFont("Helvetica-Bold", 22)
+            c.drawString(100, 800, "School Admission Form")
 
-            c.drawString(150, 800, "SCHOOL ADMISSION FORM")
+            c.drawString(100, 760, f"Student: {student_name}")
 
-            c.setFont("Helvetica", 13)
+            c.drawString(100, 730, f"Father: {father_name}")
 
-            c.drawString(80, 740, f"Student Name : {student_name}")
+            c.drawString(100, 700, f"Class: {class_name}")
 
-            c.drawString(80, 710, f"Father Name : {father_name}")
+            c.drawString(100, 670, f"Roll No: {roll_number}")
 
-            c.drawString(80, 680, f"Class : {class_name}")
-
-            c.drawString(80, 650, f"Contact : {contact}")
-
-            c.drawString(80, 620, f"Aadhaar : {aadhaar}")
-
-            c.drawString(80, 590, f"Address : {address}")
-
-            c.drawString(80, 560, f"Roll Number : {roll_number}")
-
-            c.drawString(80, 530, f"Password : {password}")
+            c.drawString(100, 640, f"Password: {password}")
 
             c.save()
 
-            # UPDATE APPLICATION
+            # FIXED TABLE NAME
             db.execute("""
 
-                UPDATE admission_applications
+                UPDATE admissions
 
                 SET
                     status=?,
@@ -900,6 +887,16 @@ def admin_admission_form(app_id):
 
 
 
+@app.route('/check-applications')
+def check_applications():
+
+    db = get_db()
+
+    apps = db.execute(
+        "SELECT * FROM admission_applications"
+    ).fetchall()
+
+    return str([dict(x) for x in apps])
 
     
     
