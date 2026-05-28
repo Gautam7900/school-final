@@ -158,7 +158,7 @@
             {% for a in admissions %}
             <tr id="adm-row-{{ a['id'] }}">
               <td>{{ a['id'] }}</td>
-              <td><strong>{{ a['name'] }}</strong></td>
+              <td><strong>{{ a['student_name'] }}</strong></td>
               <td>{{ a['class_name'] }}</td>
               <td>{{ a['parent_name'] or '—' }}</td>
               <td>{{ a['contact'] or '—' }}</td>
@@ -182,7 +182,7 @@
               <td>
 
                   <a
-                     href="/download-pdf/{{ app['id'] }}"
+                    href="/download-pdf/{{ a['id'] }}"
                      class="btn btn-dark">
                        📄 DOWNLOAD PDF
                   </a>
@@ -190,7 +190,7 @@
               </td>
               <td>
 
-                   <a href="/admin/admission-form/{{ a['id'] }}"
+                   <a href="/admin/admin_admission_form/{{ a['id'] }}"
                        class="btn btn-sm btn-gold">
 
                         📝 Complete Admission
@@ -210,7 +210,8 @@
 
     <!-- ══════════════════════════════════════════════════════
          TAB 2 — STUDENTS  (add + delete)
-  <!-- =========================================
+    ══════════════════════════════════════════════════════ -->
+    <!-- =========================================
 STUDENTS PANEL
 ========================================= -->
 

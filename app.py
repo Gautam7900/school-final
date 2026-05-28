@@ -735,17 +735,13 @@ def delete_notice(nid):
     return jsonify({'success':True})
 
 # ── ADMIN ADMISSIONS ───────────────────────────────────────────────────────────
-
-
-
-
 @app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
 def admin_admission_form(app_id):
 
     db = get_db()
 
     app_data = db.execute(
-        "SELECT * FROM admission_applications WHERE id=?",
+        "SELECT * FROM admissions WHERE id=?",
         (app_id,)
     ).fetchone()
 
@@ -883,10 +879,10 @@ def admin_admission_form(app_id):
 
         c.save()
 
-        # UPDATE APPLICATION
+        # UPDATE ADMISSION
         db.execute("""
 
-            UPDATE admission_applications
+            UPDATE admissions
 
             SET
                 pdf_file=?,
@@ -905,7 +901,7 @@ def admin_admission_form(app_id):
 
         flash("Admission Completed Successfully!")
 
-        return redirect('/admin/admissions')
+        return redirect('/admin/dashboard')
 
     return render_template(
         'complete_admission.html',
@@ -916,7 +912,7 @@ def admin_admission_form(app_id):
     
     
     
-@app.route('/download-pdf/<int:app_id>')
+    @app.route('/download-pdf/<int:app_id>')
 def download_pdf(app_id):
 
     db = get_db()
@@ -924,7 +920,7 @@ def download_pdf(app_id):
     app_data = db.execute(
         """
         SELECT *
-        FROM admission_applications
+        FROM admissions
         WHERE id=?
         """,
         (app_id,)
@@ -943,7 +939,8 @@ def download_pdf(app_id):
         pdf_file,
         as_attachment=True
     )
-    
+
+
 
 
 @app.route('/admin/update_admission_status', methods=['POST'])
