@@ -217,8 +217,7 @@ def init_db():
        
       
                 
-
-CREATE TABLE IF NOT EXISTS admission_applications (
+    CREATE TABLE IF NOT EXISTS admission_applications (
 
         id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -227,11 +226,8 @@ CREATE TABLE IF NOT EXISTS admission_applications (
         class_name TEXT,
         contact TEXT,
         email TEXT,
-
         status TEXT DEFAULT 'Pending',
-
         applied_on TEXT,
-
         pdf_file TEXT
 
     );
@@ -261,8 +257,6 @@ CREATE TABLE IF NOT EXISTS admission_applications (
         photo TEXT
 
     );
-
-
 
 
         ALTER TABLE admissions ADD COLUMN gender TEXT;
