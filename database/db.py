@@ -21,7 +21,7 @@ def init_db():
             name TEXT NOT NULL, subject TEXT NOT NULL,
             username TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
             email TEXT, phone TEXT, qualification TEXT,
-            experience TEXT, bio TEXT,  joining_date TEXT,
+            experience TEXT, bio TEXT, joining_date TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS teacher_assignments (
@@ -168,7 +168,7 @@ def init_db():
             description TEXT,
             category TEXT DEFAULT "Academic",
             achievement_date TEXT,
-            ,
+            
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS whatsapp_logs (
@@ -220,47 +220,48 @@ def init_db():
 
 CREATE TABLE IF NOT EXISTS admission_applications (
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    student_name TEXT,
-    parent_name TEXT,
-    class_name TEXT,
-    contact TEXT,
-    email TEXT,
+        student_name TEXT,
+        parent_name TEXT,
+        class_name TEXT,
+        contact TEXT,
+        email TEXT,
 
-    status TEXT DEFAULT 'Pending',
+        status TEXT DEFAULT 'Pending',
 
-    applied_on TEXT,
+        applied_on TEXT,
 
-    pdf_file TEXT
+        pdf_file TEXT
 
-);
+    );
 
 
 
-CREATE TABLE IF NOT EXISTS students (
+    CREATE TABLE IF NOT EXISTS students (
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    name TEXT NOT NULL,
+        name TEXT NOT NULL,
 
-    class_name TEXT,
+        class_name TEXT,
 
-    roll_number TEXT,
+        roll_number TEXT,
 
-    parent_name TEXT,
+        parent_name TEXT,
 
-    contact TEXT,
+        contact TEXT,
 
-    password TEXT,
+        password TEXT,
 
-    aadhaar TEXT,
+        aadhaar TEXT,
 
-    address TEXT,
+        address TEXT,
 
-    photo TEXT
+        photo TEXT
 
-);
+    );
+
 
 
 
