@@ -912,7 +912,7 @@ def admin_admission_form(app_id):
     
     
     
-    @app.route('/download-pdf/<int:app_id>')
+@app.route('/download-pdf/<int:app_id>')
 def download_pdf(app_id):
 
     db = get_db()
