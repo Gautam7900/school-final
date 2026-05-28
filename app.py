@@ -616,6 +616,12 @@ def admin_dashboard():
     return render_template('admin_dashboard.html',
         stats=stats, admissions=admissions, messages=messages,
         students=students, teachers=teachers, all_notices=all_notices)
+    
+    
+    
+
+    
+    
 # ── ADMIN STUDENTS ─────────────────────────────────────────────────────────────
 @app.route('/admin/add_student', methods=['POST'])
 def add_student():
@@ -714,23 +720,154 @@ def delete_notice(nid):
     return jsonify({'success':True})
 
 # ── ADMIN ADMISSIONS ───────────────────────────────────────────────────────────
-@app.route('/admin/admission-form/<int:aid>')
-def admin_admission_form(aid):
 
-    if session.get('role') != 'admin':
-        return redirect('/admin/login')
+@app.route('/admin/admission_form/<int:app_id>', methods=['GET', 'POST'])
+def admin_admission_form(app_id):
 
     db = get_db()
 
-    admission = db.execute(
-        'SELECT * FROM admissions WHERE id=?',
-        (aid,)
+    app_data = db.execute(
+        "SELECT * FROM admission_applications WHERE id=?",
+        (app_id,)
     ).fetchone()
 
+    if request.method == 'POST':
+
+        student_name = request.form.get('student_name')
+        father_name = request.form.get('father_name')
+        mother_name = request.form.get('mother_name')
+        class_name = request.form.get('class_name')
+        dob = request.form.get('dob')
+        contact = request.form.get('contact')
+        email = request.form.get('email')
+        address = request.form.get('permanent_address')
+        aadhaar = request.form.get('aadhaar')
+
+        photo_filename = ""
+
+        # PHOTO UPLOAD
+        photo = request.files.get('photo')
+
+        if photo and photo.filename != '':
+
+            filename = secure_filename(photo.filename)
+
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+            photo.save(
+                os.path.join(
+                    app.config['UPLOAD_FOLDER'],
+                    filename
+                )
+            )
+
+            photo_filename = filename
+
+        # SAVE STUDENT
+        db.execute("""
+
+            INSERT INTO students
+            (
+                name,
+                parent_name,
+                contact,
+                aadhaar,
+                address,
+                class_name,
+                photo
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+
+        """, (
+
+            student_name,
+            father_name,
+            contact,
+            aadhaar,
+            address,
+            class_name,
+            photo_filename
+
+        ))
+
+        db.commit()
+
+        # PDF CREATE
+        pdf_folder = "static/pdfs"
+
+        os.makedirs(pdf_folder, exist_ok=True)
+
+        pdf_path = f"{pdf_folder}/admission_{app_id}.pdf"
+
+        c = canvas.Canvas(pdf_path)
+
+        c.setFont("Helvetica-Bold", 20)
+        c.drawString(180, 800, "SCHOOL ADMISSION FORM")
+
+        c.setFont("Helvetica", 13)
+
+        c.drawString(80, 740, f"Student Name : {student_name}")
+        c.drawString(80, 710, f"Father Name : {father_name}")
+        c.drawString(80, 680, f"Mother Name : {mother_name}")
+        c.drawString(80, 650, f"Class : {class_name}")
+        c.drawString(80, 620, f"Date of Birth : {dob}")
+        c.drawString(80, 590, f"Contact : {contact}")
+        c.drawString(80, 560, f"Email : {email}")
+        c.drawString(80, 530, f"Aadhaar : {aadhaar}")
+        c.drawString(80, 500, f"Address : {address}")
+
+        c.save()
+
+        # UPDATE PDF PATH
+        db.execute("""
+
+            UPDATE admission_applications
+            SET pdf_file=?
+            WHERE id=?
+
+        """, (
+
+            f"admission_{app_id}.pdf",
+            app_id
+
+        ))
+
+        db.commit()
+
+        flash("Admission Completed Successfully")
+
+        return redirect('/admin/admissions')
+
     return render_template(
-        'admin_admission_form.html',
-        admission=admission
+        'complete_admission.html',
+        app=app_data
     )
+
+
+
+@app.route('/download-pdf/<int:app_id>')
+def download_pdf(app_id):
+
+    db = get_db()
+
+    app_data = db.execute(
+        "SELECT * FROM admission_applications WHERE id=?",
+        (app_id,)
+    ).fetchone()
+
+    if not app_data:
+        return "Application not found"
+
+    pdf_file = app_data['pdf_file']
+
+    return send_from_directory(
+        'static/pdfs',
+        pdf_file,
+        as_attachment=True
+    )
+
+
 
 
 @app.route('/admin/update_admission_status', methods=['POST'])

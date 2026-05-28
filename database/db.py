@@ -269,9 +269,9 @@ def init_db():
 
         ALTER TABLE students ADD COLUMN pincode TEXT;
        
-                
-        ALTER TABLE admissions
-        ADD COLUMN pdf_file TEXT;
+        ALTER TABLE admission_applications
+        ADD COLUMN pdf_file TEXT;     
+       
         
        ALTER TABLE admissions
        ADD COLUMN form_pdf TEXT;
