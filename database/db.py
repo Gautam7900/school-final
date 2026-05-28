@@ -246,22 +246,54 @@ CREATE TABLE IF NOT EXISTS admissions (
 );
 
 
-       CREATE TABLE IF NOT EXISTS students (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           name TEXT NOT NULL,
-           class_name TEXT,
-           roll_number TEXT,
-           parent_name TEXT,
-           contact TEXT,
-           password TEXT,
-           aadhaar TEXT,
-           address TEXT,
-           city TEXT,
-           state TEXT,
-           pincode TEXT,
-           photo TEXT
+CREATE TABLE IF NOT EXISTS students (
 
-       );
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- BASIC DETAILS
+    name TEXT NOT NULL,
+    class_name TEXT,
+    roll_number TEXT,
+    password TEXT,
+
+    -- FAMILY DETAILS
+    parent_name TEXT,
+    mother_name TEXT,
+
+    -- CONTACT DETAILS
+    contact TEXT,
+    email TEXT,
+
+    -- PERSONAL DETAILS
+    dob TEXT,
+    aadhaar TEXT,
+    category TEXT,
+    caste TEXT,
+    religion TEXT,
+    gender TEXT,
+
+    -- ADDRESS DETAILS
+    address TEXT,
+    correspondence_address TEXT,
+    city TEXT,
+    state TEXT,
+    pincode TEXT,
+
+    -- OTHER DETAILS
+    mother_tongue TEXT,
+    nationality TEXT,
+    bus_facility TEXT,
+    blood_group TEXT,
+    previous_school TEXT,
+    emergency_contact TEXT,
+
+    -- PHOTO
+    photo TEXT,
+
+    -- CREATED DATE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
 
 
 
