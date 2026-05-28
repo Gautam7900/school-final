@@ -281,21 +281,7 @@ def init_db():
        ALTER TABLE admissions
        ADD COLUMN form_pdf TEXT;
        
-       
-      try:
-          db.execute("ALTER TABLE students ADD COLUMN city TEXT")
-      except:
-          pass
-
-      try:
-          db.execute("ALTER TABLE students ADD COLUMN state TEXT")
-      except:
-          pass
-
-      try:
-          db.execute("ALTER TABLE students ADD COLUMN pincode TEXT")
-      except:
-          pass
+    
                      
     ''')
     

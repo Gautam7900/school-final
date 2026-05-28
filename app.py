@@ -812,7 +812,6 @@ def admin_admission_form(app_id):
 
     db = get_db()
 
-    # IMPORTANT FIX
     app_data = db.execute(
         "SELECT * FROM admissions WHERE id=?",
         (app_id,)
@@ -823,54 +822,78 @@ def admin_admission_form(app_id):
 
     if request.method == 'POST':
 
-        student_name = request.form.get('student_name')
-        father_name = request.form.get('father_name')
-        class_name = request.form.get('class_name')
-        contact = request.form.get('contact')
-        aadhaar = request.form.get('aadhaar')
-        address = request.form.get('permanent_address')
-        city = request.form.get('city')
-        state = request.form.get('state')
-        pincode = request.form.get('pincode')
+        try:
 
-        # PHOTO
-        photo_filename = ""
+            student_name = request.form.get('student_name')
+            father_name = request.form.get('father_name')
+            class_name = request.form.get('class_name')
 
-        photo = request.files.get('photo')
+            contact = request.form.get('contact')
 
-        if photo and photo.filename != '':
+            aadhaar = request.form.get('aadhaar')
 
-            filename = secure_filename(photo.filename)
+            address = request.form.get('permanent_address')
 
-            upload_folder = os.path.join(
-                app.root_path,
-                'static',
-                'uploads',
-                'students'
-            )
+            city = request.form.get('city')
 
-            os.makedirs(upload_folder, exist_ok=True)
+            state = request.form.get('state')
 
-            photo.save(
-                os.path.join(upload_folder, filename)
-            )
+            pincode = request.form.get('pincode')
 
-            photo_filename = filename
+            # PHOTO
+            photo_filename = ""
 
-        # AUTO GENERATED
-        roll_number = f"{class_name}-{random.randint(100,999)}"
+            photo = request.files.get('photo')
 
-        password = "student123"
+            if photo and photo.filename != '':
 
-        # INSERT STUDENT
-        db.execute("""
+                filename = secure_filename(photo.filename)
 
-            INSERT INTO students
-            (
-                name,
+                upload_folder = "static/uploads/students"
+
+                os.makedirs(upload_folder, exist_ok=True)
+
+                filepath = os.path.join(
+                    upload_folder,
+                    filename
+                )
+
+                photo.save(filepath)
+
+                photo_filename = filename
+
+            # AUTO GENERATE
+            roll_number = f"{class_name}-{random.randint(100,999)}"
+
+            password = "student123"
+
+            # INSERT STUDENT
+            db.execute("""
+
+                INSERT INTO students
+                (
+                    name,
+                    class_name,
+                    roll_number,
+                    parent_name,
+                    contact,
+                    password,
+                    aadhaar,
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    photo
+                )
+
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+            """, (
+
+                student_name,
                 class_name,
                 roll_number,
-                parent_name,
+                father_name,
                 contact,
                 password,
                 aadhaar,
@@ -878,85 +901,72 @@ def admin_admission_form(app_id):
                 city,
                 state,
                 pincode,
-                photo
+                photo_filename
+
+            ))
+
+            # PDF CREATE
+            pdf_folder = "static/pdfs"
+
+            os.makedirs(pdf_folder, exist_ok=True)
+
+            pdf_filename = f"admission_{app_id}.pdf"
+
+            pdf_path = os.path.join(
+                pdf_folder,
+                pdf_filename
             )
 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            c = canvas.Canvas(pdf_path)
 
-        """, (
+            c.setFont("Helvetica-Bold", 20)
 
-            student_name,
-            class_name,
-            roll_number,
-            father_name,
-            contact,
-            password,
-            aadhaar,
-            address,
-            city,
-            state,
-            pincode,
-            photo_filename
+            c.drawString(150, 800, "SCHOOL ADMISSION FORM")
 
-        ))
+            c.drawString(80, 740, f"Student Name: {student_name}")
+            c.drawString(80, 710, f"Father Name: {father_name}")
+            c.drawString(80, 680, f"Class: {class_name}")
+            c.drawString(80, 650, f"Contact: {contact}")
+            c.drawString(80, 620, f"City: {city}")
+            c.drawString(80, 590, f"State: {state}")
 
-        # PDF CREATE
-        pdf_folder = os.path.join(
-            app.root_path,
-            'static',
-            'pdfs'
-        )
+            c.save()
 
-        os.makedirs(pdf_folder, exist_ok=True)
+            # UPDATE ADMISSION
+            db.execute("""
 
-        pdf_filename = f"admission_{app_id}.pdf"
+                UPDATE admissions
 
-        pdf_path = os.path.join(
-            pdf_folder,
-            pdf_filename
-        )
+                SET
+                    status='Approved',
+                    pdf_file=?
 
-        c = canvas.Canvas(pdf_path)
+                WHERE id=?
 
-        c.setFont("Helvetica-Bold", 20)
+            """, (
 
-        c.drawString(150, 800, "SCHOOL ADMISSION FORM")
+                pdf_filename,
+                app_id
 
-        c.drawString(80, 740, f"Student Name: {student_name}")
-        c.drawString(80, 710, f"Father Name: {father_name}")
-        c.drawString(80, 680, f"Class: {class_name}")
-        c.drawString(80, 650, f"Contact: {contact}")
+            ))
 
-        c.save()
+            db.commit()
 
-        # IMPORTANT FIX
-        db.execute("""
+            flash(
+                "Admission Completed Successfully!",
+                "success"
+            )
 
-            UPDATE admissions
+            return redirect('/admin/dashboard')
 
-            SET
-                status='Approved',
-                pdf_file=?
+        except Exception as e:
 
-            WHERE id=?
-
-        """, (
-
-            pdf_filename,
-            app_id
-
-        ))
-
-        db.commit()
-
-        flash("Admission Completed Successfully!", "success")
-
-        return redirect('/admin/dashboard')
+            return f"REAL ERROR: {str(e)}"
 
     return render_template(
         'admin_admission_form.html',
         app=app_data
-    )    
+    )
     
     
     
