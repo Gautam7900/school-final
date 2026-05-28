@@ -16,6 +16,8 @@ from flask import (
     flash,
     send_from_directory
 )
+
+from reportlab.pdfgen import canvas
 import os
 import random
 from werkzeug.utils import secure_filename
@@ -813,45 +815,24 @@ def admin_admission_form(app_id):
         (app_id,)
     ).fetchone()
 
-    # IF NOT FOUND
+    # NOT FOUND
     if not app_data:
         return "Application Not Found"
 
     # FORM SUBMIT
     if request.method == 'POST':
 
-        import os
-        import random
-
-        from werkzeug.utils import secure_filename
-        from reportlab.pdfgen import canvas
-
-        # =========================
-        # FORM DATA
-        # =========================
-
         student_name = request.form.get('student_name')
-
         father_name = request.form.get('father_name')
-
         mother_name = request.form.get('mother_name')
-
         class_name = request.form.get('class_name')
-
         dob = request.form.get('dob')
-
         contact = request.form.get('contact')
-
         email = request.form.get('email')
-
         address = request.form.get('permanent_address')
-
         aadhaar = request.form.get('aadhaar')
 
-        # =========================
-        # PHOTO UPLOAD
-        # =========================
-
+        # PHOTO
         photo_filename = ""
 
         photo = request.files.get('photo')
@@ -870,18 +851,12 @@ def admin_admission_form(app_id):
 
             photo_filename = filename
 
-        # =========================
         # AUTO GENERATE
-        # =========================
-
         roll_number = f"{class_name}-{random.randint(100,999)}"
 
         password = "student123"
 
-        # =========================
-        # INSERT STUDENT
-        # =========================
-
+        # SAVE STUDENT
         db.execute("""
 
             INSERT INTO students
@@ -915,10 +890,7 @@ def admin_admission_form(app_id):
 
         db.commit()
 
-        # =========================
-        # PDF CREATE
-        # =========================
-
+        # PDF FOLDER
         pdf_folder = "static/pdfs"
 
         os.makedirs(pdf_folder, exist_ok=True)
@@ -930,42 +902,30 @@ def admin_admission_form(app_id):
             pdf_filename
         )
 
+        # CREATE PDF
         c = canvas.Canvas(pdf_path)
 
-        c.setFont("Helvetica-Bold", 22)
+        c.setFont("Helvetica-Bold", 20)
 
-        c.drawString(150, 800, "SCHOOL ADMISSION FORM")
+        c.drawString(170, 800, "SCHOOL ADMISSION FORM")
 
-        c.setFont("Helvetica", 14)
+        c.setFont("Helvetica", 13)
 
         c.drawString(80, 740, f"Student Name : {student_name}")
-
         c.drawString(80, 710, f"Father Name : {father_name}")
-
         c.drawString(80, 680, f"Mother Name : {mother_name}")
-
         c.drawString(80, 650, f"Class : {class_name}")
-
         c.drawString(80, 620, f"DOB : {dob}")
-
         c.drawString(80, 590, f"Contact : {contact}")
-
         c.drawString(80, 560, f"Email : {email}")
-
         c.drawString(80, 530, f"Aadhaar : {aadhaar}")
-
         c.drawString(80, 500, f"Address : {address}")
-
         c.drawString(80, 470, f"Roll Number : {roll_number}")
-
         c.drawString(80, 440, f"Password : {password}")
 
         c.save()
 
-        # =========================
         # UPDATE APPLICATION
-        # =========================
-
         db.execute("""
 
             UPDATE admission_applications
@@ -989,14 +949,219 @@ def admin_admission_form(app_id):
 
         return redirect('/admin/dashboard')
 
-    # =========================
-    # LOAD FORM PAGE
-    # =========================
-
     return render_template(
         'admin_admission_form.html',
         app=app_data
     )
+    
+    
+    
+    
+    
+#     @app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
+# def admin_admission_form(app_id):
+
+#     db = get_db()
+
+#     # FETCH APPLICATION
+#     app_data = db.execute(
+#         "SELECT * FROM admissions WHERE id=?",
+#         (app_id,)
+#     ).fetchone()
+
+#     if not app_data:
+#         return "Application Not Found"
+
+#     if request.method == 'POST':
+
+#         student_name = request.form.get('student_name')
+
+#         father_name = request.form.get('father_name')
+
+#         mother_name = request.form.get('mother_name')
+
+#         class_name = request.form.get('class_name')
+
+#         dob = request.form.get('dob')
+
+#         contact = request.form.get('contact')
+
+#         email = request.form.get('email')
+
+#         address = request.form.get('permanent_address')
+
+#         aadhaar = request.form.get('aadhaar')
+
+#         # PHOTO
+#         photo_filename = ""
+
+#         photo = request.files.get('photo')
+
+#         if photo and photo.filename != '':
+
+#             filename = secure_filename(photo.filename)
+
+#             upload_folder = os.path.join(
+#                 app.config['UPLOAD_FOLDER'],
+#                 'students'
+#             )
+
+#             os.makedirs(upload_folder, exist_ok=True)
+
+#             photo.save(
+#                 os.path.join(upload_folder, filename)
+#             )
+
+#             photo_filename = filename
+
+#         # AUTO GENERATED
+#         roll_number = f"{class_name}-{random.randint(100,999)}"
+
+#         password = "student123"
+
+#         # INSERT STUDENT
+#         db.execute("""
+
+#             INSERT INTO students
+#             (
+#                 name,
+#                 class_name,
+#                 roll_number,
+#                 parent_name,
+#                 contact,
+#                 password,
+#                 aadhaar,
+#                 address,
+#                 photo
+#             )
+
+#             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+#         """, (
+
+#             student_name,
+#             class_name,
+#             roll_number,
+#             father_name,
+#             contact,
+#             password,
+#             aadhaar,
+#             address,
+#             photo_filename
+
+#         ))
+
+#         db.commit()
+
+#         # PDF CREATE
+#         pdf_folder = "static/pdfs"
+
+#         os.makedirs(pdf_folder, exist_ok=True)
+
+#         pdf_filename = f"admission_{app_id}.pdf"
+
+#         pdf_path = os.path.join(
+#             pdf_folder,
+#             pdf_filename
+#         )
+
+#         c = canvas.Canvas(pdf_path)
+
+#         c.setFont("Helvetica-Bold", 22)
+
+#         c.drawString(150, 800, "SCHOOL ADMISSION FORM")
+
+#         c.setFont("Helvetica", 13)
+
+#         c.drawString(80, 740, f"Student Name : {student_name}")
+
+#         c.drawString(80, 710, f"Father Name : {father_name}")
+
+#         c.drawString(80, 680, f"Mother Name : {mother_name}")
+
+#         c.drawString(80, 650, f"Class : {class_name}")
+
+#         c.drawString(80, 620, f"DOB : {dob}")
+
+#         c.drawString(80, 590, f"Contact : {contact}")
+
+#         c.drawString(80, 560, f"Email : {email}")
+
+#         c.drawString(80, 530, f"Aadhaar : {aadhaar}")
+
+#         c.drawString(80, 500, f"Address : {address}")
+
+#         c.drawString(80, 470, f"Roll Number : {roll_number}")
+
+#         c.drawString(80, 440, f"Password : {password}")
+
+#         c.save()
+
+#         # UPDATE ADMISSION STATUS
+#         db.execute("""
+
+#             UPDATE admissions
+
+#             SET
+#                 status='Approved',
+#                 pdf_file=?
+
+#             WHERE id=?
+
+#         """, (
+
+#             pdf_filename,
+#             app_id
+
+#         ))
+
+#         db.commit()
+
+#         flash("Admission Completed Successfully!")
+
+#         return redirect('/admin/dashboard')
+
+#     return render_template(
+#         'admin_admission_form.html',
+#         app=app_data
+#     )
+
+
+
+
+# =========================
+
+
+# @app.route('/download-pdf/<int:app_id>')
+# def download_pdf(app_id):
+
+#     db = get_db()
+
+#     app_data = db.execute(
+#         "SELECT * FROM admissions WHERE id=?",
+#         (app_id,)
+#     ).fetchone()
+
+#     if not app_data:
+#         return "Application not found"
+
+#     pdf_file = app_data['pdf_file']
+
+#     if not pdf_file:
+#         return "PDF not generated yet"
+
+#     return send_from_directory(
+#         'static/pdfs',
+#         pdf_file,
+#         as_attachment=True
+#     )
+
+
+#
+
+# <a href="/admin/admin_admission_form/{{ a['id'] }}">
+
+# <a href="/download-pdf/{{ a['id'] }}">
 
 
 # =========================
