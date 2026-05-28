@@ -217,52 +217,38 @@ def init_db():
        
       
                 
-  CREATE TABLE IF NOT EXISTS admissions (
+         CREATE TABLE IF NOT EXISTS admissions (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           student_name TEXT,
+           parent_name TEXT,
+           class_name TEXT,
+           contact TEXT,
+           email TEXT,
+           status TEXT DEFAULT 'Pending',
+           applied_on TEXT,
+           pdf_file TEXT
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    student_name TEXT,
-    parent_name TEXT,
-    class_name TEXT,
-    contact TEXT,
-    email TEXT,
-    status TEXT DEFAULT 'Pending',
-    applied_on TEXT,
-    pdf_file TEXT
-
-);
+       );
 
 
+       CREATE TABLE IF NOT EXISTS students (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           name TEXT NOT NULL,
+           class_name TEXT,
+           roll_number TEXT,
+           parent_name TEXT,
+           contact TEXT,
+           password TEXT,
+           aadhaar TEXT,
+           address TEXT,
+           city TEXT,
+           state TEXT,
+           pincode TEXT,
+           photo TEXT
 
- CREATE TABLE IF NOT EXISTS students (
+       );
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    name TEXT NOT NULL,
-
-    class_name TEXT,
-
-    roll_number TEXT,
-
-    parent_name TEXT,
-
-    contact TEXT,
-
-    password TEXT,
-
-    aadhaar TEXT,
-
-    address TEXT,
-
-    city TEXT,
-
-    state TEXT,
-
-    pincode TEXT,
-
-    photo TEXT
-
-);
 
         ALTER TABLE admissions ADD COLUMN gender TEXT;
 
@@ -288,14 +274,6 @@ def init_db():
 
         ALTER TABLE admissions ADD COLUMN emergency_contact TEXT;
         
-        
-  
-
-        ALTER TABLE students ADD COLUMN city TEXT;
-
-        ALTER TABLE students ADD COLUMN state TEXT;
-
-        ALTER TABLE students ADD COLUMN pincode TEXT;
        
              
        
