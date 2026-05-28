@@ -236,27 +236,27 @@ def init_db():
 
     CREATE TABLE IF NOT EXISTS students (
 
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        name TEXT NOT NULL,
+    name TEXT NOT NULL,
 
-        class_name TEXT,
+    class_name TEXT,
 
-        roll_number TEXT,
+    roll_number TEXT,
 
-        parent_name TEXT,
+    parent_name TEXT,
 
-        contact TEXT,
+    contact TEXT,
 
-        password TEXT,
+    password TEXT,
 
-        aadhaar TEXT,
+    aadhaar TEXT,
 
-        address TEXT,
+    address TEXT,
 
-        photo TEXT
+    photo TEXT
 
-    );
+);
 
 
         ALTER TABLE admissions ADD COLUMN gender TEXT;

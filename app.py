@@ -22,13 +22,9 @@ from flask import (
     flash,
     send_from_directory
 )
-
-from werkzeug.utils import secure_filename
-from reportlab.pdfgen import canvas
+import os
 import random
-import os
 from werkzeug.utils import secure_filename
-import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
@@ -745,11 +741,10 @@ def admin_admission_form(app_id):
 
     db = get_db()
 
-    # FETCH APPLICATION
     app_data = db.execute(
-        "SELECT * FROM admissions WHERE id=?",
-        (app_id,)
-    ).fetchone()
+    "SELECT * FROM admission_applications WHERE id=?",
+    (app_id,)
+).fetchone()
 
     if not app_data:
         return "Application Not Found"
@@ -760,15 +755,9 @@ def admin_admission_form(app_id):
 
         father_name = request.form.get('father_name')
 
-        mother_name = request.form.get('mother_name')
-
         class_name = request.form.get('class_name')
 
-        dob = request.form.get('dob')
-
         contact = request.form.get('contact')
-
-        email = request.form.get('email')
 
         address = request.form.get('permanent_address')
 
@@ -783,10 +772,7 @@ def admin_admission_form(app_id):
 
             filename = secure_filename(photo.filename)
 
-            upload_folder = os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                'students'
-            )
+            upload_folder = "static/uploads/students"
 
             os.makedirs(upload_folder, exist_ok=True)
 
@@ -835,7 +821,7 @@ def admin_admission_form(app_id):
 
         db.commit()
 
-        # PDF CREATE
+        # PDF GENERATE
         pdf_folder = "static/pdfs"
 
         os.makedirs(pdf_folder, exist_ok=True)
@@ -853,36 +839,28 @@ def admin_admission_form(app_id):
 
         c.drawString(150, 800, "SCHOOL ADMISSION FORM")
 
-        c.setFont("Helvetica", 13)
+        c.drawString(80, 740, f"Student Name: {student_name}")
 
-        c.drawString(80, 740, f"Student Name : {student_name}")
+        c.drawString(80, 710, f"Father Name: {father_name}")
 
-        c.drawString(80, 710, f"Father Name : {father_name}")
+        c.drawString(80, 680, f"Class: {class_name}")
 
-        c.drawString(80, 680, f"Mother Name : {mother_name}")
+        c.drawString(80, 650, f"Contact: {contact}")
 
-        c.drawString(80, 650, f"Class : {class_name}")
+        c.drawString(80, 620, f"Aadhaar: {aadhaar}")
 
-        c.drawString(80, 620, f"DOB : {dob}")
+        c.drawString(80, 590, f"Address: {address}")
 
-        c.drawString(80, 590, f"Contact : {contact}")
+        c.drawString(80, 560, f"Roll Number: {roll_number}")
 
-        c.drawString(80, 560, f"Email : {email}")
-
-        c.drawString(80, 530, f"Aadhaar : {aadhaar}")
-
-        c.drawString(80, 500, f"Address : {address}")
-
-        c.drawString(80, 470, f"Roll Number : {roll_number}")
-
-        c.drawString(80, 440, f"Password : {password}")
+        c.drawString(80, 530, f"Password: {password}")
 
         c.save()
 
-        # UPDATE ADMISSION STATUS
+        # UPDATE PDF
         db.execute("""
 
-            UPDATE admissions
+            UPDATE admission_applications
 
             SET
                 status='Approved',
