@@ -290,13 +290,7 @@ def init_db():
         ALTER TABLE admissions ADD COLUMN emergency_contact TEXT;
         
         
-        
-        
-        
-
-        ALTER TABLE students ADD COLUMN aadhaar TEXT;
-
-        ALTER TABLE students ADD COLUMN address TEXT;
+  
 
         ALTER TABLE students ADD COLUMN city TEXT;
 
