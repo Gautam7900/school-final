@@ -21,7 +21,7 @@ def init_db():
             name TEXT NOT NULL, subject TEXT NOT NULL,
             username TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
             email TEXT, phone TEXT, qualification TEXT,
-            experience TEXT, bio TEXT, photo TEXT, joining_date TEXT,
+            experience TEXT, bio TEXT,  joining_date TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS teacher_assignments (
@@ -168,7 +168,7 @@ def init_db():
             description TEXT,
             category TEXT DEFAULT "Academic",
             achievement_date TEXT,
-            photo TEXT,
+            ,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS whatsapp_logs (
