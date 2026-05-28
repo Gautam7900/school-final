@@ -234,7 +234,7 @@ def init_db():
 
 
 
-   CREATE TABLE IF NOT EXISTS students (
+ CREATE TABLE IF NOT EXISTS students (
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -253,6 +253,12 @@ def init_db():
     aadhaar TEXT,
 
     address TEXT,
+
+    city TEXT,
+
+    state TEXT,
+
+    pincode TEXT,
 
     photo TEXT
 

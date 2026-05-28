@@ -829,6 +829,9 @@ def admin_admission_form(app_id):
         contact = request.form.get('contact')
         aadhaar = request.form.get('aadhaar')
         address = request.form.get('permanent_address')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        pincode = request.form.get('pincode')
 
         # PHOTO
         photo_filename = ""
@@ -872,10 +875,13 @@ def admin_admission_form(app_id):
                 password,
                 aadhaar,
                 address,
+                city,
+                state,
+                pincode,
                 photo
             )
 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
         """, (
 
@@ -887,6 +893,9 @@ def admin_admission_form(app_id):
             password,
             aadhaar,
             address,
+            city,
+            state,
+            pincode,
             photo_filename
 
         ))
