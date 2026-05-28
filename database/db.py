@@ -223,18 +223,27 @@ def init_db():
        
       
                 
-         CREATE TABLE IF NOT EXISTS admissions (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           student_name TEXT,
-           parent_name TEXT,
-           class_name TEXT,
-           contact TEXT,
-           email TEXT,
-           status TEXT DEFAULT 'Pending',
-           applied_on TEXT,
-           pdf_file TEXT
+CREATE TABLE IF NOT EXISTS admissions (
 
-       );
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    student_name TEXT,
+
+    parent_name TEXT,
+
+    class_name TEXT,
+
+    contact TEXT,
+
+    email TEXT,
+
+    status TEXT DEFAULT 'Pending',
+
+    applied_on TEXT,
+
+    pdf_file TEXT
+
+);
 
 
        CREATE TABLE IF NOT EXISTS students (
@@ -290,6 +299,15 @@ def init_db():
     
                      
     ''')
+    
+    try:
+       db.execute(
+        "ALTER TABLE admissions ADD COLUMN pdf_file TEXT"
+       )
+    except:
+       pass
+
+
     
     if db.execute('SELECT COUNT(*) FROM students').fetchone()[0] == 0:
         db.executescript('''
