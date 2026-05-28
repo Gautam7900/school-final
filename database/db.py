@@ -238,14 +238,22 @@ def init_db():
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    name TEXT,
+    name TEXT NOT NULL,
+
     class_name TEXT,
+
     roll_number TEXT,
+
     parent_name TEXT,
+
     contact TEXT,
+
     password TEXT,
+
     aadhaar TEXT,
+
     address TEXT,
+
     photo TEXT
 
 );
