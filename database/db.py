@@ -297,7 +297,7 @@ CREATE TABLE IF NOT EXISTS students (
         
         
         
-        ALTER TABLE students ADD COLUMN photo TEXT;
+        
 
         ALTER TABLE students ADD COLUMN aadhaar TEXT;
 
