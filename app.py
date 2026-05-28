@@ -807,30 +807,28 @@ def delete_notice(nid):
 @app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
 def admin_admission_form(app_id):
 
+    if session.get('role') != 'admin':
+        return redirect('/admin/login')
+
     db = get_db()
 
-    # GET APPLICATION
+    # IMPORTANT FIX
     app_data = db.execute(
-        "SELECT * FROM admission_applications WHERE id=?",
+        "SELECT * FROM admissions WHERE id=?",
         (app_id,)
     ).fetchone()
 
-    # NOT FOUND
     if not app_data:
         return "Application Not Found"
 
-    # FORM SUBMIT
     if request.method == 'POST':
 
         student_name = request.form.get('student_name')
         father_name = request.form.get('father_name')
-        mother_name = request.form.get('mother_name')
         class_name = request.form.get('class_name')
-        dob = request.form.get('dob')
         contact = request.form.get('contact')
-        email = request.form.get('email')
-        address = request.form.get('permanent_address')
         aadhaar = request.form.get('aadhaar')
+        address = request.form.get('permanent_address')
 
         # PHOTO
         photo_filename = ""
@@ -841,7 +839,12 @@ def admin_admission_form(app_id):
 
             filename = secure_filename(photo.filename)
 
-            upload_folder = "static/uploads/students"
+            upload_folder = os.path.join(
+                app.root_path,
+                'static',
+                'uploads',
+                'students'
+            )
 
             os.makedirs(upload_folder, exist_ok=True)
 
@@ -851,12 +854,12 @@ def admin_admission_form(app_id):
 
             photo_filename = filename
 
-        # AUTO GENERATE
+        # AUTO GENERATED
         roll_number = f"{class_name}-{random.randint(100,999)}"
 
         password = "student123"
 
-        # SAVE STUDENT
+        # INSERT STUDENT
         db.execute("""
 
             INSERT INTO students
@@ -888,10 +891,12 @@ def admin_admission_form(app_id):
 
         ))
 
-        db.commit()
-
-        # PDF FOLDER
-        pdf_folder = "static/pdfs"
+        # PDF CREATE
+        pdf_folder = os.path.join(
+            app.root_path,
+            'static',
+            'pdfs'
+        )
 
         os.makedirs(pdf_folder, exist_ok=True)
 
@@ -902,33 +907,23 @@ def admin_admission_form(app_id):
             pdf_filename
         )
 
-        # CREATE PDF
         c = canvas.Canvas(pdf_path)
 
         c.setFont("Helvetica-Bold", 20)
 
-        c.drawString(170, 800, "SCHOOL ADMISSION FORM")
+        c.drawString(150, 800, "SCHOOL ADMISSION FORM")
 
-        c.setFont("Helvetica", 13)
-
-        c.drawString(80, 740, f"Student Name : {student_name}")
-        c.drawString(80, 710, f"Father Name : {father_name}")
-        c.drawString(80, 680, f"Mother Name : {mother_name}")
-        c.drawString(80, 650, f"Class : {class_name}")
-        c.drawString(80, 620, f"DOB : {dob}")
-        c.drawString(80, 590, f"Contact : {contact}")
-        c.drawString(80, 560, f"Email : {email}")
-        c.drawString(80, 530, f"Aadhaar : {aadhaar}")
-        c.drawString(80, 500, f"Address : {address}")
-        c.drawString(80, 470, f"Roll Number : {roll_number}")
-        c.drawString(80, 440, f"Password : {password}")
+        c.drawString(80, 740, f"Student Name: {student_name}")
+        c.drawString(80, 710, f"Father Name: {father_name}")
+        c.drawString(80, 680, f"Class: {class_name}")
+        c.drawString(80, 650, f"Contact: {contact}")
 
         c.save()
 
-        # UPDATE APPLICATION
+        # IMPORTANT FIX
         db.execute("""
 
-            UPDATE admission_applications
+            UPDATE admissions
 
             SET
                 status='Approved',
@@ -945,15 +940,14 @@ def admin_admission_form(app_id):
 
         db.commit()
 
-        flash("Admission Completed Successfully!")
+        flash("Admission Completed Successfully!", "success")
 
         return redirect('/admin/dashboard')
 
     return render_template(
         'admin_admission_form.html',
         app=app_data
-    )
-    
+    )    
     
     
     
@@ -1167,14 +1161,13 @@ def admin_admission_form(app_id):
 # =========================
 # DOWNLOAD PDF
 # =========================
-
 @app.route('/download-pdf/<int:app_id>')
 def download_pdf(app_id):
 
     db = get_db()
 
     app_data = db.execute(
-        "SELECT * FROM admission_applications WHERE id=?",
+        "SELECT * FROM admissions WHERE id=?",
         (app_id,)
     ).fetchone()
 
@@ -1191,6 +1184,8 @@ def download_pdf(app_id):
         pdf_file,
         as_attachment=True
     )
+    
+    
 
 
 @app.route('/admin/update_admission_status', methods=['POST'])
