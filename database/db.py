@@ -278,12 +278,6 @@ def init_db():
 
         ALTER TABLE admissions ADD COLUMN income TEXT;
 
-        ALTER TABLE admissions ADD COLUMN city TEXT;
-
-        ALTER TABLE admissions ADD COLUMN state TEXT;
-
-        ALTER TABLE admissions ADD COLUMN pincode TEXT;
-
         ALTER TABLE admissions ADD COLUMN previous_school TEXT;
 
         ALTER TABLE admissions ADD COLUMN last_class TEXT;
@@ -308,6 +302,22 @@ def init_db():
         
        ALTER TABLE admissions
        ADD COLUMN form_pdf TEXT;
+       
+       
+      try:
+          db.execute("ALTER TABLE students ADD COLUMN city TEXT")
+      except:
+          pass
+
+      try:
+          db.execute("ALTER TABLE students ADD COLUMN state TEXT")
+      except:
+          pass
+
+      try:
+          db.execute("ALTER TABLE students ADD COLUMN pincode TEXT")
+      except:
+          pass
                      
     ''')
     
