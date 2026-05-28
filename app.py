@@ -6,6 +6,7 @@ from reportlab.platypus import (
     Paragraph,
     Spacer
 )
+import random
 import os
 from werkzeug.utils import secure_filename
 import os
@@ -721,136 +722,15 @@ def delete_notice(nid):
 
 # ── ADMIN ADMISSIONS ───────────────────────────────────────────────────────────
 
-@app.route('/admin/admission_form/<int:app_id>', methods=['GET', 'POST'])
+
+
+
+@app.route('/admin/admin_admission_form/<int:app_id>', methods=['GET', 'POST'])
 def admin_admission_form(app_id):
 
     db = get_db()
 
-    app_data = db.execute(
-        "SELECT * FROM admission_applications WHERE id=?",
-        (app_id,)
-    ).fetchone()
-
-    if request.method == 'POST':
-
-        student_name = request.form.get('student_name')
-        father_name = request.form.get('father_name')
-        mother_name = request.form.get('mother_name')
-        class_name = request.form.get('class_name')
-        dob = request.form.get('dob')
-        contact = request.form.get('contact')
-        email = request.form.get('email')
-        address = request.form.get('permanent_address')
-        aadhaar = request.form.get('aadhaar')
-
-        photo_filename = ""
-
-        # PHOTO UPLOAD
-        photo = request.files.get('photo')
-
-        if photo and photo.filename != '':
-
-            filename = secure_filename(photo.filename)
-
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-            photo.save(
-                os.path.join(
-                    app.config['UPLOAD_FOLDER'],
-                    filename
-                )
-            )
-
-            photo_filename = filename
-
-        # SAVE STUDENT
-        db.execute("""
-
-            INSERT INTO students
-            (
-                name,
-                parent_name,
-                contact,
-                aadhaar,
-                address,
-                class_name,
-                photo
-            )
-
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-
-        """, (
-
-            student_name,
-            father_name,
-            contact,
-            aadhaar,
-            address,
-            class_name,
-            photo_filename
-
-        ))
-
-        db.commit()
-
-        # PDF CREATE
-        pdf_folder = "static/pdfs"
-
-        os.makedirs(pdf_folder, exist_ok=True)
-
-        pdf_path = f"{pdf_folder}/admission_{app_id}.pdf"
-
-        c = canvas.Canvas(pdf_path)
-
-        c.setFont("Helvetica-Bold", 20)
-        c.drawString(180, 800, "SCHOOL ADMISSION FORM")
-
-        c.setFont("Helvetica", 13)
-
-        c.drawString(80, 740, f"Student Name : {student_name}")
-        c.drawString(80, 710, f"Father Name : {father_name}")
-        c.drawString(80, 680, f"Mother Name : {mother_name}")
-        c.drawString(80, 650, f"Class : {class_name}")
-        c.drawString(80, 620, f"Date of Birth : {dob}")
-        c.drawString(80, 590, f"Contact : {contact}")
-        c.drawString(80, 560, f"Email : {email}")
-        c.drawString(80, 530, f"Aadhaar : {aadhaar}")
-        c.drawString(80, 500, f"Address : {address}")
-
-        c.save()
-
-        # UPDATE PDF PATH
-        db.execute("""
-
-            UPDATE admission_applications
-            SET pdf_file=?
-            WHERE id=?
-
-        """, (
-
-            f"admission_{app_id}.pdf",
-            app_id
-
-        ))
-
-        db.commit()
-
-        flash("Admission Completed Successfully")
-
-        return redirect('/admin/admissions')
-
-    return render_template(
-        'complete_admission.html',
-        app=app_data
-    )
-
-
-
-@app.route('/download-pdf/<int:app_id>')
-def download_pdf(app_id):
-
-    db = get_db()
-
+    # GET APPLICATION
     app_data = db.execute(
         "SELECT * FROM admission_applications WHERE id=?",
         (app_id,)
@@ -859,15 +739,266 @@ def download_pdf(app_id):
     if not app_data:
         return "Application not found"
 
+    # FORM SUBMIT
+    if request.method == 'POST':
+
+        # FORM DATA
+        student_name = request.form.get('student_name')
+        father_name = request.form.get('father_name')
+        mother_name = request.form.get('mother_name')
+
+        class_name = request.form.get('class_name')
+
+        dob = request.form.get('dob')
+
+        contact = request.form.get('contact')
+
+        email = request.form.get('email')
+
+        address = request.form.get(
+            'permanent_address'
+        )
+
+        aadhaar = request.form.get('aadhaar')
+
+        # PHOTO
+        photo_filename = ""
+
+        photo = request.files.get('photo')
+
+        if photo and photo.filename != '':
+
+            filename = secure_filename(
+                photo.filename
+            )
+
+            upload_folder = os.path.join(
+                app.config['UPLOAD_FOLDER'],
+                'students'
+            )
+
+            os.makedirs(
+                upload_folder,
+                exist_ok=True
+            )
+
+            photo.save(
+                os.path.join(
+                    upload_folder,
+                    filename
+                )
+            )
+
+            photo_filename = filename
+
+        # AUTO ROLL NUMBER
+        roll_number = f"{class_name}-{random.randint(100,999)}"
+
+        # DEFAULT PASSWORD
+        password = "student123"
+
+        # SAVE STUDENT
+        db.execute("""
+
+            INSERT INTO students
+            (
+                name,
+                class_name,
+                roll_number,
+                parent_name,
+                contact,
+                password,
+                aadhaar,
+                address,
+                photo
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+        """, (
+
+            student_name,
+            class_name,
+            roll_number,
+            father_name,
+            contact,
+            password,
+            aadhaar,
+            address,
+            photo_filename
+
+        ))
+
+        db.commit()
+
+        # PDF FOLDER
+        pdf_folder = "static/pdfs"
+
+        os.makedirs(
+            pdf_folder,
+            exist_ok=True
+        )
+
+        # PDF PATH
+        pdf_filename = (
+            f"admission_{app_id}.pdf"
+        )
+
+        pdf_path = os.path.join(
+            pdf_folder,
+            pdf_filename
+        )
+
+        # CREATE PDF
+        c = canvas.Canvas(pdf_path)
+
+        c.setFont(
+            "Helvetica-Bold",
+            22
+        )
+
+        c.drawString(
+            160,
+            800,
+            "SCHOOL ADMISSION FORM"
+        )
+
+        c.setFont(
+            "Helvetica",
+            13
+        )
+
+        c.drawString(
+            80,
+            740,
+            f"Student Name : {student_name}"
+        )
+
+        c.drawString(
+            80,
+            710,
+            f"Father Name : {father_name}"
+        )
+
+        c.drawString(
+            80,
+            680,
+            f"Mother Name : {mother_name}"
+        )
+
+        c.drawString(
+            80,
+            650,
+            f"Class : {class_name}"
+        )
+
+        c.drawString(
+            80,
+            620,
+            f"Date of Birth : {dob}"
+        )
+
+        c.drawString(
+            80,
+            590,
+            f"Contact : {contact}"
+        )
+
+        c.drawString(
+            80,
+            560,
+            f"Email : {email}"
+        )
+
+        c.drawString(
+            80,
+            530,
+            f"Aadhaar : {aadhaar}"
+        )
+
+        c.drawString(
+            80,
+            500,
+            f"Address : {address}"
+        )
+
+        c.drawString(
+            80,
+            450,
+            f"Roll Number : {roll_number}"
+        )
+
+        c.drawString(
+            80,
+            420,
+            f"Student Password : {password}"
+        )
+
+        c.save()
+
+        # UPDATE APPLICATION
+        db.execute("""
+
+            UPDATE admission_applications
+
+            SET
+                pdf_file=?,
+                status='Approved'
+
+            WHERE id=?
+
+        """, (
+
+            pdf_filename,
+            app_id
+
+        ))
+
+        db.commit()
+
+        flash(
+            "Admission Completed Successfully!"
+        )
+
+        return redirect(
+            '/admin/admissions'
+        )
+
+    return render_template(
+        'complete_admission.html',
+        app=app_data
+    )
+
+
+
+# DOWNLOAD PDF
+@app.route('/download-pdf/<int:app_id>')
+def download_pdf(app_id):
+
+    db = get_db()
+
+    app_data = db.execute(
+        """
+        SELECT *
+        FROM admission_applications
+        WHERE id=?
+        """,
+        (app_id,)
+    ).fetchone()
+
+    if not app_data:
+        return "Application not found"
+
     pdf_file = app_data['pdf_file']
+
+    if not pdf_file:
+        return "PDF not generated"
 
     return send_from_directory(
         'static/pdfs',
         pdf_file,
         as_attachment=True
     )
-
-
 
 
 @app.route('/admin/update_admission_status', methods=['POST'])
